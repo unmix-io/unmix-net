@@ -197,6 +197,7 @@ fabric.properties
 .idea/
 
 .DS_Store
+._.DS_Store
 
 # MedleyDB temp files
 MedleyDB_fileprocessing/mixes
