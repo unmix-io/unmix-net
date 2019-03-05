@@ -8,6 +8,12 @@
     },
     "training": {
         "epochs": 10,
-        "loss_function": "mean_squared_error"
+        "loss_function": "mean_squared_error",
+        "model": {
+            "name": "LeakyReLU",
+            "alpha1": "float(0.1)",
+            "alpha2": "float(0.01)",
+            "rate": "float(0.1)"
+        }
     }
 }
