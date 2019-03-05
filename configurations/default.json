@@ -9,6 +9,7 @@
     "training": {
         "epochs": 10,
         "loss_function": "mean_squared_error",
+        "optimizer": "adam",
         "model": {
             "name": "LeakyReLU",
             "alpha1": "float(0.1)",
