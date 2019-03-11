@@ -8,4 +8,4 @@ from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2
 name = 'unmix'
 
 def generate():
-        return False
+        return None
