@@ -2,7 +2,10 @@
     "environment": {
         "name": "default",
         "data_folder": "",
-        "weights_file": "/weights/weights.h5",
+        "weights": {
+            "file": "/weights/weights.h5",
+            "load": "str2bool(True)"
+        },
         "log_folder": "/logs",
         "tensorboard_folder": "/TensorBoard"
     },

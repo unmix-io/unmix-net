@@ -9,12 +9,14 @@ __email__ = "info@unmix.io"
 import json
 from collections import namedtuple
 
-from helpers import converter
 from helpers import reducer
+from helpers import converter
 from exceptions.configurationerror import ConfigurationError
 
 
 class Configuration(object):
+
+    workingdir = ''
 
     @staticmethod
     def initialize(configuration_file):
@@ -37,3 +39,8 @@ class Configuration(object):
             except:
                 raise ConfigurationError(key)
         return key
+
+    @staticmethod
+    def get_path(key='', optional=True):
+        path = Configuration.get(key, optional)
+        return converter.build_path(path)
