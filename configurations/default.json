@@ -13,6 +13,13 @@
         "epochs": 10,
         "loss_function": "mean_squared_error",
         "optimizer": "adam",
+        "choppers": [
+            {
+                "direction": "horizontal",
+                "mode": "split",
+                "size": "int(64)"
+            }
+        ],
         "model": {
             "name": "LeakyReLU",
             "alpha1": "float(0.1)",
