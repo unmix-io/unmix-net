@@ -13,5 +13,5 @@ class Chopper:
         self.mode = mode
         self.size = size
 
-    def chop(input):
+    def chop(self, input):
         return input # TODO Chop horizontal or vertically

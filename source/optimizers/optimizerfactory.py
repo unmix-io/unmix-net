@@ -15,7 +15,7 @@ class OptimizerFactory(object):
     @staticmethod
     def build():
         optimizer = Configuration.get('training.optimizer')
-        return getattr(OptimizerFactory, optimizer)
+        return getattr(OptimizerFactory, optimizer)(OptimizerFactory)
 
     def adam(self, **kwargs):
         return Adam(**kwargs)

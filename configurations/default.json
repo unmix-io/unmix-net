@@ -7,12 +7,14 @@
             "load": "str2bool(True)"
         },
         "log_folder": "/logs",
-        "tensorboard_folder": "/TensorBoard"
+        "tensorboard_folder": "/TensorBoard",
+        "summary_line_length": "int(150)"
     },
     "training": {
         "epochs": 10,
         "loss_function": "mean_squared_error",
         "optimizer": "adam",
+        "metrics": ["mean_pred"],
         "choppers": [
             {
                 "direction": "horizontal",
