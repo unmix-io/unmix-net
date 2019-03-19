@@ -6,13 +6,17 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 import os
+import keras.utils
 
 from unmix.source.helpers import console
 from unmix.source.helpers import converter
+from unmix.source.helpers import reducer
 from unmix.source.configuration import Configuration
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
+from unmix.source.callbacks.callbacksfactory import CallbacksFactory
+from unmix.source.data.datacollectionhandler import DataCollectionHandler
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 
 
@@ -22,11 +26,38 @@ class UnmixNet:
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build()
         metrics = MetricsFactory.build()
+        
+        self.callbacks = CallbacksFactory.build()
 
         self.model = ModelFactory.build()
-        self.model.compile(loss=loss_function, optimizer=optimizer, metrics=metrics)
+        self.model.compile(loss=loss_function,optimizer=optimizer, metrics=metrics)
         self.model.summary(Configuration.get("environment.summary_line_length"))
-        console.debug('Model initialized with %d parameters' % self.model.count_params())
+        self.plot_model()
+        console.debug('Model initialized with %d parameters' %self.model.count_params())
+
+    def plot_model(self):
+        try:
+            path = Configuration.get_path("environment.model_plot_folder")
+            if path:
+                name = Configuration.get('training.model').name
+                file_name = os.path.join(path, ("%s-model.png" % name))
+                keras.utils.plot_model(self.model, file_name)
+        except Exception as e:
+            console.error("Error while plotting model: %s" % str(e))
+
+    def train(self, batch_size, epoch_count, epoch_start=0):
+        x_train, y_train = DataCollectionHandler.load_training()
+        x_valid, y_valid = DataCollectionHandler.load_validation()
+        x_train = reducer.flatten(x_train)
+        y_train = reducer.flatten(y_train)
+        history = self.model.fit(
+            x_train, y_train, 
+            batch_size=batch_size,
+            initial_epoch=epoch_start, epochs=epoch_start + epoch_count,
+            validation_data=(x_valid, y_valid),
+            callbacks=self.callbacks)
+
+        return False
 
     def save_weights(self):
         path = Configuration.get_path('environment.weights.file')

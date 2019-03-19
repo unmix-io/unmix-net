@@ -3,6 +3,9 @@
 Builds a keras loss function from configuration.
 """
 
+__author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
+__email__ = "info@unmix.io"
+
 
 from keras import losses
 

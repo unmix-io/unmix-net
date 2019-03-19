@@ -3,15 +3,18 @@
         "name": "default",
         "data_folder": "",
         "weights": {
-            "file": "/weights/weights.h5",
+            "folder": "weights",
+            "file": "weights.h5",
             "load": "str2bool(True)"
         },
-        "log_folder": "/logs",
-        "tensorboard_folder": "/TensorBoard",
-        "summary_line_length": "int(150)"
+        "log_folder": "logs",
+        "tensorboard_folder": "TensorBoard",
+        "summary_line_length": "int(150)",
+        "model_plot_folder": "models"
     },
     "training": {
-        "epochs": 10,
+        "batch_size": "10",
+        "epoch_count": "10",
         "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
@@ -22,6 +25,23 @@
                 "size": "int(64)"
             }
         ],
+        "callbacks": {
+            "tensorboard" : {
+                "write_images": "str2bool(True)",
+                "write_grads": "str2bool(True)",
+                "histogram_freq": "int(2)"
+            },
+            "early_stopping": {
+                "min_delta": "float(0.8)",
+                "patience": "float(0.8)",
+                "verbose": "int(1)"
+            },
+            "weights": {
+                "file_name": "callback_weights.h5",
+                "best_only": "str2bool(True)",
+                "verbose": "int(1)"
+            }
+        },
         "model": {
             "name": "LeakyReLU",
             "alpha1": "float(0.1)",

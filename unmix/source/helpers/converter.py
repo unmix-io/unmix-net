@@ -7,7 +7,7 @@ __email__ = "info@unmix.io"
 
 
 import os
-
+import datetime
 
 def try_eval(expression):
     """
@@ -27,3 +27,7 @@ def str2bool(value):
     Converts a string to a boolean value.
     """
     return value and value.lower() in ("yes", "true", "t", "1", "y")
+
+
+def get_timestamp():
+    return datetime.datetime.now().strftime("%Y%m%d_%H%M%S")

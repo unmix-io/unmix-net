@@ -3,6 +3,9 @@
 Builds metrics from configuration.
 """
 
+__author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
+__email__ = "info@unmix.io"
+
 
 import keras.backend as keras
 
