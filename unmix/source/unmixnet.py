@@ -17,7 +17,7 @@ from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
-from unmix.source.data.datacollectionhandler import DataCollectionHandler
+from unmix.source.data.dataloader import DataLoader
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 
 
@@ -36,9 +36,8 @@ class UnmixNet:
         self.plot_model()
         console.debug('Model initialized with %d parameters.' %self.model.count_params())
 
-
-        datahandler = DataCollectionHandler()
-        training_songs, validation_songs = datahandler.load()
+        dataloader = DataLoader()
+        training_songs, validation_songs = dataloader.load()
         
         self.training_generator = DataGenerator(training_songs)
         self.validation_generator = DataGenerator(validation_songs)

@@ -17,22 +17,19 @@ from unmix.source.configuration import Configuration
 from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
-class DataCollectionHandler(object):
+class DataLoader(object):
 
     VALIDATION_MODE_SHUFFLE = "shuffle"
 
     def load(self):
-        base_path = Configuration.get_path("environment.collection.folder")
-        path = os.path.join(base_path, "**")
+        path = Configuration.get_path("collection.folder")
         songs = []
-        for file in glob.iglob(os.path.join(path, "%s*.h5" % Song.PREFIX_VOCALS), recursive=True):
-            songs.append(os.path.dirname(file))
+        for file in glob.iglob(os.path.join(path, "**", "%s*.h5" % Song.PREFIX_VOCALS), recursive=True):
+            songs.append(Song(os.path.dirname(file)))
 
-        validation_ratio = Configuration.get_path(
-            "environment.collection.validation.ratio")
-        validation_mode = Configuration.get_path(
-            "environment.collection.validation.mode")
-        if validation_mode == DataCollectionHandler.VALIDATION_MODE_SHUFFLE:
+        validation_ratio = Configuration.get("collection.validation.ratio")
+        validation_mode = Configuration.get("collection.validation.mode")
+        if validation_mode == DataLoader.VALIDATION_MODE_SHUFFLE:
             self.validation_songs = random.sample(
                 songs, int(validation_ratio * len(songs)))
             self.training_songs = set(songs) - set(self.validation_songs)

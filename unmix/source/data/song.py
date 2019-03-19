@@ -11,10 +11,9 @@ import sys
 import glob
 import h5py
 
-
 from unmix.source.data.track import Track
 from unmix.source.configuration import Configuration
-from unmix.source.exceptions.configurationerror import ConfigurationError
+from unmix.source.exceptions.dataerror import DataError
 
 class Song(object):
 
@@ -22,18 +21,25 @@ class Song(object):
     PREFIX_VOCALS = "vocals_"
 
     def __init__(self, folder):
-        vocals_data = ""
+        vocals_file = ""
         for file in glob.iglob(os.path.join(folder, "%s*.h5" % Song.PREFIX_VOCALS)):
-            vocals_data = h5py.File(file, 'r')
+            vocals_file = file
             break
-        instrumental_data = ""
+        instrumental_file = ""
         for file in glob.iglob(os.path.join(folder, "%s*.h5" % Song.PREFIX_INSTRUMENTAL)):
-            instrumental_data = h5py.File(file, 'r')
+            instrumental_file = file
             break
-        self.fft_window = vocals_data['fft_window'].value
-        self.sample_rate = vocals_data['sample_rate'].value
-        self.collection = vocals_data['collection'].value
-        self.song_name = vocals_data['song'].value
-        self.vocals = Track("vocals", vocals_data)
-        self.instrumental = Track("instrumental", instrumental_data)
-        self.mix = Track("mix").mix(self.vocals, self.instrumental)
+        if not (instrumental_file and vocals_file):
+            raise DataError(folder, 'missing vocal or instrumental track')
+        data = h5py.File(vocals_file, 'r')
+        self.folder = folder
+        self.height = data['height'].value
+        self.width = data['width'].value
+        self.depth = data['depth'].value
+        self.fft_window = data['fft_window'].value
+        self.sample_rate = data['sample_rate'].value
+        self.collection = data['collection'].value
+        self.song_name = data['song'].value
+        self.vocals = Track("vocals", self.height, self.width, self.depth, vocals_file)
+        self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
+        self.mix = Track("mix", self.height, self.width, self.depth)
