@@ -14,9 +14,9 @@ import string
 import argparse
 import numpy as np
 
-from unmixnet import UnmixNet
-from helpers import console
-from configuration import Configuration
+from unmix.source.unmixnet import UnmixNet
+from unmix.source.helpers import console
+from unmix.source.configuration import Configuration
 
 if __name__ == "__main__":
     global config

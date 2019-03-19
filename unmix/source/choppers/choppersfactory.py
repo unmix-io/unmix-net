@@ -3,8 +3,8 @@
 Builds choppers to chop the input spectrograms.
 """
 
-from choppers.chopper import Chopper
-from configuration import Configuration
+from unmix.source.choppers.chopper import Chopper
+from unmix.source.configuration import Configuration
 
 
 class ChoppersFactory(object):

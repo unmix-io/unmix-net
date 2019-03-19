@@ -4,13 +4,13 @@ Builds a keras model from configuration.
 """
 
 
-from models import unmix as UnmixModel
-from models import leakyrelu as LeakyReLUModel
-from models import acapellabot as AcapellaBotModel
+from unmix.source.models import unmix as UnmixModel
+from unmix.source.models import leakyrelu as LeakyReLUModel
+from unmix.source.models import acapellabot as AcapellaBotModel
 
-from helpers import converter
-from configuration import Configuration
-from exceptions.configurationerror import ConfigurationError
+from unmix.source.helpers import converter
+from unmix.source.configuration import Configuration
+from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class ModelFactory(object):

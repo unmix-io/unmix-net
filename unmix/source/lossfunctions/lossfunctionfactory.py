@@ -6,8 +6,8 @@ Builds a keras loss function from configuration.
 
 from keras import losses
 
-from configuration import Configuration
-from exceptions.configurationerror import ConfigurationError
+from unmix.source.configuration import Configuration
+from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class LossFunctionFactory(object):

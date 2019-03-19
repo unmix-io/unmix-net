@@ -8,8 +8,6 @@ __email__ = "info@unmix.io"
 
 import os
 
-from configuration import Configuration
-
 
 def try_eval(expression):
     """
@@ -22,15 +20,6 @@ def try_eval(expression):
         except:
             pass
     return expression
-
-
-def build_path(path):
-    """
-    Generates an absolute path if a relative is passed.
-    """
-    if not os.path.isabs(path):
-        path = os.path.join(Configuration.workingdir, path)
-    return path
 
 
 def str2bool(value):

@@ -6,8 +6,8 @@ Builds metrics from configuration.
 
 import keras.backend as keras
 
-from configuration import Configuration
-from exceptions.configurationerror import ConfigurationError
+from unmix.source.configuration import Configuration
+from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class MetricsFactory(object):

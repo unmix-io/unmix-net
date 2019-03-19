@@ -7,13 +7,13 @@ __email__ = "info@unmix.io"
 
 import os
 
-from helpers import console
-from helpers import converter
-from configuration import Configuration
-from models.modelfactory import ModelFactory
-from metrics.metricsfactory import MetricsFactory
-from optimizers.optimizerfactory import OptimizerFactory
-from lossfunctions.lossfunctionfactory import LossFunctionFactory
+from unmix.source.helpers import console
+from unmix.source.helpers import converter
+from unmix.source.configuration import Configuration
+from unmix.source.models.modelfactory import ModelFactory
+from unmix.source.metrics.metricsfactory import MetricsFactory
+from unmix.source.optimizers.optimizerfactory import OptimizerFactory
+from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 
 
 class UnmixNet:

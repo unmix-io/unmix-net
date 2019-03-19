@@ -6,12 +6,13 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
+import os
 import json
 from collections import namedtuple
 
-from helpers import reducer
-from helpers import converter
-from exceptions.configurationerror import ConfigurationError
+from unmix.source.helpers import reducer
+from unmix.source.helpers import converter
+from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class Configuration(object):
@@ -28,6 +29,7 @@ class Configuration(object):
 
     @staticmethod
     def get(key='', optional=True):
+        global configuration
         if not configuration:
             raise ConfigurationError()
         if key:
@@ -43,4 +45,13 @@ class Configuration(object):
     @staticmethod
     def get_path(key='', optional=True):
         path = Configuration.get(key, optional)
-        return converter.build_path(path)
+        return Configuration.build_path(path)
+
+    @staticmethod
+    def build_path(path):
+        """
+        Generates an absolute path if a relative is passed.
+        """
+        if not os.path.isabs(path):
+            path = os.path.join(Configuration.workingdir, path)
+        return path
