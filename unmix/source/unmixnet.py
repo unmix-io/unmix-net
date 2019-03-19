@@ -9,8 +9,8 @@ import os
 import keras.utils
 
 from unmix.source.helpers import console
-from unmix.source.helpers import converter
 from unmix.source.helpers import reducer
+from unmix.source.helpers import converter
 from unmix.source.configuration import Configuration
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
@@ -35,6 +35,8 @@ class UnmixNet:
         self.plot_model()
         console.debug('Model initialized with %d parameters' %self.model.count_params())
 
+        self.datahandler = DataCollectionHandler()
+
     def plot_model(self):
         try:
             path = Configuration.get_path("environment.model_plot_folder")
@@ -46,12 +48,8 @@ class UnmixNet:
             console.error("Error while plotting model: %s" % str(e))
 
     def train(self, batch_size, epoch_count, epoch_start=0):
-        x_train, y_train = DataCollectionHandler.load_training()
-        x_valid, y_valid = DataCollectionHandler.load_validation()
-        x_train = reducer.flatten(x_train)
-        y_train = reducer.flatten(y_train)
-        history = self.model.fit(
-            x_train, y_train, 
+        history = self.model.fit_generator(
+            generator=
             batch_size=batch_size,
             initial_epoch=epoch_start, epochs=epoch_start + epoch_count,
             validation_data=(x_valid, y_valid),

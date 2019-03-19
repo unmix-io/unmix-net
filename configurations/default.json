@@ -1,7 +1,7 @@
 {
     "environment": {
         "name": "default",
-        "data_folder": "",
+        "data_folder": "D:\\Data\\unmix.io\\4_training",
         "weights": {
             "folder": "weights",
             "file": "weights.h5",
@@ -13,8 +13,8 @@
         "model_plot_folder": "models"
     },
     "training": {
-        "batch_size": "10",
-        "epoch_count": "10",
+        "batch_size": "int(10)",
+        "epoch_count": "int(10)",
         "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
