@@ -1,7 +1,6 @@
 {
     "environment": {
         "name": "default",
-        "data_folder": "D:\\Data\\unmix.io\\4_training",
         "weights": {
             "folder": "weights",
             "file": "weights.h5",
@@ -12,9 +11,21 @@
         "summary_line_length": "int(150)",
         "model_plot_folder": "models"
     },
+    "collection": {
+        "folder": "D:\\Data\\unmix.io\\4_training",
+        "validation": {
+            "ratio": "float(0.2)",
+            "mode": "shuffle"
+        }
+    },
     "training": {
         "batch_size": "int(10)",
         "epoch_count": "int(10)",
+        "epoch": {
+            "count": "int(10)",
+            "shuffle": "str2bool(True)"
+        },
+        "verbose": "int(1)",
         "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],

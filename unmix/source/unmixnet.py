@@ -12,10 +12,11 @@ from unmix.source.helpers import console
 from unmix.source.helpers import reducer
 from unmix.source.helpers import converter
 from unmix.source.configuration import Configuration
+from unmix.source.data.datagenerator import DataGenerator
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
-from unmix.source.optimizers.optimizerfactory import OptimizerFactory
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
+from unmix.source.optimizers.optimizerfactory import OptimizerFactory
 from unmix.source.data.datacollectionhandler import DataCollectionHandler
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 
@@ -33,9 +34,14 @@ class UnmixNet:
         self.model.compile(loss=loss_function,optimizer=optimizer, metrics=metrics)
         self.model.summary(Configuration.get("environment.summary_line_length"))
         self.plot_model()
-        console.debug('Model initialized with %d parameters' %self.model.count_params())
+        console.debug('Model initialized with %d parameters.' %self.model.count_params())
 
-        self.datahandler = DataCollectionHandler()
+
+        datahandler = DataCollectionHandler()
+        training_songs, validation_songs = datahandler.load()
+        
+        self.training_generator = DataGenerator(training_songs)
+        self.validation_generator = DataGenerator(validation_songs)
 
     def plot_model(self):
         try:
@@ -47,15 +53,14 @@ class UnmixNet:
         except Exception as e:
             console.error("Error while plotting model: %s" % str(e))
 
-    def train(self, batch_size, epoch_count, epoch_start=0):
+    def train(self, epoch_count, epoch_start=0):
         history = self.model.fit_generator(
-            generator=
-            batch_size=batch_size,
+            generator=self.training_generator,
+            validation_data=self.validation_generator,
             initial_epoch=epoch_start, epochs=epoch_start + epoch_count,
-            validation_data=(x_valid, y_valid),
+            verbose=Configuration.get("training.verbose"),
             callbacks=self.callbacks)
-
-        return False
+        return history
 
     def save_weights(self):
         path = Configuration.get_path('environment.weights.file')
