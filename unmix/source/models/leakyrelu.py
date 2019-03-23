@@ -71,5 +71,4 @@ def generate(alpha1, alpha2, rate, channels=2):
 
     conv = Conv2D(channels, 3, padding='same')(conv)
 
-    vocal = conv
-    return Model(inputs=mashup, outputs=vocal)
+    return Model(inputs=mashup, outputs=conv)

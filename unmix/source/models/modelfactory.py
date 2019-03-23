@@ -24,5 +24,5 @@ class ModelFactory(object):
             elif model.name.lower() == AcapellaBotModel.name.lower():
                 return AcapellaBotModel.generate(0)
             elif model.name.lower() == UnmixModel.name:
-                return UnmixModel.generate()
+                return UnmixModel.generate(model.alpha1, model.alpha2, model.rate)
         raise ConfigurationError('training.model.name')

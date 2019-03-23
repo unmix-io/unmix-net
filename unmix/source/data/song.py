@@ -43,3 +43,5 @@ class Song(object):
         self.vocals = Track("vocals", self.height, self.width, self.depth, vocals_file)
         self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
+
+        self.position = 0

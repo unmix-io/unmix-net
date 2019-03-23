@@ -29,13 +29,13 @@
         "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
-        "choppers": [
-            {
+        "choppers": {
+            "horizontal": {
                 "direction": "horizontal",
                 "mode": "split",
-                "size": "int(64)"
+                "size": "int(64)"           
             }
-        ],
+        },
         "callbacks": {
             "tensorboard" : {
                 "write_images": "str2bool(True)",
@@ -54,7 +54,7 @@
             }
         },
         "model": {
-            "name": "LeakyReLU",
+            "name": "unmix",
             "alpha1": "float(0.1)",
             "alpha2": "float(0.01)",
             "rate": "float(0.1)"

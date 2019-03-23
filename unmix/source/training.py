@@ -34,7 +34,7 @@ if __name__ == "__main__":
     Configuration.workingdir = args.workingdir
     
     unmixnet = UnmixNet()
-
+    unmixnet.train(8)
     end = time.time()
 
     console.info('Finished processing in %d [ms]' % (end - start))

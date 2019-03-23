@@ -26,6 +26,8 @@ def str2bool(value):
     """
     Converts a string to a boolean value.
     """
+    if type(value) == bool:
+        return value
     return value and value.lower() in ("yes", "true", "t", "1", "y")
 
 

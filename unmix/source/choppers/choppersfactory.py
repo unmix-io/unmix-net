@@ -11,8 +11,10 @@ class ChoppersFactory(object):
 
     @staticmethod
     def build():
-        configs = Configuration.get('training.choppers')
+        config = Configuration.get('training.choppers')
         choppers = []
-        for config in configs:
-            choppers.append(Chopper(config.direction, config.mode, config.size))
+        if hasattr(config,'horizontal'):
+            choppers.append(Chopper(Chopper.DIRECTION_HORIZONTAL, config.horizontal.mode, config.horizontal.size))
+        if hasattr(config,'vertical'):
+            choppers.append(Chopper(Chopper.DIRECTION_VERTICAL, config.vertical.mode, config.vertical.size))
         return choppers
