@@ -23,9 +23,7 @@ class DataLoader(object):
 
     def load(self):
         path = Configuration.get_path("collection.folder")
-        songs = []
-        for file in glob.iglob(os.path.join(path, "**", "%s*.h5" % Song.PREFIX_VOCALS), recursive=True):
-            songs.append(Song(os.path.dirname(file)))
+        songs = [Song(os.path.dirname(file)) for file in glob.iglob(os.path.join(path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
 
         validation_ratio = Configuration.get("collection.validation.ratio")
         validation_mode = Configuration.get("collection.validation.mode")
@@ -34,7 +32,7 @@ class DataLoader(object):
                 songs, int(validation_ratio * len(songs)))
             self.training_songs = set(songs) - set(self.validation_songs)
 
-        console.debug('Found %d songs for traing and %d songs for validation.'
+        console.debug("Found %d songs for traing and %d songs for validation."
                       % (len(self.training_songs), len(self.validation_songs)))
 
         return self.training_songs, self.validation_songs

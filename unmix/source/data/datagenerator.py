@@ -31,8 +31,8 @@ class DataGenerator(keras.utils.Sequence):
         for song in self.collection:
             if self.choppers:
                 for chopper in self.choppers:
-                    self.index = np.append(self.index, [BatchItem(song, i) for i in range(
-                        chopper.calculate_chops(song.width, song.height))])
+                    self.index = np.append(self.index, [BatchItem(song, i) 
+                        for i in range(chopper.calculate_chops(song.width, song.height))])
             else:
                 self.index = np.append(self.index, BatchItem(song, 0))
 

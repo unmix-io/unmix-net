@@ -41,10 +41,8 @@ class Chopper:
         raise ConfigurationError("Chopper with invalid configuration")
 
     def chop_split(self, input):
-        chops = []
         slices = int(len(input) / self.size)
-        for i in range(slices):
-            chops.append(input[(i * self.size):((i+1) * self.size)])
+        chops = [input[(i * self.size):((i+1) * self.size)] for i in range(slices)]
         return np.array(chops)
 
     def chop_overlap(self, input):

@@ -56,8 +56,7 @@ class Track(object):
             first.load()
         self.channels = first.channels
         for track in tracks[1:]:
-            if not track.initialized:
-                track.load()
+            track.load()
             for i in range(len(self.channels)):
                 self.channels[i] += track.channels[i]
         self.initialized = True
@@ -73,6 +72,6 @@ class Track(object):
             input = channel
             for chopper in choppers:
                 input = chopper.chop(input)
-            self.chops.append(input)
-            #self.chops.append(reducer.lflatter(input, len(choppers)))
+            #self.chops.append(input)
+            self.chops.append(reducer.lflatter(input, len(choppers))) # TODO Check if it works
         self.chopped = True

@@ -47,9 +47,7 @@ class Song(object):
     def load_vocals(self, choppers=None, offset=0):
         if choppers:
             self.vocals.chop(choppers)
-            channels = []
-            for chop in self.vocals.chops:
-                channels.append(chop[offset])
+            channels = [chop[offset] for chop in self.vocals.chops]
             return channels
         else:
             self.vocals.load()
@@ -61,8 +59,7 @@ class Song(object):
         if choppers:
             self.mix.chop(choppers)
             channels = []
-            for chop in self.mix.chops:
-                channels.append(chop[offset])
+            channels = [chop[offset] for chop in self.mix.chops]
             return channels
         else:
             return self.mix.channels
