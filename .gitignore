@@ -207,3 +207,7 @@ MedleyDB_fileprocessing/temp
 #Logfiles
 logfiles/
 temp/
+
+
+#Tensorboard
+/TensorBoard
