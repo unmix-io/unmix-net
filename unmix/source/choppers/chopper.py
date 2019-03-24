@@ -20,7 +20,8 @@ class Chopper:
     MODE_SPLIT = "split"
     MODE_OVERLAP = "overlap"
 
-    TRANSPOSE_DIMENSIONS = [[0], [1,0], [1, 0, 2], [2, 0, 1, 3]]
+    PRE_TRANSPOSE_DIMENSIONS = [[0], [1,0], [1,0,2], [2,0,1,3]]
+    POST_TRANSPOSE_DIMENSIONS = [[0,1], [0,2,1], [0,2,1,3], [0,2,1,3,4]]
 
     def __init__(self, direction, mode, size):
         self.direction = direction
@@ -35,9 +36,11 @@ class Chopper:
                 return self.chop_overlap(input)
         if self.direction == Chopper.DIRECTION_HORIZONTAL:
             if self.mode == Chopper.MODE_SPLIT:
-                return self.chop_split(input.transpose(*Chopper.TRANSPOSE_DIMENSIONS[len(input.shape) - 1]))
+                return self.chop_split(input.transpose(*Chopper.PRE_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])) \
+                        .transpose(*Chopper.POST_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])
             if self.mode == Chopper.MODE_OVERLAP:
-                return self.chop_overlap(input.transpose(*Chopper.TRANSPOSE_DIMENSIONS[len(input.shape) - 1]))
+                return self.chop_overlap(input.transpose(*Chopper.PRE_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])) \
+                        .transpose(*Chopper.POST_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])
         raise ConfigurationError("Chopper with invalid configuration")
 
     def chop_split(self, input):

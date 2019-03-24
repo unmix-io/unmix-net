@@ -72,6 +72,6 @@ class Track(object):
             input = channel
             for chopper in choppers:
                 input = chopper.chop(input)
-            #self.chops.append(input)
-            self.chops.append(reducer.lflatter(input, len(choppers))) # TODO Check if it works
+            self.chops.append(input)
+            #self.chops.append(reducer.lflatter(input, len(choppers))) # TODO Check if it works
         self.chopped = True
