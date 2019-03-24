@@ -16,9 +16,11 @@ def rgetattr(obj, attr, *args):
         return getattr(obj, attr, *args)
     return functools.reduce(_getattr, [obj] + attr.split('.'))
 
-
-def flatten(input):
-    result = []
-    for element in input:
-        result.extend(element)
-    return np.array(result)
+def lflatter(input, times):
+    if len(input.shape) == 2:
+        output = input.flatten()
+    else:
+        output = input.reshape(-1, *input.shape[-2:])
+    if times > 1:
+        return lflatter(output, times - 1)
+    return output

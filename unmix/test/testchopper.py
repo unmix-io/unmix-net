@@ -5,10 +5,10 @@ Tests of the chopper objects.
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
+
 import numpy as np
 
 from unmix.source.choppers.chopper import Chopper
-from unmix.source.configuration import Configuration
 
 
 def test_vertical_split_100_10():

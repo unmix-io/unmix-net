@@ -44,4 +44,25 @@ class Song(object):
         self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
 
-        self.position = 0
+    def load_vocals(self, choppers=None, offset=0):
+        if choppers:
+            self.vocals.chop(choppers)
+            channels = []
+            for chop in self.vocals.chops:
+                channels.append(chop[offset])
+            return channels
+        else:
+            self.vocals.load()
+            return self.vocals.channels
+
+    def load_mix(self, choppers=None, offset=0):
+        if not self.mix.initialized:
+            self.mix.mix(self.vocals, self.instrumental)
+        if choppers:
+            self.mix.chop(choppers)
+            channels = []
+            for chop in self.mix.chops:
+                channels.append(chop[offset])
+            return channels
+        else:
+            return self.mix.channels

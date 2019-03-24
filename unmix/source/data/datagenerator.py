@@ -56,10 +56,11 @@ class DataGenerator(keras.utils.Sequence):
     def __data_generation(self, subset):
         'Generates data containing batch_size samples'
 
-        X = np.array([])
-        y = np.array([])
+        X = []
+        y = []
 
-        for item in enumerate(subset):
-            item # TODO
+        for item in subset:
+            X.append(item.song.load_mix(self.choppers, item.offset))
+            y.append(item.song.load_vocals(self.choppers, item.offset))
 
-        return X, keras.utils.to_categorical(y)
+        return np.array(X), np.array(y)
