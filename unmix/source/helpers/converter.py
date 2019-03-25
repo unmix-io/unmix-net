@@ -10,6 +10,9 @@ import os
 import datetime
 import numpy as np
 
+from unmix.source.exceptions.configurationerror import ConfigurationError
+
+
 def try_eval(expression):
     """
     Returns an evaluated expression if possible.
@@ -22,15 +25,20 @@ def try_eval(expression):
             pass
     return expression
 
-
 def str2bool(value):
     """
     Converts a string to a boolean value.
     """
     if type(value) == bool:
         return value
-    return value and value.lower() in ("yes", "true", "t", "1", "y")
-
+    return value and value.lower() in ('yes', 'true', 't', '1', 'y')
 
 def get_timestamp():
-    return datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    return datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
+
+def env(key):
+    try:
+        return os.environ[key]
+    except Exception:
+        raise ConfigurationError(key)

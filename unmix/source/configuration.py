@@ -8,6 +8,7 @@ __email__ = "info@unmix.io"
 
 import os
 import json
+from dotenv import load_dotenv
 from collections import namedtuple
 
 from unmix.source.helpers import reducer
@@ -22,10 +23,12 @@ class Configuration(object):
     @staticmethod
     def initialize(configuration_file, working_directory=None):
         global configuration
-        with open(configuration_file, 'rb') as f:
+        Configuration.working_directory = working_directory if working_directory else os.getcwd()
+        with open(Configuration.build_path(configuration_file), 'rb') as f:
             configuration = json.load(f, object_hook=lambda d: namedtuple(
                 'X', d.keys())(*map(lambda x: converter.try_eval(x), d.values())))
-        Configuration.working_directory = working_directory if working_directory else os.getcwd()
+
+        load_dotenv(verbose=True)
         return configuration
 
     @staticmethod

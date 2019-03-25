@@ -12,7 +12,7 @@
         "model_plot_folder": "models"
     },
     "collection": {
-        "folder": "D:\\Data\\unmix.io\\4_training",
+        "folder": "env('UNMIX_COLLECTION_DIR')",
         "validation": {
             "ratio": "0.2",
             "mode": "shuffle"

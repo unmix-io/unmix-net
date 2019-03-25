@@ -23,8 +23,8 @@ from unmix.source.configuration import Configuration
 if __name__ == "__main__":
     global config
 
-    parser = argparse.ArgumentPadescription="Executes a training session.")
-    parser.add_argument('--configuration', default='D:\\Repos\\unmix.io\\unmix-net\\configurations\\default.json',
+    parser = argparse.ArgumentParser(description="Executes a training session.")
+    parser.add_argument('--configuration', default='./configurations/default.json',
                         type=str, help="Environment and training configuration.")
     parser.add_argument('--workingdir', default=os.getcwd(), 
                         type=str, help="Working directory (default: current directory)")

@@ -33,9 +33,9 @@ class UnmixNet:
 
         self.model = ModelFactory.build()
         self.model.compile(loss=loss_function,optimizer=optimizer, metrics=metrics)
-        self.model.summary(Configuration.get("environment.summary_line_length"))
+        self.model.summary(Configuration.get('environment.summary_line_length'))
         self.plot_model()
-        console.debug('Model initialized with %d parameters.' %self.model.count_params())
+        console.debug("Model initialized with %d parameters." %self.model.count_params())
 
         dataloader = DataLoader()
         training_songs, validation_songs = dataloader.load()
@@ -47,20 +47,20 @@ class UnmixNet:
 
     def plot_model(self):
         try:
-            path = Configuration.get_path("environment.model_plot_folder")
+            path = Configuration.get_path('environment.model_plot_folder')
             if path:
                 name = Configuration.get('training.model').name
                 file_name = os.path.join(path, ("%s-model.png" % name))
                 keras.utils.plot_model(self.model, file_name)
         except Exception as e:
-            console.error("Error while plotting model: %s" % str(e))
+            console.error("Error while plotting model: %s." % str(e))
 
     def train(self, epoch_count, epoch_start=0):
         history = self.model.fit_generator(
             generator=self.training_generator,
             validation_data=self.validation_generator,
             initial_epoch=epoch_start, epochs=epoch_start + epoch_count,
-            verbose=Configuration.get("training.verbose"),
+            verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
         return history
 
