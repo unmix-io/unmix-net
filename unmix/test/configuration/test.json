@@ -1,0 +1,15 @@
+{
+    "test": "test-root",
+    "level1": {
+        "level2": {
+            "level3": "test-level3"
+        }
+    },
+    "float_implicit": "0.5",
+    "float_explicit": "float(0.5)",
+    "int_implicit": "12",
+    "int_explicit": "int(12)",
+    "bool_implicit": "True",
+    "bool_explicit": "str2bool('true')",
+    "path": "..\\test.json"
+}
