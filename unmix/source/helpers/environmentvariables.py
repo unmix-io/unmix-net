@@ -9,7 +9,10 @@ __email__ = "info@unmix.io"
 import os
 import sys
 
-
+""" Title: python-dotenv
+Author: Saurabh Kumar
+Code version: 0.10.1
+Availability: https://github.com/theskumar/python-dotenv """
 def find_dotenv(filename='.env', raise_error_if_not_found=False, usecwd=False):
     """
     Search in increasingly higher folders for the given file
