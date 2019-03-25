@@ -1,0 +1,7 @@
+keras
+python-dotenv
+argparse
+tensorflow
+Pillow
+matplotlib
+pydot
