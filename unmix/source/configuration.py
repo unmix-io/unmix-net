@@ -28,7 +28,7 @@ class Configuration(object):
             configuration = json.load(f, object_hook=lambda d: namedtuple(
                 'X', d.keys())(*map(lambda x: converter.try_eval(x), d.values())))
 
-        load_dotenv(verbose=True)
+        load_dotenv(verbose=True, override=True)
         #os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
         return configuration
 
