@@ -39,7 +39,7 @@ class Song(object):
         self.fft_window = data['fft_window'].value
         self.sample_rate = data['sample_rate'].value
         self.collection = data['collection'].value
-        self.song_name = data['song'].value
+        self.name = data['song'].value
         self.vocals = Track("vocals", self.height, self.width, self.depth, vocals_file)
         self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
