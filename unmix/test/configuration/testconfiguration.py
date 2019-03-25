@@ -28,5 +28,6 @@ def test_configuration_initialize():
     assert os.path.isabs(test_path)
     assert test_path.startswith(current_path)
 
+
 if __name__ == "__main__":
     test_configuration_initialize()

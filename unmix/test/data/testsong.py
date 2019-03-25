@@ -21,6 +21,7 @@ def test_load_song():
     assert len(song.mix.channels) > 0
     assert song.vocals.channels[0].shape == song.mix.channels[0].shape
 
+
 def test_load_chopper_horizontal_song():
     song = Song("D:\\Data\\unmix.io\\4_training\\fft-window=1536_sample-rate=11025_channels=1-mono\\musdb18\\Steven Clark - Bounty")
     choppers = [Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_SPLIT, 64)]

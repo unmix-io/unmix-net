@@ -7,9 +7,8 @@ __email__ = "info@unmix.io"
 
 
 import glob
-import os
-
 import h5py
+import os
 
 from unmix.source.data.track import Track
 from unmix.source.exceptions.dataerror import DataError
@@ -58,7 +57,6 @@ class Song(object):
             self.mix.mix(self.vocals, self.instrumental)
         if choppers:
             self.mix.chop(choppers)
-            channels = []
             channels = [chop[offset] for chop in self.mix.chops]
             return channels
         else:

@@ -5,6 +5,13 @@ Keras model for training using the acapellabot architecture.
 from keras.layers import Input, Conv2D, BatchNormalization, UpSampling2D, Concatenate
 from keras.models import Model
 
+"""
+Title: AcapellaBot - acapellabot.py
+Author: Ollin Boer Bohan
+Date: 2018-07-28
+Availability: https://github.com/madebyollin/acapellabot
+"""
+
 name = 'AcapellaBot'
 
 def generate(channels=2):
