@@ -2,8 +2,8 @@
 Keras model for training using the acapellabot architecture.
 """
 
+from keras.layers import Input, Conv2D, BatchNormalization, UpSampling2D, Concatenate
 from keras.models import Model
-from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2D, Concatenate, LeakyReLU
 
 name = 'AcapellaBot'
 

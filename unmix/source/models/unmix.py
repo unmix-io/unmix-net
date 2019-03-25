@@ -2,8 +2,8 @@
 Keras model for training using the unmix.io architecture.
 """
 
+from keras.layers import Dropout, Conv2D, MaxPooling2D, Flatten, Dense
 from keras.models import Sequential
-from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2D, Concatenate, LeakyReLU, MaxPooling2D, Flatten, Dense
 
 name = 'unmix'
 

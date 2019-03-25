@@ -6,20 +6,20 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 import os
+
 import keras.utils
 
-from unmix.source.helpers import console
-from unmix.source.helpers import reducer
-from unmix.source.helpers import converter
-from unmix.source.data.dataloader import DataLoader
+from unmix.source.callbacks.callbacksfactory import CallbacksFactory
+from unmix.source.choppers.choppersfactory import ChoppersFactory
 from unmix.source.configuration import Configuration
 from unmix.source.data.datagenerator import DataGenerator
-from unmix.source.models.modelfactory import ModelFactory
-from unmix.source.metrics.metricsfactory import MetricsFactory
-from unmix.source.choppers.choppersfactory import ChoppersFactory
-from unmix.source.callbacks.callbacksfactory import CallbacksFactory
-from unmix.source.optimizers.optimizerfactory import OptimizerFactory
+from unmix.source.data.dataloader import DataLoader
+from unmix.source.helpers import console
+from unmix.source.helpers import converter
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
+from unmix.source.metrics.metricsfactory import MetricsFactory
+from unmix.source.models.modelfactory import ModelFactory
+from unmix.source.optimizers.optimizerfactory import OptimizerFactory
 
 
 class UnmixNet:

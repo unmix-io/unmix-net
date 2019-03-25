@@ -1,5 +1,4 @@
 keras
-python-dotenv
 argparse
 tensorflow
 Pillow

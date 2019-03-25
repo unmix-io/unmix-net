@@ -5,15 +5,8 @@ Model of a track of a song.
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
-
-import os
-import sys
-import glob
 import h5py
-import numpy as np
 
-from unmix.source.helpers import reducer
-from unmix.source.configuration import Configuration
 from unmix.source.exceptions.dataerror import DataError
 
 

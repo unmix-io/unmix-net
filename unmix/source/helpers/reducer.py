@@ -5,8 +5,6 @@ Helps reducing and handle objects.
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
-
-import numpy as np
 import functools
 
 

@@ -10,7 +10,6 @@ __email__ = "info@unmix.io"
 from keras import losses
 
 from unmix.source.configuration import Configuration
-from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class LossFunctionFactory(object):

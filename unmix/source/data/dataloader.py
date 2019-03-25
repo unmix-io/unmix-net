@@ -6,15 +6,13 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import os
-import sys
 import glob
+import os
 import random
 
+from unmix.source.configuration import Configuration
 from unmix.source.data.song import Song
 from unmix.source.helpers import console
-from unmix.source.configuration import Configuration
-from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class DataLoader(object):

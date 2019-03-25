@@ -9,7 +9,6 @@ __email__ = "info@unmix.io"
 
 import numpy as np
 
-from unmix.source.configuration import Configuration
 from unmix.source.exceptions.configurationerror import ConfigurationError
 
 

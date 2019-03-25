@@ -7,7 +7,6 @@ __email__ = "info@unmix.io"
 
 
 import os
-import numpy as np
 
 from unmix.source.configuration import Configuration
 

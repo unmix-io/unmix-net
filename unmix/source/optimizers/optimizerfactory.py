@@ -7,7 +7,6 @@ Builds an optimizer from configuration.
 from keras.optimizers import Adam, RMSprop
 
 from unmix.source.configuration import Configuration
-from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class OptimizerFactory(object):

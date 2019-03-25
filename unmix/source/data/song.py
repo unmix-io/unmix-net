@@ -6,14 +6,14 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import os
-import sys
 import glob
+import os
+
 import h5py
 
 from unmix.source.data.track import Track
-from unmix.source.configuration import Configuration
 from unmix.source.exceptions.dataerror import DataError
+
 
 class Song(object):
 

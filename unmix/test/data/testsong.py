@@ -5,10 +5,9 @@ Tests loading songs and tracks.
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
-import numpy as np
-
-from unmix.source.data.song import Song
 from unmix.source.choppers.chopper import Chopper
+from unmix.source.data.song import Song
+
 
 def test_load_song():
     song = Song("D:\\Data\\unmix.io\\4_training\\fft-window=1536_sample-rate=11025_channels=1-mono\\musdb18\\Steven Clark - Bounty")

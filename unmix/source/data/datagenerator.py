@@ -5,8 +5,6 @@ Loads and handels training and validation data collections.
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
-
-import os
 import keras
 import numpy as np
 

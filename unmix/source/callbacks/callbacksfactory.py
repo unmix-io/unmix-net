@@ -8,13 +8,13 @@ __email__ = "info@unmix.io"
 
 
 import os
-import keras.backend as keras
-from keras.callbacks import ModelCheckpoint, TensorBoard, Callback, EarlyStopping
 
-from unmix.source.helpers import converter
-from unmix.source.configuration import Configuration
-from unmix.source.exceptions.configurationerror import ConfigurationError
+from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
+
 from unmix.source.callbacks.errorvisualization import ErrorVisualization
+from unmix.source.configuration import Configuration
+from unmix.source.helpers import converter
+
 
 class CallbacksFactory(object):
 

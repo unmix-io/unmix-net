@@ -10,7 +10,6 @@ __email__ = "info@unmix.io"
 import keras.backend as keras
 
 from unmix.source.configuration import Configuration
-from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
 class MetricsFactory(object):
