@@ -6,10 +6,11 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import os
+import os, inspect
 import json
 from dotenv import load_dotenv
 from collections import namedtuple
+from pathlib import Path
 
 from unmix.source.helpers import reducer
 from unmix.source.helpers import converter
@@ -23,7 +24,8 @@ class Configuration(object):
     @staticmethod
     def initialize(configuration_file, working_directory=None):
         global configuration
-        Configuration.working_directory = working_directory if working_directory else os.getcwd()
+        Configuration.working_directory = working_directory if working_directory else \
+            os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
         with open(Configuration.build_path(configuration_file), 'rb') as f:
             configuration = json.load(f, object_hook=lambda d: namedtuple(
                 'X', d.keys())(*map(lambda x: converter.try_eval(x), d.values())))
@@ -57,5 +59,6 @@ class Configuration(object):
         Generates an absolute path if a relative is passed.
         """
         if not os.path.isabs(path):
-            path = os.path.join(Configuration.working_directory, path)
+            base_dir = Path(Path(Configuration.working_directory).parent).parent
+            path = os.path.join(base_dir, path)
         return path
