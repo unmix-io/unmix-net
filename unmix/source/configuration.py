@@ -6,14 +6,15 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import os, inspect
+import os
 import json
-from dotenv import load_dotenv
 from collections import namedtuple
 
 from unmix.source.helpers import reducer
 from unmix.source.helpers import converter
+from unmix.source.helpers import environmentvariables
 from unmix.source.exceptions.configurationerror import ConfigurationError
+
 
 
 class Configuration(object):
@@ -27,9 +28,7 @@ class Configuration(object):
         with open(Configuration.build_path(configuration_file), 'rb') as f:
             configuration = json.load(f, object_hook=lambda d: namedtuple(
                 'X', d.keys())(*map(lambda x: converter.try_eval(x), d.values())))
-
-        load_dotenv(verbose=True, override=True)
-        #os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
+        environmentvariables.set_environment_variables(extend=True)
         return configuration
 
     @staticmethod

@@ -8,7 +8,6 @@ __email__ = "info@unmix.io"
 
 import os
 import datetime
-import numpy as np
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 

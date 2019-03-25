@@ -7,13 +7,9 @@ __email__ = "info@unmix.io"
 
 
 import os
-import sys
 import time
-import signal
-import random
-import string
 import argparse
-import numpy as np
+
 
 from unmix.source.helpers import console
 from unmix.source.unmixnet import UnmixNet
