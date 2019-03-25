@@ -25,11 +25,10 @@ class DataLoader(object):
         path = Configuration.get_path("collection.folder")
         songs = [Song(os.path.dirname(file)) for file in glob.iglob(os.path.join(path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
 
-        validation_ratio = Configuration.get("collection.validation.ratio")
-        validation_mode = Configuration.get("collection.validation.mode")
-        if validation_mode == DataLoader.VALIDATION_MODE_SHUFFLE:
+        validation = Configuration.get("collection.validation")
+        if validation.mode == DataLoader.VALIDATION_MODE_SHUFFLE:
             self.validation_songs = random.sample(
-                songs, int(validation_ratio * len(songs)))
+                songs, int(validation.ratio * len(songs)))
             self.training_songs = set(songs) - set(self.validation_songs)
 
         console.debug("Found %d songs for traing and %d songs for validation."
