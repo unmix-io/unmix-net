@@ -50,7 +50,7 @@ class UnmixNet:
             path = Configuration.get_path('environment.model_plot_folder')
             if path:
                 name = Configuration.get('training.model').name
-                file_name = os.path.join(path, ("%s-model.png" % name))
+                file_name = os.path.join(path, ('%s_%s-model.png' % (converter.get_timestamp(), name)))
                 keras.utils.plot_model(self.model, file_name)
         except Exception as e:
             console.error("Error while plotting model: %s." % str(e))

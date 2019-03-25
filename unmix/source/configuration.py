@@ -48,15 +48,17 @@ class Configuration(object):
         return key
 
     @staticmethod
-    def get_path(key='', optional=True):
+    def get_path(key='', create=True, optional=True):
         path = Configuration.get(key, optional)
         return Configuration.build_path(path)
 
     @staticmethod
-    def build_path(path):
+    def build_path(path, create=True):
         """
         Generates an absolute path if a relative is passed.
         """
         if not os.path.isabs(path):
             path = os.path.join(Configuration.working_directory, path)
+        if create and not os.path.exists(path):
+            os.makedirs(path)
         return path

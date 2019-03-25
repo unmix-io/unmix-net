@@ -34,7 +34,7 @@ def str2bool(value):
     return value and value.lower() in ('yes', 'true', 't', '1', 'y')
 
 def get_timestamp():
-    return datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    return datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
 
 
 def env(key):

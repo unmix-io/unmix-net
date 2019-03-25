@@ -209,5 +209,7 @@ logfiles/
 temp/
 
 
-#Tensorboard
+# Neuralnet
 /TensorBoard
+
+/models/*.png
