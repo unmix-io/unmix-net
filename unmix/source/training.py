@@ -10,7 +10,6 @@ import os
 import time
 import argparse
 
-
 from unmix.source.helpers import console
 from unmix.source.unmixnet import UnmixNet
 from unmix.source.configuration import Configuration

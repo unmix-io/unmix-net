@@ -5,9 +5,13 @@ Model of a track of a song.
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
+
 import h5py
+import numpy as np
+from functools import reduce
 
 from unmix.source.exceptions.dataerror import DataError
+import unmix.source.helpers.reducer as reducer
 
 
 class Track(object):
@@ -32,12 +36,10 @@ class Track(object):
             if not data:
                 raise DataError('?', 'missing data to load')
             self.stereo = data['stereo'].value
-            self.channels = []
             if self.stereo:
-                self.channels.append(data['spectrogram_left'].value)
-                self.channels.append(data['spectrogram_right'].value)
+                self.channels = np.array([data['spectrogram_left'].value, data['spectrogram_right'].value])
             else:
-                self.channels.append(data['spectrogram'].value)
+                self.channels = np.array([data['spectrogram'].value])
             self.initialized = True
             return self
         except Exception as e:            
@@ -60,11 +62,7 @@ class Track(object):
             return
         if not self.initialized:
             self.load()
-        self.chops = []
-        for channel in self.channels:
-            input = channel
-            for chopper in choppers:
-                input = chopper.chop(input)
-            self.chops.append(input)
-            #self.chops.append(reducer.lflatter(input, len(choppers))) # TODO Check if it works
+        self.chops = np.array([reduce((lambda input, chopper: chopper.chop(input)), [channel]  + choppers)
+                        for channel in self.channels])
+        self.chops = reducer.rflatter(self.chops.transpose(1,2,3,0,4))
         self.chopped = True

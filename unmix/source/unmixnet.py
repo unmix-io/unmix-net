@@ -27,18 +27,17 @@ class UnmixNet:
     def __init__(self):
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build()
-        metrics = MetricsFactory.build()
-        
+        metrics = MetricsFactory.build()        
         self.callbacks = CallbacksFactory.build()
+        
+        dataloader = DataLoader()
+        training_songs, validation_songs = dataloader.load()
 
         self.model = ModelFactory.build()
         self.model.compile(loss=loss_function,optimizer=optimizer, metrics=metrics)
         self.model.summary(Configuration.get('environment.summary_line_length'))
         self.plot_model()
         console.debug("Model initialized with %d parameters." %self.model.count_params())
-
-        dataloader = DataLoader()
-        training_songs, validation_songs = dataloader.load()
 
         choppers = ChoppersFactory.build()
         
