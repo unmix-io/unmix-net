@@ -11,6 +11,7 @@ import numpy as np
 
 from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
+from unmix.source.normalizers import normalizer
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -59,7 +60,9 @@ class DataGenerator(keras.utils.Sequence):
         y = []
 
         for item in subset:
-            X.append(item.song.load_mix(self.choppers, item.offset))
-            y.append(item.song.load_vocals(self.choppers, item.offset))
+            mix = item.song.load_mix(self.choppers, item.offset)
+            vocals = item.song.load_vocals(self.choppers, item.offset)
+            X.append(normalizer.normalize(mix))
+            y.append(normalizer.normalize(vocals))
 
         return np.array(X), np.array(y)
