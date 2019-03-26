@@ -25,10 +25,10 @@ class Configuration(object):
     def initialize(configuration_file, working_directory=None):
         global configuration
         Configuration.working_directory = working_directory if working_directory else os.getcwd()
+        environmentvariables.set_environment_variables(extend=True)
         with open(Configuration.build_path(configuration_file), 'rb') as f:
             configuration = json.load(f, object_hook=lambda d: namedtuple(
                 'X', d.keys())(*map(lambda x: converter.try_eval(x), d.values())))
-        environmentvariables.set_environment_variables(extend=True)
         return configuration
 
     @staticmethod

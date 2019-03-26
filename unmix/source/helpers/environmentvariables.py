@@ -70,6 +70,7 @@ def set_environment_variables(extend=False):
     with open(find_dotenv(), 'r') as fp:
         for line in fp:
             k, v = line.split('=', 1)
+            v = v.rstrip('\n')
             if k in os.environ and not extend:
                 continue
             elif k in os.environ and extend:
