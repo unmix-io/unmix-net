@@ -54,7 +54,7 @@
             }
         },
         "model": {
-            "name": "leakyrelu",
+            "name": "unmix",
             "alpha1": "0.1",
             "alpha2": "0.01",
             "rate": "0.1"
