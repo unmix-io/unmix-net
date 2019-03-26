@@ -12,7 +12,7 @@ name = 'dummy'
 
 def generate(alpha1, alpha2, rate, channels=2):
     batch_size = Configuration.get("training.batch_size")
-
+    
     model = Sequential()
     model.add(Dense((2), input_shape=(769, 64, 2)))
 

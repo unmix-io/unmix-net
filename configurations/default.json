@@ -19,7 +19,7 @@
         }
     },
     "training": {
-        "batch_size": "10",
+        "batch_size": "1",
         "epoch_count": "10",
         "epoch": {
             "count": "10",
