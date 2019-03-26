@@ -24,6 +24,7 @@ def try_eval(expression):
             pass
     return expression
 
+
 def str2bool(value):
     """
     Converts a string to a boolean value.
@@ -31,6 +32,7 @@ def str2bool(value):
     if type(value) == bool:
         return value
     return value and value.lower() in ('yes', 'true', 't', '1', 'y')
+
 
 def get_timestamp():
     return datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
