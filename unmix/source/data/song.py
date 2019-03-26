@@ -6,6 +6,7 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
+import gc
 import glob
 import h5py
 import os
@@ -43,20 +44,20 @@ class Song(object):
         self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
 
-    def load_vocals(self, choppers=None, offset=0):
-        if choppers:
-            self.vocals.chop(choppers)
-            return self.vocals.chops[offset]
-        else:
-            self.vocals.load()
-            return self.vocals.channels
+    def load(self, choppers=[], offset=0):
+        if not self.mix.initialized and not self.mix.chopped:
+            self.mix.mix(self.vocals, self.instrumental) # After this step all tracks are initialized
+        self.mix.chop(choppers)
+        self.vocals.chop(choppers)
+        self.clean_up(False)
+        return self.mix.chops[offset], self.vocals.chops[offset]
 
-    def load_mix(self, choppers=None, offset=0):
-        if not self.mix.initialized:
-            self.mix.mix(self.vocals, self.instrumental)
-        if choppers:
-            self.mix.chop(choppers)
-            return self.mix.chops[offset]
-        else:
-            return self.mix.channels
-        
+
+    def clean_up(self, clean_chops):
+        self.vocals.clean_up(clean_chops)
+        self.mix.clean_up(clean_chops)
+        if hasattr(self, 'instrumental') and self.instrumental:
+            self.instrumental.clean_up(clean_chops)
+            del self.instrumental
+        self.instrumental = None
+        gc.collect()

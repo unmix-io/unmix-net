@@ -6,6 +6,7 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
+import gc
 import h5py
 import numpy as np
 from functools import reduce
@@ -45,7 +46,9 @@ class Track(object):
         except Exception as e:            
             raise DataError(self.file, str(e))
 
-    def mix(self, *tracks):
+    def mix(self, force=False, *tracks):
+        if self.initialized and not force:
+            return self
         first = tracks[0]
         if not first.initialized:
             first.load()
@@ -62,7 +65,13 @@ class Track(object):
             return
         if not self.initialized:
             self.load()
-        self.chops = np.array([reduce((lambda input, chopper: chopper.chop(input)), [channel]  + choppers)
-                        for channel in self.channels])
+        self.chops = np.array([reduce((lambda input, chopper: chopper.chop(input)), [channel]  + choppers if choppers else [])
+                            for channel in self.channels])
         self.chops = reducer.rflatter(self.chops.transpose(1,2,3,0,4))
         self.chopped = True
+
+    def clean_up(self, clean_chops):
+        if hasattr(self, 'channels'):
+            del self.channels
+        self.initialized = False
+        gc.collect()

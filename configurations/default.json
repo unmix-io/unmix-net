@@ -23,7 +23,7 @@
         "epoch_count": "10",
         "epoch": {
             "count": "10",
-            "shuffle": "True"
+            "shuffle": "False"
         },
         "verbose": "1",
         "loss_function": "mean_squared_error",

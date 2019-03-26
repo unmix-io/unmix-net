@@ -6,12 +6,14 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
+import gc
 import keras
 import numpy as np
 
 from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.normalizers import normalizer
+from unmix.source.data.song import Song
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -28,7 +30,8 @@ class DataGenerator(keras.utils.Sequence):
 
     def generate_index(self):
         self.index = np.array([])
-        for song in self.collection:
+        for file in self.collection:
+            song = Song(file)
             if self.choppers:
                 for chopper in self.choppers:
                     self.index = np.append(self.index, [BatchItem(song, i) 
@@ -44,6 +47,8 @@ class DataGenerator(keras.utils.Sequence):
         'Generate one batch of data'
         subset = self.index[i*self.batch_size:(i+1)*self.batch_size]
         X, y = self.__data_generation(subset)
+        self.index[i*self.batch_size:(i+1)*self.batch_size] = None
+        gc.collect()
 
         return X, y
 
@@ -60,8 +65,7 @@ class DataGenerator(keras.utils.Sequence):
         y = []
 
         for item in subset:
-            mix = item.song.load_mix(self.choppers, item.offset)
-            vocals = item.song.load_vocals(self.choppers, item.offset)
+            mix, vocals = item.song.load(self.choppers, item.offset)
             X.append(normalizer.normalize(mix))
             y.append(normalizer.normalize(vocals))
 

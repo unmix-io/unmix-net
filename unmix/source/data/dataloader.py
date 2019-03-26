@@ -21,23 +21,27 @@ class DataLoader(object):
     VALIDATION_MODE_FIRST = "first"
     VALIDATION_MODE_LAST = "last"
 
-    def load(self):
+    @staticmethod
+    def load():
         path = Configuration.get_path("collection.folder")
-        songs = [Song(os.path.dirname(file)) for file in glob.iglob(os.path.join(path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
+        files = [os.path.dirname(file) for file in glob.iglob(os.path.join(path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
+
 
         validation = Configuration.get("collection.validation")
-        validation_count = int(validation.ratio * len(songs))
+        validation_count = int(validation.ratio * len(files))
+
+        validation_files = []
         if validation.mode == DataLoader.VALIDATION_MODE_SHUFFLE:
-            self.validation_songs = random.sample(songs, validation_count)
+            validation_files = random.sample(files, validation_count)
         if validation.mode == DataLoader.VALIDATION_MODE_FIRST:
-            songs.sort(key=lambda x: x.name, reverse=False)
-            self.validation_songs = songs[:validation_count]
+            files.sort(key=lambda x: x, reverse=False)
+            validation_files = files[:validation_count]
         if validation.mode == DataLoader.VALIDATION_MODE_LAST:
-            songs.sort(key=lambda x: x.name, reverse=False)
-            self.validation_songs = songs[-validation_count:]
-        self.training_songs = list(set(songs) - set(self.validation_songs))
+            files.sort(key=lambda x: x, reverse=False)
+            validation_files = files[-validation_count:]
+        training_files = list(set(files) - set(validation_files))
 
         console.debug("Found %d songs for traing and %d songs for validation."
-                      % (len(self.training_songs), len(self.validation_songs)))
+                      % (len(training_files), len(validation_files)))
 
-        return self.training_songs, self.validation_songs
+        return training_files, validation_files

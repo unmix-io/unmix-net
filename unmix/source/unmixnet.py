@@ -30,8 +30,7 @@ class UnmixNet:
         metrics = MetricsFactory.build()        
         self.callbacks = CallbacksFactory.build()
         
-        dataloader = DataLoader()
-        training_songs, validation_songs = dataloader.load()
+        training_songs, validation_songs = DataLoader.load()
 
         self.model = ModelFactory.build()
         self.model.compile(loss=loss_function,optimizer=optimizer, metrics=metrics)
@@ -42,7 +41,7 @@ class UnmixNet:
         choppers = ChoppersFactory.build()
         
         self.training_generator = DataGenerator(training_songs, choppers)
-        self.validation_generator = DataGenerator(validation_songs,choppers)
+        self.validation_generator = DataGenerator(validation_songs, choppers)
 
     def plot_model(self):
         try:
@@ -59,6 +58,7 @@ class UnmixNet:
             generator=self.training_generator,
             validation_data=self.validation_generator,
             initial_epoch=epoch_start, epochs=epoch_start + epoch_count,
+            shuffle=False,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
         return history
