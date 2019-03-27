@@ -1,0 +1,6 @@
+# Based on: https://github.com/unlhcc/singularity-dockerfiles/tree/master/tensorflow-gpu
+
+bootstrap:docker
+From:unlhcc/keras-tensorflow-gpu
+
+%post
