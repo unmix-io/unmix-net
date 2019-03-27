@@ -27,27 +27,33 @@ class UnmixNet:
     def __init__(self):
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build()
-        metrics = MetricsFactory.build()        
+        metrics = MetricsFactory.build()
         self.callbacks = CallbacksFactory.build()
         choppers = ChoppersFactory.build()
-        
+
         training_songs, validation_songs = DataLoader.load()
 
         self.model = ModelFactory.build()
-        self.model.compile(loss=loss_function, optimizer=optimizer, metrics=metrics)
-        self.model.summary(Configuration.get('environment.summary_line_length'))
+        self.model.compile(loss=loss_function,
+                           optimizer=optimizer, metrics=metrics)
+        self.model.summary(Configuration.get(
+            'environment.summary_line_length'))
         self.plot_model()
-        console.debug("Model initialized with %d parameters." %self.model.count_params())
-        
+        console.debug("Model initialized with %d parameters." %
+                      self.model.count_params())
+
         self.training_generator = DataGenerator(training_songs, choppers)
         self.validation_generator = DataGenerator(validation_songs, choppers)
+        if Configuration.get('environment.weights.load'):
+            self.load_weights()
 
     def plot_model(self):
         try:
             path = Configuration.get_path('environment.model_plot_folder')
             if path:
                 name = Configuration.get('training.model').name
-                file_name = os.path.join(path, ('%s_%s-model.png' % (converter.get_timestamp(), name)))
+                file_name = os.path.join(
+                    path, ('%s_%s-model.png' % (converter.get_timestamp(), name)))
                 keras.utils.plot_model(self.model, file_name)
         except Exception as e:
             console.error("Error while plotting model: %s." % str(e))
@@ -57,17 +63,19 @@ class UnmixNet:
         history = self.model.fit_generator(
             generator=self.training_generator,
             validation_data=self.validation_generator,
-            initial_epoch=epoch_start, 
+            initial_epoch=epoch_start,
             epochs=epoch_start + epoch_count,
             shuffle=False,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
+        self.save_weights()
         return history
 
     def save_weights(self):
         path = Configuration.get_path('environment.weights.file')
         self.model.save_weights(path, overwrite=True)
 
-    def load_weights(self, path):
-        path = Configuration.get_path('environment.weights.file')
+    def load_weights(self):
+        path = os.path.join(Configuration.get_path(
+            'environment.weights.folder'), Configuration.get('environment.weights.file'))
         self.model.load_weights(path)
