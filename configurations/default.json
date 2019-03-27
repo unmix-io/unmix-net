@@ -36,6 +36,11 @@
             }
         },
         "callbacks": {
+            "tensorboard" : {	
+                "write_images": "True",	
+                "write_grads": "False",	
+                "histogram_freq": "2"	
+            },
             "early_stopping": {
                 "min_delta": "0.8",
                 "patience": "0.8",

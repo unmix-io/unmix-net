@@ -29,16 +29,15 @@ class UnmixNet:
         loss_function = LossFunctionFactory.build()
         metrics = MetricsFactory.build()        
         self.callbacks = CallbacksFactory.build()
+        choppers = ChoppersFactory.build()
         
         training_songs, validation_songs = DataLoader.load()
 
         self.model = ModelFactory.build()
-        self.model.compile(loss=loss_function,optimizer=optimizer, metrics=metrics)
+        self.model.compile(loss=loss_function, optimizer=optimizer, metrics=metrics)
         self.model.summary(Configuration.get('environment.summary_line_length'))
         self.plot_model()
         console.debug("Model initialized with %d parameters." %self.model.count_params())
-
-        choppers = ChoppersFactory.build()
         
         self.training_generator = DataGenerator(training_songs, choppers)
         self.validation_generator = DataGenerator(validation_songs, choppers)
@@ -58,7 +57,8 @@ class UnmixNet:
         history = self.model.fit_generator(
             generator=self.training_generator,
             validation_data=self.validation_generator,
-            initial_epoch=epoch_start, epochs=epoch_start + epoch_count,
+            initial_epoch=epoch_start, 
+            epochs=epoch_start + epoch_count,
             shuffle=False,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
