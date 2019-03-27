@@ -53,7 +53,8 @@ class UnmixNet:
         except Exception as e:
             console.error("Error while plotting model: %s." % str(e))
 
-    def train(self, epoch_count, epoch_start=0):
+    def train(self, epoch_start=0):
+        epoch_count = Configuration.get('training.epoch.count')
         history = self.model.fit_generator(
             generator=self.training_generator,
             validation_data=self.validation_generator,

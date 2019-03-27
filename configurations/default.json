@@ -20,7 +20,6 @@
     },
     "training": {
         "batch_size": "8",
-        "epoch_count": "10",
         "epoch": {
             "count": "10",
             "shuffle": "False"

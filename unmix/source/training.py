@@ -37,7 +37,7 @@ if __name__ == "__main__":
     console.info("Model: %s" % Configuration.get('training.model.name'))
     
     unmixnet = UnmixNet()
-    unmixnet.train(8)
+    unmixnet.train()
     end = time.time()
 
     console.info("Finished processing in %d [ms]." % (end - start))
