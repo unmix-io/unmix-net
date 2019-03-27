@@ -35,13 +35,13 @@ if __name__ == "__main__":
 
         config = Configuration.initialize(args.configuration, args.workingdir)
 
-		console.h1("unmix.io Neuronal Network Training Application")
-		console.info("Environment: %s" % Configuration.get('environment.name'))
-		console.info("Collection: %s" % Configuration.get('collection.folder'))
-		console.info("Model: %s" % Configuration.get('training.model.name'))
-		
-		unmixnet = UnmixNet()
-		unmixnet.train()
+        console.h1("unmix.io Neuronal Network Training Application")
+        console.info("Environment: %s" % Configuration.get('environment.name'))
+        console.info("Collection: %s" % Configuration.get('collection.folder'))
+        console.info("Model: %s" % Configuration.get('training.model.name'))
+
+        unmixnet = UnmixNet()
+        unmixnet.train()
         # Todo: unmixnet.save_weights()
 
         end = time.time()
