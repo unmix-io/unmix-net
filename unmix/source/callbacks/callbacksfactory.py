@@ -22,11 +22,11 @@ class CallbacksFactory(object):
     def build():
         configs = Configuration.get('training.callbacks', False)
         callbacks = []
-        if configs.weights:
+        if hasattr(configs, 'weights'):
             callbacks.append(CallbacksFactory.weights(configs.weights))
-        if configs.early_stopping:
+        if hasattr(configs, 'early_stopping'):
             callbacks.append(CallbacksFactory.early_stopping(configs.early_stopping))
-        if configs.tensorboard:
+        if hasattr(configs, 'tensorboard'):
             callbacks.append(CallbacksFactory.tensorboard(configs.tensorboard))
         return callbacks
 
