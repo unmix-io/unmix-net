@@ -3,7 +3,7 @@ Keras model for training using LeakyReLU activation layers.
 """
 
 from keras.models import Model, Sequential
-from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2D, Concatenate, LeakyReLU
+from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2D, Concatenate, LeakyReLU, ZeroPadding2D
 
 from unmix.source.configuration import Configuration
 """
@@ -18,9 +18,9 @@ name = 'LeakyReLU'
 def generate(alpha1, alpha2, rate, channels=1):
     batch_size = Configuration.get("training.batch_size")
 
-    mashup = Input(batch_shape=(batch_size, None, 64, 2), name='input')
-
-    dropout = Dropout(rate=rate)(mashup)
+    mashup = Input(batch_shape=(batch_size, 769, 64, 2), name='input')
+    padding = ZeroPadding2D(((3, 0), (0, 0)))(mashup)
+    dropout = Dropout(rate=rate)(padding)
 
     conv_a = Conv2D(filters=64, kernel_size=3, padding='same')(dropout)
     conv_a = LeakyReLU(alpha=alpha1)(conv_a)

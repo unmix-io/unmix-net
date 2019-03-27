@@ -30,3 +30,7 @@ class LossFunctionFactory(object):
     @staticmethod
     def mean_squared_log_error(y_true, y_pred):
         return losses.mean_squared_logarithmic_error(y_true, y_pred)
+
+    @staticmethod
+    def squared_hinge(y_true, y_pred):
+        return losses.squared_hinge(y_true, y_pred)
