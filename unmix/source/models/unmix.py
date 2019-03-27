@@ -11,7 +11,6 @@ from unmix.source.configuration import Configuration
 name = 'unmix'
 
 def generate(alpha1, alpha2, rate, channels=2):
-    batch_size = Configuration.get("training.batch_size")
     
     input_shape = (769, 64, 2)
 
