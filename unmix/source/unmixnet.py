@@ -20,7 +20,7 @@ from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
-
+from unmix.source.normalizers import normalizer
 
 class UnmixNet:
 
@@ -70,6 +70,10 @@ class UnmixNet:
             callbacks=self.callbacks)
         self.save_weights()
         return history
+
+    def predict(self, data):
+        y = self.model.predict(data)
+        return y
 
     def save_weights(self):
         path = Configuration.get_path('environment.weights.file')
