@@ -17,8 +17,7 @@ import librosa
 from unmix.source.normalizers import normalizer
 import numpy as np
 
-def polar_to_rectangular(radii, angles):
-    return radii * np.exp(1j*angles)
+
 
 if __name__ == "__main__":
     global config
@@ -52,6 +51,8 @@ if __name__ == "__main__":
     chopsshape = chops[0].shape
 
     unmixnet = UnmixNet()
+    unmixnet.load_weights()
+    
     predictions = np.empty((chopsshape[0], chopsshape[1] * len(chops)), dtype=np.complex)
     for i,c in enumerate(chops):
         realimag = np.zeros((c.shape[0], c.shape[1], 2))
@@ -60,8 +61,8 @@ if __name__ == "__main__":
 
         normalized = normalizer.normalize(realimag)
         predicted = unmixnet.predict(np.array([normalized]))[0]
-        predicted = polar_to_rectangular(predicted[:, :, 0], predicted[:, :, 1])
-        #predicted = polar_to_rectangular(normalized[:, :, 0], normalized[:, :, 1])
+        #predicted = polar_to_rectangular(predicted)
+        predicted = normalizer.denormalize(predicted)
         predictions[:, chopsshape[1] * i : (chopsshape[1] * (i + 1))] = predicted
         #predictions[:, chopsshape[1] * i : (chopsshape[1] * (i + 1))] = c
 
