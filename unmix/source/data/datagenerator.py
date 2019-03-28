@@ -25,6 +25,7 @@ class DataGenerator(keras.utils.Sequence):
         self.choppers = choppers
         self.batch_size = Configuration.get("training.batch_size")
         self.shuffle = Configuration.get("training.epoch.shuffle")
+        self.shuffle_in_song = Configuration.get("training.shuffle_chops_in_song")
 
         self.on_epoch_end()
 
@@ -34,8 +35,11 @@ class DataGenerator(keras.utils.Sequence):
             song = Song(file)
             if self.choppers:
                 for chopper in self.choppers:
-                    self.index = np.append(self.index, [BatchItem(song, i) 
-                        for i in range(chopper.calculate_chops(song.width, song.height))])
+                    batchitems = [BatchItem(song, i) 
+                        for i in range(chopper.calculate_chops(song.width, song.height))]
+                    if(self.shuffle_in_song):
+                        np.random.shuffle(batchitems)
+                    self.index = np.append(self.index, batchitems)
             else:
                 self.index = np.append(self.index, BatchItem(song, 0))
 

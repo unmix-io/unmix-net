@@ -23,6 +23,7 @@
             "count": "10",
             "shuffle": "False"
         },
+        "shuffle_chops_in_song": "True",
         "verbose": "1",
         "loss_function": "mean_absolute_error",
         "optimizer": "adam",
