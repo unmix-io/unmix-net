@@ -48,7 +48,6 @@ class DataGenerator(keras.utils.Sequence):
         subset = self.index[i*self.batch_size:(i+1)*self.batch_size]
         X, y = self.__data_generation(subset)
         self.index[i*self.batch_size:(i+1)*self.batch_size] = None
-        gc.collect()
 
         return X, y
 
