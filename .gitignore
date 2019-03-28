@@ -176,7 +176,7 @@ atlassian-ide-plugin.xml
 .idea/replstate.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
+com_crashlytics_export_strings.xml§
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
@@ -205,5 +205,5 @@ temp/
 # Neural Net
 /TensorBoard
 /models/*.png
-envs/
-weights/*.h5
+/envs/
+/weights/
