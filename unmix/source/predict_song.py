@@ -47,13 +47,14 @@ if __name__ == "__main__":
     
     chopper = ChoppersFactory.build()[0]
     chops = chopper.chop(stft)
-    
-    chopsshape = chops[0].shape
+    chopshape = chops[0].shape
 
     unmixnet = UnmixNet()
     unmixnet.load_weights()
-    
-    predictions = np.empty((chopsshape[0], chopsshape[1] * len(chops)), dtype=np.complex)
+
+    predictions = np.empty((chopshape[0], chopshape[1] * len(chops)), dtype=np.complex)
+
+    # Predict each chop
     for i,c in enumerate(chops):
         realimag = np.zeros((c.shape[0], c.shape[1], 2))
         realimag[:, :, 0] = np.real(c)
@@ -61,10 +62,8 @@ if __name__ == "__main__":
 
         normalized = normalizer.normalize(realimag)
         predicted = unmixnet.predict(np.array([normalized]))[0]
-        #predicted = polar_to_rectangular(predicted)
         predicted = normalizer.denormalize(predicted)
-        predictions[:, chopsshape[1] * i : (chopsshape[1] * (i + 1))] = predicted
-        #predictions[:, chopsshape[1] * i : (chopsshape[1] * (i + 1))] = c
+        predictions[:, chopshape[1] * i : (chopshape[1] * (i + 1))] = predicted
 
     # Convert back to wav audio file
     data = librosa.istft(predictions)
