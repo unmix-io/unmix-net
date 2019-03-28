@@ -77,9 +77,11 @@ class UnmixNet:
 
     def save_weights(self):
         path = Configuration.get_path('environment.weights.file')
+        console.info("Saved weights to: %s" % path)
         self.model.save_weights(path, overwrite=True)
 
     def load_weights(self):
         path = os.path.join(Configuration.get_path(
             'environment.weights.folder'), Configuration.get('environment.weights.file'))
+        console.info("Load weights from: %s" % path)
         self.model.load_weights(path)
