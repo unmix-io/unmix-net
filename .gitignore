@@ -202,10 +202,8 @@ MedleyDB_fileprocessing/temp
 logfiles/
 temp/
 
-
-# Neuralnet
+# Neural Net
 /TensorBoard
-
 /models/*.png
-
 envs/
+weights/*.h5
