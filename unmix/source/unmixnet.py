@@ -44,8 +44,6 @@ class UnmixNet:
 
         self.training_generator = DataGenerator(training_songs, choppers)
         self.validation_generator = DataGenerator(validation_songs, choppers)
-        if Configuration.get('environment.weights.load'):
-            self.load_weights()
 
     def plot_model(self):
         try:

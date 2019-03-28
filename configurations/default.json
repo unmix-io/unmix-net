@@ -3,8 +3,7 @@
         "name": "default",
         "weights": {
             "folder": "weights",
-            "file": "weights.h5",
-            "load": "True"
+            "file": "weights.h5"
         },
         "log_folder": "logs",
         "tensorboard_folder": "TensorBoard",
@@ -28,6 +27,7 @@
         "loss_function": "mean_absolute_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
+        "load_weights": "False",
         "choppers": {
             "horizontal": {
                 "direction": "horizontal",

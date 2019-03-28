@@ -39,6 +39,10 @@ if __name__ == "__main__":
     console.info("Model: %s" % Configuration.get('training.model.name'))
 
     unmixnet = UnmixNet()
+
+    if Configuration.get('training.load_weights'):
+        unmixnet.load_weights()
+
     unmixnet.train()
 
     end = time.time()
