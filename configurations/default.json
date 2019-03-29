@@ -6,7 +6,6 @@
             "file": "weights.h5"
         },
         "log_folder": "logs",
-        "tensorboard_folder": "TensorBoard",
         "summary_line_length": "150",
         "model_plot_folder": "models"
     },
@@ -37,20 +36,35 @@
             }
         },
         "callbacks": {
-            "tensorboard" : {	
+            "tensorboard" : {
+                "folder": "/tensorboard",
+                "histogram_freq": "0",
+                "write_graph": "True",	
+                "write_grads": "False",
                 "write_images": "True",	
-                "write_grads": "False",	
-                "histogram_freq": "0"	
+                "embeddings_freq": "0",
+                "update_freq": "epoch"
+            },
+            "model_checkpoint": {
+                "file_name": "callback_weights.h5",
+                "monitor": "loss",
+                "best_only": "True",
+                "weights_only": "False",
+                "mode": "auto",
+                "period": "1",
+                "verbose": "1"
             },
             "early_stopping": {
+                "monitor": "loss",
                 "min_delta": "0.01",
                 "patience": "0.8",
                 "verbose": "1"
             },
-            "weights": {
-                "file_name": "callback_weights.h5",
-                "best_only": "True",
-                "verbose": "1"
+            "reduce_learningrate": {
+                "monitor": "loss",
+                "factor": "0.2",
+                "patience": "5",
+                "min_learningrate": "0.001"
             }
         },
         "model": {
