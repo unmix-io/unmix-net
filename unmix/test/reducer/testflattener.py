@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf8
+
 """
 Tests of the flattener mechanism.
 """

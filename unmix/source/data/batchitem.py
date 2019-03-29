@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf8
+
 """
 Batch item with song and chop offset.
 """

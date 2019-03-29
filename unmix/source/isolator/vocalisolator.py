@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf8
+
 """
 Seperates vocals from a given song
 """

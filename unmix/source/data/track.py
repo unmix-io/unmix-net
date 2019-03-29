@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf8
+
 """
 Model of a track of a song.
 """

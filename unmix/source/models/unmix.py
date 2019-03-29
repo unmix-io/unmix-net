@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf8
+
 """
 Keras model for training using the unmix.io architecture.
 """

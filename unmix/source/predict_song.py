@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf8
+
 """
 Predicts vocal and/or instrumental for a song
 """

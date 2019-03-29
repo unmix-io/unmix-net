@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding: utf8
 
 """
 Builds callback checkpoint hooks for kera from configuration.

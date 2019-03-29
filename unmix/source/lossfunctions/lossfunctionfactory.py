@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding: utf8
 
 """
 Builds a keras loss function from configuration.

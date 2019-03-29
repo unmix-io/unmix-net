@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# coding: utf8
+
 """
-Model of the unmix.io neuronal network.
+Model of the unmix.io neuronal network learning object.
 """
 
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
