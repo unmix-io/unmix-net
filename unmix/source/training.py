@@ -26,9 +26,7 @@ if __name__ == "__main__":
     parser.add_argument('--configuration', default='./configurations/default.json',
                         type=str, help="Environment and training configuration.")
     parser.add_argument('--workingdir', default=os.getcwd(),
-                        type=str, help="Working directory (default: current directory)")
-    parser.add_argument('--songfiles', default='',
-                        type=str, help="Audiofiles to be splited")
+                        type=str, help="Working directory (default: current directory).")
 
     args = parser.parse_args()
     console.info("Arguments: ", str(args))

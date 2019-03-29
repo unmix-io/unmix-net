@@ -8,8 +8,8 @@ Model of the unmix.io neuronal network learning object.
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
-import os
 
+import os
 import keras.utils
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
@@ -24,6 +24,7 @@ from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
 from unmix.source.normalizers import normalizer
+
 
 class UnmixNet:
 
@@ -82,8 +83,8 @@ class UnmixNet:
         console.info("Saved weights to: %s" % path)
         self.model.save_weights(path, overwrite=True)
 
-    def load_weights(self):
-        path = os.path.join(Configuration.get_path(
-            'environment.weights.folder'), Configuration.get('environment.weights.file'))
+    def load_weights(self, path=None):
+        if not path:            
+            path = os.path.join(Configuration.get_path('environment.weights.folder'), Configuration.get('environment.weights.file'))
         console.info("Load weights from: %s" % path)
         self.model.load_weights(path)
