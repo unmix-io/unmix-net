@@ -15,10 +15,13 @@ from unmix.source.normalizers import normalizer
 
 
 def test_normalize_denormalize():
-    input = np.array([[[[0.1], [1j]]]])
+    input = np.array([[[20, 1.5]]])
     normalized = normalizer.normalize(input)
-    denormalized = normalizer.denormalize(normalized)
-    assert normalized == denormalized
+    denormalized_complex = normalizer.denormalize(normalized)
+    denormalized = np.zeros(shape=input.shape)
+    denormalized[:, :, 0] = np.real(denormalized_complex)
+    denormalized[:, :, 1] = np.imag(denormalized_complex)
+    assert np.alltrue(denormalized == input)
 
 
 if __name__ == "__main__":
