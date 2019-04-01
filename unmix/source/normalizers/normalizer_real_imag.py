@@ -24,7 +24,8 @@ def normalize(realimag):
     percentile99 = np.percentile(magnitude, 99)
     magnitude = np.clip(magnitude, 0, percentile99)
 
-    magnitude = magnitude / (percentile99 * 2)
+    if(percentile99 > 0):
+        magnitude = magnitude / (percentile99 * 2)
     magnitude = magnitude - 1
 
     return np.reshape(magnitude, magnitude.shape + (1,))
