@@ -34,9 +34,9 @@ if __name__ == "__main__":
                         type=str, help="Target sample rate which the model can process.")
     parser.add_argument('--fft_window', default=1536, 
                         type=str, help="FFT window size the model was trained on.")
-    parser.add_argument('--file', default="D:\\Data\\unmix.io\\songs\\skyfall.mp3",
+    parser.add_argument('--file', default="test.mp3",
                         type=str, help="Input audio file to split vocals and instrumental.")
-    parser.add_argument('--weights', default="D:\\Repos\\unmix.io\\unmix-net\\weights\\callback_weights.h5",
+    parser.add_argument('--weights', default="",
                         type=str, help="Pretrained weights file (overwrites configuration).")
 
     args = parser.parse_args()
