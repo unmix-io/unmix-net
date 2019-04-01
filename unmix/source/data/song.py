@@ -62,5 +62,5 @@ class Song(object):
         if hasattr(self, 'instrumental') and self.instrumental:
             self.instrumental.clean_up(clean_chops)
             del self.instrumental
-        self.instrumental = None
+        self.instrumental = []
         gc.collect()

@@ -19,6 +19,7 @@ class Chopper:
     DIRECTION_HORIZONTAL = "horizontal"
     MODE_SPLIT = "split"
     MODE_OVERLAP = "overlap"
+    MODE_STEPWISE = "stepwise"
 
     PRE_TRANSPOSE_DIMENSIONS = [[0], [1,0], [1,0,2], [2,0,1,3]]
     POST_TRANSPOSE_DIMENSIONS = [[0,1], [0,2,1], [0,2,1,3], [0,2,1,3,4]]
@@ -52,10 +53,23 @@ class Chopper:
             position += step
         return np.array(chops)
 
+    def chop_stepwise(self, input):
+        chops = []
+        position = 0
+        step = int(self.size / 2)
+        while position + step < len(input):
+            chops.append(input[position:(position + self.size)])
+            position += step
+        return np.array(chops)
+
     def calculate_chops(self, width, height):
         chops = 0
-        if self.direction == Chopper.DIRECTION_HORIZONTAL:
-            chops = width / self.size
-        if self.mode == Chopper.MODE_OVERLAP:
-            chops = chops * 2 - 1
+        if self.mode == Chopper.MODE_STEPWISE:
+            if self.direction == Chopper.DIRECTION_HORIZONTAL:
+                chops = width - self.size
+        else:
+            if self.direction == Chopper.DIRECTION_HORIZONTAL:
+                chops = width / self.size
+            if self.mode == Chopper.MODE_OVERLAP:
+                chops = chops * 2 - 1
         return int(chops)
