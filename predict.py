@@ -18,7 +18,7 @@ import time
 from unmix.source.choppers.choppersfactory import ChoppersFactory
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import console
-from unmix.source.normalizers import normalizer
+from unmix.source.normalizers import normalizer_real_imag as normalizer
 from unmix.source.engine import Engine
 
 

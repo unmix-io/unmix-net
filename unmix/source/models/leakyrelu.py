@@ -22,7 +22,7 @@ name = 'LeakyReLU'
 def generate(alpha1, alpha2, rate, channels=1):
     batch_size = Configuration.get("training.batch_size")
 
-    mashup = Input(batch_shape=(batch_size, 769, 64, 2), name='input')
+    mashup = Input(batch_shape=(batch_size, 769, 64, 1), name='input')
     padding = ZeroPadding2D(((3, 0), (0, 0)))(mashup)
     dropout = Dropout(rate=rate)(padding)
 
@@ -84,7 +84,7 @@ def generate(alpha1, alpha2, rate, channels=1):
     conv = LeakyReLU(alpha=alpha2)(conv)
     conv = Dropout(rate=rate)(conv)
 
-    conv = Conv2D(filters=channels*2, kernel_size=3, padding='same')(conv)
+    conv = Conv2D(filters=channels, kernel_size=3, padding='same')(conv)
     conv = Cropping2D(((3, 0), (0, 0)))(conv)
 
     return Model(inputs=mashup, outputs=conv)

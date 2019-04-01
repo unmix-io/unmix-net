@@ -17,7 +17,7 @@
         }
     },
     "training": {
-        "batch_size": "8",
+        "batch_size": "32",
         "epoch": {
             "count": "10",
             "shuffle": "False"
