@@ -25,13 +25,13 @@ def normalize(realimag):
     magnitude = np.clip(magnitude, 0, percentile99)
 
     if(percentile99 > 0):
-        magnitude = magnitude / (percentile99 * 2)
+        magnitude = magnitude / (percentile99 / 2)
     magnitude = magnitude - 1
 
     return np.reshape(magnitude, magnitude.shape + (1,))
 
 def denormalize(realimag):
     'Returns denormalized values as array of complex values'
-    realimag = realimag * 1000 # Todo: value should be taken from normalizer
-    realimag = realimag[:, :, 0] + realimag[:, :, 1] * 1j
+    #realimag = realimag * 1000 # Todo: value should be taken from normalizer
+    #realimag = realimag[:, :, 0] + realimag[:, :, 1] * 1j
     return realimag
