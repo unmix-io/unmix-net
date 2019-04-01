@@ -47,18 +47,6 @@
                 "mode": "auto",
                 "period": "1",
                 "verbose": "1"
-            },
-            "early_stopping": {
-                "monitor": "loss",
-                "min_delta": "0.01",
-                "patience": "0.8",
-                "verbose": "1"
-            },
-            "reduce_learningrate": {
-                "monitor": "loss",
-                "factor": "0.2",
-                "patience": "5",
-                "min_learningrate": "0.001"
             }
         },
         "model": {

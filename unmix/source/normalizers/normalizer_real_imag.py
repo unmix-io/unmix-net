@@ -30,8 +30,16 @@ def normalize(realimag):
 
     return np.reshape(magnitude, magnitude.shape + (1,))
 
-def denormalize(realimag):
-    'Returns denormalized values as array of complex values'
-    #realimag = realimag * 1000 # Todo: value should be taken from normalizer
-    #realimag = realimag[:, :, 0] + realimag[:, :, 1] * 1j
-    return realimag
+def denormalize(magnitude_predicted, mix_complex):
+    'Returns denormalized values as array of complex values (sft)'
+    denorm = np.reshape(magnitude_predicted, magnitude_predicted.shape[0:2])
+
+    # Shift values to original space and clip values below zero
+    denorm = denorm + 1
+    denorm = denorm.clip(0)
+    
+    # Amplitude values cannot be higher than those in original mix amplitudes - take max values
+    denorm = np.minimum(denorm, np.abs(mix_complex))
+
+    denorm = denorm * np.exp( np.angle(mix_complex) * 1j )
+    return denorm

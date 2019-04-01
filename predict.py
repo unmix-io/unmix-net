@@ -18,7 +18,7 @@ import time
 from unmix.source.choppers.choppersfactory import ChoppersFactory
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import console
-from unmix.source.normalizers import normalizer_real_imag as normalizer
+from unmix.source.normalizers.normalizerfactory import NormalizerFactory
 from unmix.source.engine import Engine
 
 
@@ -42,6 +42,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     config = Configuration.initialize(args.configuration, args.workingdir)
+
+    normalizer = NormalizerFactory.build()
 
     console.info("Arguments: ", str(args))
 
@@ -68,13 +70,7 @@ if __name__ == "__main__":
 
         normalized = normalizer.normalize(realimag)
         predicted = engine.predict(np.array([normalized]))[0]
-        #predicted = normalizer.denormalize(predicted)
-        #predicted = np.reshape(predicted, predicted.shape[0:2]) + np.angle(c) * 1j
-        predicted = np.reshape(predicted, normalized.shape[0:2])
-        predicted = predicted + np.abs(np.min(predicted))
-        predicted = predicted * np.exp( np.angle(c) * 1j )
-        #predicted = np.abs(c) * np.exp( 1j * np.angle(c) )
-        #
+        predicted = normalizer.denormalize(predicted, c)
         predictions[:, chopshape[1] * i : (chopshape[1] * (i + 1))] = predicted
 
     # Convert back to wav audio file
