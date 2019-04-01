@@ -14,7 +14,7 @@ import time
 import argparse
 
 from unmix.source.helpers import console
-from unmix.source.unmixnet import UnmixNet
+from unmix.source.engine import Engine
 from unmix.source.configuration import Configuration
 
 
@@ -39,12 +39,12 @@ if __name__ == "__main__":
     console.info("Collection: %s" % Configuration.get('collection.folder'))
     console.info("Model: %s" % Configuration.get('training.model.name'))
 
-    unmixnet = UnmixNet()
+    engine = Engine()
 
     if Configuration.get('training.load_weights'):
-        unmixnet.load_weights()
+        engine.load_weights()
 
-    unmixnet.train()
+    engine.train()
 
     end = time.time()
     console.info("Finished processing in %d [ms]." % (end - start))

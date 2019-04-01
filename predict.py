@@ -19,7 +19,7 @@ from unmix.source.choppers.choppersfactory import ChoppersFactory
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import console
 from unmix.source.normalizers import normalizer
-from unmix.source.unmixnet import UnmixNet
+from unmix.source.engine import Engine
 
 
 if __name__ == "__main__":
@@ -55,8 +55,8 @@ if __name__ == "__main__":
     chops = chopper.chop(stft)
     chopshape = chops[0].shape
 
-    unmixnet = UnmixNet()
-    unmixnet.load_weights(args.weights)
+    engine = Engine()
+    engine.load_weights(args.weights)
 
     predictions = np.empty((chopshape[0], chopshape[1] * len(chops)), dtype=np.complex)
 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         realimag[:, :, 1] = np.imag(c)
 
         normalized = normalizer.normalize(realimag)
-        predicted = unmixnet.predict(np.array([normalized]))[0]
+        predicted = engine.predict(np.array([normalized]))[0]
         predicted = normalizer.denormalize(predicted)
         predictions[:, chopshape[1] * i : (chopshape[1] * (i + 1))] = predicted
 

@@ -26,7 +26,7 @@ from unmix.source.optimizers.optimizerfactory import OptimizerFactory
 from unmix.source.normalizers.normalizerfactory import NormalizerFactory
 
 
-class UnmixNet:
+class Engine:
 
     def __init__(self):
         optimizer = OptimizerFactory.build()
