@@ -23,7 +23,7 @@ from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
-from unmix.source.normalizers import normalizer
+from unmix.source.normalizers.normalizerfactory import NormalizerFactory
 
 
 class UnmixNet:
@@ -32,6 +32,7 @@ class UnmixNet:
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build()
         metrics = MetricsFactory.build()
+        normalizer = NormalizerFactory.build()
         self.callbacks = CallbacksFactory.build()
         choppers = ChoppersFactory.build()
 
@@ -46,8 +47,8 @@ class UnmixNet:
         console.debug("Model initialized with %d parameters." %
                       self.model.count_params())
 
-        self.training_generator = DataGenerator(training_songs, choppers)
-        self.validation_generator = DataGenerator(validation_songs, choppers)
+        self.training_generator = DataGenerator(training_songs, choppers, normalizer)
+        self.validation_generator = DataGenerator(validation_songs, choppers, normalizer)
 
     def plot_model(self):
         try:

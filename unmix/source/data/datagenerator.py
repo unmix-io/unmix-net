@@ -15,17 +15,17 @@ import numpy as np
 
 from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
-from unmix.source.normalizers import normalizer
 from unmix.source.data.song import Song
 
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, collection, choppers):
+    def __init__(self, collection, choppers, normalizer):
         'Initialization'
         self.collection = collection
         self.choppers = choppers
+        self.normalizer = normalizer
         self.batch_size = Configuration.get("training.batch_size")
         self.shuffle = Configuration.get("training.epoch.shuffle")
         self.shuffle_in_song = Configuration.get("training.shuffle_chops_in_song")
@@ -72,7 +72,7 @@ class DataGenerator(keras.utils.Sequence):
 
         for item in subset:
             mix, vocals = item.song.load(self.choppers, item.offset)
-            X.append(normalizer.normalize(mix))
-            y.append(normalizer.normalize(vocals))
+            X.append(self.normalizer.normalize(mix))
+            y.append(self.normalizer.normalize(vocals))
 
         return np.array(X), np.array(y)

@@ -12,6 +12,7 @@ __email__ = "info@unmix.io"
 import numpy as np
 import math
 
+name = 'normalizer_abs'
 
 def polar_to_rectangular(radii, angles):
     return radii * np.exp(1j*angles)

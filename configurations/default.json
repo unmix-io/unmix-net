@@ -17,7 +17,7 @@
         }
     },
     "training": {
-        "batch_size": "8",
+        "batch_size": "32",
         "epoch": {
             "count": "10",
             "shuffle": "False"
@@ -35,16 +35,10 @@
                 "size": "64"           
             }
         },
+        "normalizer": {
+            "name": "normalizer_real_imag"
+        },
         "callbacks": {
-            "tensorboard" : {
-                "folder": "./tensorboard",
-                "histogram_freq": "0",
-                "write_graph": "True",	
-                "write_grads": "False",
-                "write_images": "True",	
-                "embeddings_freq": "0",
-                "update_freq": "epoch"
-            },
             "model_checkpoint": {
                 "file_name": "callback_weights.h5",
                 "monitor": "loss",
