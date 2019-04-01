@@ -17,6 +17,4 @@ class ChoppersFactory(object):
         choppers = []
         if hasattr(config,'horizontal'):
             choppers.append(Chopper(Chopper.DIRECTION_HORIZONTAL, config.horizontal.mode, config.horizontal.size))
-        if hasattr(config,'vertical'):
-            choppers.append(Chopper(Chopper.DIRECTION_VERTICAL, config.vertical.mode, config.vertical.size))
         return choppers

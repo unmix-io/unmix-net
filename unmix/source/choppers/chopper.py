@@ -17,7 +17,6 @@ from unmix.source.exceptions.configurationerror import ConfigurationError
 class Chopper:
 
     DIRECTION_HORIZONTAL = "horizontal"
-    DIRECTION_VERTICAL = "vertical"
     MODE_SPLIT = "split"
     MODE_OVERLAP = "overlap"
 
@@ -30,11 +29,6 @@ class Chopper:
         self.size = size
 
     def chop(self, input):
-        if self.direction == Chopper.DIRECTION_VERTICAL:
-            if self.mode == Chopper.MODE_SPLIT:
-                return self.chop_split(input)
-            if self.mode == Chopper.MODE_OVERLAP:
-                return self.chop_overlap(input)
         if self.direction == Chopper.DIRECTION_HORIZONTAL:
             if self.mode == Chopper.MODE_SPLIT:
                 return self.chop_split(input.transpose(*Chopper.PRE_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])) \
@@ -60,8 +54,6 @@ class Chopper:
 
     def calculate_chops(self, width, height):
         chops = 0
-        if self.direction == Chopper.DIRECTION_VERTICAL:
-            chops = height / self.size
         if self.direction == Chopper.DIRECTION_HORIZONTAL:
             chops = width / self.size
         if self.mode == Chopper.MODE_OVERLAP:
