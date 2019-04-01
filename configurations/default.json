@@ -35,6 +35,10 @@
                 "size": "64"           
             }
         },
+        "cutter": {
+            "position": "center",
+            "size": "1"
+        }, 
         "normalizer": {
             "name": "normalizer_real_imag"
         },

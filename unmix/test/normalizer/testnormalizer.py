@@ -26,3 +26,4 @@ def test_normalize_denormalize():
 
 if __name__ == "__main__":
     test_normalize_denormalize()
+    print("Test run successful.")

@@ -43,3 +43,4 @@ def test_load_chopper_horizontal_song_mono():
 if __name__ == "__main__":
     test_load_song_mono()
     test_load_chopper_horizontal_song_mono()
+    print("Test run successful.")

@@ -34,3 +34,4 @@ def test_configuration_initialize():
 
 if __name__ == "__main__":
     test_configuration_initialize()
+    print("Test run successful.")

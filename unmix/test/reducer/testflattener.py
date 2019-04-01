@@ -78,3 +78,4 @@ if __name__ == "__main__":
     test_rflatter_3_1()
     test_rflatter_5_1()
     test_rflatter_5_2()
+    print("Test run successful.")

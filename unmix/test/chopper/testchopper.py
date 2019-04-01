@@ -14,15 +14,73 @@ import numpy as np
 from unmix.source.choppers.chopper import Chopper
 
 
-def test_horizontal_split_matrix3():
-    matrix = np.array([[["000","001"],["010","011"],["020","021"],["030","031"],["040","051"],["060","071"]],
-                       [["100","101"],["110","111"],["120","121"],["130","131"],["140","151"],["160","171"]],
-                       [["200","201"],["210","211"],["220","221"],["230","231"],["240","251"],["260","271"]],
-                       [["300","301"],["310","311"],["320","321"],["330","331"],["340","351"],["360","371"]]])
-    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_SPLIT, 2)
-    chops = chopper.chop(matrix)
-    assert len(chops) == 3
+def test_horizontal_overlap_2d_2():
+    input = np.array([range(9)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_OVERLAP, 2)
+    chops = chopper.chop(input)
+    assert len(chops) == 8
+    input = np.array([range(10)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_OVERLAP, 2)
+    chops = chopper.chop(input)
+    assert len(chops) == 9
+    input = np.array([range(11)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_OVERLAP, 2)
+    chops = chopper.chop(input)
+    assert len(chops) == 10
+
+
+def test_horizontal_overlap_2d_4():
+    input = np.array([range(11)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_OVERLAP, 4)
+    chops = chopper.chop(input)
+    assert len(chops) == 4
+    input = np.array([range(12)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_OVERLAP, 4)
+    chops = chopper.chop(input)
+    assert len(chops) == 5
+    input = np.array([range(13)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_OVERLAP, 4)
+    chops = chopper.chop(input)
+    assert len(chops) == 5
+
+
+def test_horizontal_stepwise_2d_2():
+    input = np.array([range(9)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_STEPWISE, 3)
+    chops = chopper.chop(input)
+    assert len(chops) == 7
+    input = np.array([range(10)])
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_STEPWISE, 3)
+    chops = chopper.chop(input)
+    assert len(chops) == 8
+
+
+def test_horizontal_split_3d_64():
+    input = np.empty((769, 2000, 2))
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_SPLIT, 64)
+    chops = chopper.chop(input)
+    assert len(chops) == 31  # floor(2000/64)
+
+
+def test_horizontal_overlap_3d_64():
+    input = np.empty((769, 2000, 2))
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_OVERLAP, 64)
+    chops = chopper.chop(input)
+    assert len(chops) == 61  # floor((2000-32)/(32))
+
+
+def test_horizontal_stepwise_3d_64():
+    input = np.empty((769, 2000, 2))
+    chopper = Chopper(Chopper.DIRECTION_HORIZONTAL, Chopper.MODE_STEPWISE, 64)
+    chops = chopper.chop(input)
+    assert len(chops) == 1937  # 2000 - 64 + 1
 
 
 if __name__ == "__main__":
-    test_horizontal_split_matrix3()
+    test_horizontal_overlap_2d_2()
+    test_horizontal_overlap_2d_4()
+    test_horizontal_stepwise_2d_2()
+    test_horizontal_split_3d_64()
+    test_horizontal_overlap_3d_64()
+    test_horizontal_stepwise_3d_64()
+    print("Test run successful.")

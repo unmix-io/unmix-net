@@ -2,7 +2,7 @@
 # coding: utf8
 
 """
-Builds choppers to chop the input spectrograms.
+Chops an input matrix horizontally.
 """
 
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
@@ -12,6 +12,7 @@ __email__ = "info@unmix.io"
 import numpy as np
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
+import unmix.source.helpers.transposer as transposer
 
 
 class Chopper:
@@ -21,9 +22,6 @@ class Chopper:
     MODE_OVERLAP = "overlap"
     MODE_STEPWISE = "stepwise"
 
-    PRE_TRANSPOSE_DIMENSIONS = [[0], [1,0], [1,0,2], [2,0,1,3]]
-    POST_TRANSPOSE_DIMENSIONS = [[0,1], [0,2,1], [0,2,1,3], [0,2,1,3,4]]
-
     def __init__(self, direction, mode, size):
         self.direction = direction
         self.mode = mode
@@ -32,44 +30,47 @@ class Chopper:
     def chop(self, input):
         if self.direction == Chopper.DIRECTION_HORIZONTAL:
             if self.mode == Chopper.MODE_SPLIT:
-                return self.chop_split(input.transpose(*Chopper.PRE_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])) \
-                        .transpose(*Chopper.POST_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])
+                return transposer.post_transpose(self.chop_split(transposer.pre_transpose(input)))
             if self.mode == Chopper.MODE_OVERLAP:
-                return self.chop_overlap(input.transpose(*Chopper.PRE_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])) \
-                        .transpose(*Chopper.POST_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])
+                return transposer.post_transpose(self.chop_overlap(transposer.pre_transpose(input)))
+            if self.mode == Chopper.MODE_STEPWISE:
+                return transposer.post_transpose(self.chop_stepwise(transposer.pre_transpose(input)))
         raise ConfigurationError("Chopper with invalid configuration")
 
     def chop_split(self, input):
         slices = int(len(input) / self.size)
-        chops = [input[(i * self.size):((i+1) * self.size)] for i in range(slices)]
+        chops = [input[(i * self.size):((i+1) * self.size)]
+                 for i in range(slices)]
         return np.array(chops)
 
     def chop_overlap(self, input):
-        chops = []
-        position = 0
         step = int(self.size / 2)
-        while position + step < len(input):
-            chops.append(input[position:(position + self.size)])
-            position += step
-        return np.array(chops)
+        return self.chop_step(input, step)
 
     def chop_stepwise(self, input):
-        chops = []
-        position = 0
-        step = int(self.size / 2)
-        while position + step < len(input):
-            chops.append(input[position:(position + self.size)])
-            position += step
-        return np.array(chops)
+        step = 1
+        return self.chop_step(input, step)
 
-    def calculate_chops(self, width, height):
+    def chop_step(self, input, step):
+        count = self.calculate_chops(len(input))
+        chops = np.empty((count,) + (self.size,) + input.shape[1:])
+        position = 0
+        i = 0
+        while i < count:
+            chops[i] = input[position:(position + self.size)]
+            position += step
+            i += 1
+        return chops
+
+    def calculate_chops(self, width):
         chops = 0
         if self.mode == Chopper.MODE_STEPWISE:
             if self.direction == Chopper.DIRECTION_HORIZONTAL:
-                chops = width - self.size
-        else:
+                chops = width - self.size + 1
+        if self.mode == Chopper.MODE_OVERLAP:
             if self.direction == Chopper.DIRECTION_HORIZONTAL:
-                chops = width / self.size
-            if self.mode == Chopper.MODE_OVERLAP:
-                chops = chops * 2 - 1
+                chops = int((width - self.size / 2) / (self.size / 2))
+        if self.mode == Chopper.MODE_SPLIT:
+            if self.direction == Chopper.DIRECTION_HORIZONTAL:
+                chops = int(width / self.size)
         return int(chops)
