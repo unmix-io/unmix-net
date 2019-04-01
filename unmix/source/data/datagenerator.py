@@ -16,6 +16,7 @@ import numpy as np
 from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
+from unmix.source.helpers import console
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -35,20 +36,23 @@ class DataGenerator(keras.utils.Sequence):
     def generate_index(self):
         self.index = np.array([])
         for file in self.collection:
-            song = Song(file)
-            if self.choppers:
-                for chopper in self.choppers:
-                    batchitems = [BatchItem(song, i) 
-                        for i in range(chopper.calculate_chops(song.width))]
-                    if(self.shuffle_in_song):
-                        np.random.shuffle(batchitems)
-                    self.index = np.append(self.index, batchitems)
-            else:
-                self.index = np.append(self.index, BatchItem(song, 0))
+            try:
+                song = Song(file)
+                if self.choppers:
+                    for chopper in self.choppers:
+                        batchitems = [BatchItem(song, i) 
+                            for i in range(chopper.calculate_chops(song.width))]
+                        if(self.shuffle_in_song):
+                            np.random.shuffle(batchitems)
+                        self.index = np.append(self.index, batchitems)
+                else:
+                    self.index = np.append(self.index, BatchItem(song, 0))
+            except Exception as e:
+                console.warn("Skip file while generating index: %s", str(e.args))
 
     def __len__(self):
         'Denotes the number of batches per epoch'
-        return int(np.floor(len(self.index) / self.batch_size))
+        return int(len(self.index) / self.batch_size)
 
     def __getitem__(self, i):
         'Generate one batch of data'
