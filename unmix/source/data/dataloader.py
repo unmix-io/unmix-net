@@ -26,10 +26,8 @@ class DataLoader(object):
 
     @staticmethod
     def load():
-        path = Configuration.get_path("collection.folder")
+        path = Configuration.get_path("collection.folder", False)
         files = [os.path.dirname(file) for file in glob.iglob(os.path.join(path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
-
-
         validation = Configuration.get("collection.validation")
         validation_count = int(validation.ratio * len(files))
 
