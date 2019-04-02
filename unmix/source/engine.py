@@ -13,7 +13,7 @@ import os
 import keras.utils
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
-from unmix.source.choppers.choppersfactory import ChoppersFactory
+from unmix.source.choppers.chopperfactory import ChopperFactory
 from unmix.source.configuration import Configuration
 from unmix.source.data.datagenerator import DataGenerator
 from unmix.source.data.dataloader import DataLoader
@@ -34,7 +34,7 @@ class Engine:
         metrics = MetricsFactory.build()
         normalizer = NormalizerFactory.build()
         self.callbacks = CallbacksFactory.build()
-        choppers = ChoppersFactory.build()
+        chopper = ChopperFactory.build()
 
         training_songs, validation_songs = DataLoader.load()
 
@@ -48,9 +48,9 @@ class Engine:
                       self.model.count_params())
 
         self.training_generator = DataGenerator(
-            training_songs, choppers, normalizer)
+            training_songs, chopper, normalizer)
         self.validation_generator = DataGenerator(
-            validation_songs, choppers, normalizer)
+            validation_songs, chopper, normalizer)
 
     def plot_model(self):
         try:

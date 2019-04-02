@@ -64,12 +64,12 @@ class Track(object):
         self.initialized = True
         return self
 
-    def chop(self, choppers, force=False):
+    def chop(self, chopper, force=False):
         if self.chopped and not force:
             return
         if not self.initialized:
             self.load()
-        self.chops = np.array([reduce((lambda input, chopper: chopper.chop(input)), [channel] + choppers if choppers else [])
+        self.chops = np.array([chopper.chop(channel)
                                for channel in self.channels])
         self.chops = reducer.rflatter(self.chops.transpose(1, 2, 3, 0, 4))
         self.chopped = True
@@ -77,5 +77,6 @@ class Track(object):
     def clean_up(self, clean_chops):
         if hasattr(self, 'channels'):
             del self.channels
+        self.channels = []
         self.initialized = False
         gc.collect()

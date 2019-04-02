@@ -26,6 +26,7 @@ class Chopper:
         self.direction = direction
         self.mode = mode
         self.size = size
+        self.inner_shape = None
 
     def chop(self, input):
         if self.direction == Chopper.DIRECTION_HORIZONTAL:
@@ -41,6 +42,7 @@ class Chopper:
         slices = int(len(input) / self.size)
         chops = [input[(i * self.size):((i+1) * self.size)]
                  for i in range(slices)]
+        self.set_inner_shape(chops)
         return np.array(chops)
 
     def chop_overlap(self, input):
@@ -60,7 +62,12 @@ class Chopper:
             chops[i] = input[position:(position + self.size)]
             position += step
             i += 1
+        self.set_inner_shape(chops)
         return chops
+
+    def set_inner_shape(self, chops):
+        if chops and len(chops) > 0:
+            self.inner_shape = chops[0].shape
 
     def calculate_chops(self, width):
         chops = 0

@@ -14,6 +14,7 @@ import glob
 import h5py
 import os
 
+from unmix.source.choppers.emptychopper import EmptyChopper
 from unmix.source.data.track import Track
 from unmix.source.exceptions.dataerror import DataError
 
@@ -47,11 +48,11 @@ class Song(object):
         self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
 
-    def load(self, choppers=[], offset=0):
+    def load(self, chopper=EmptyChopper(), offset=0):
         if not self.mix.initialized and not self.mix.chopped:
             self.mix.mix(self.vocals, self.instrumental) # After this step all tracks are initialized
-        self.mix.chop(choppers)
-        self.vocals.chop(choppers)
+        self.mix.chop(chopper)
+        self.vocals.chop(chopper)
         self.clean_up(False)
         return self.mix.chops[offset], self.vocals.chops[offset]
 

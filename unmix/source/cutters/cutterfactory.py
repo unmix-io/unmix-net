@@ -2,10 +2,10 @@
 # coding: utf8
 
 """
-Builds choppers to chop the input spectrograms.
+Builds a cutter to cut from the input data.
 """
 
-from unmix.source.choppers.chopper import Chopper
+from unmix.source.cutters.cutter import Cutter
 from unmix.source.configuration import Configuration
 
 

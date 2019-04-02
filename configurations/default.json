@@ -30,17 +30,15 @@
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": "False",
-        "choppers": {
-            "horizontal": {
-                "direction": "horizontal",
-                "mode": "split",
-                "size": "64"
-            }
+        "chopper": {
+            "direction": "horizontal",
+            "mode": "overlap",
+            "size": "64"
         },
         "cutter": {
             "position": "center",
             "size": "1"
-        }, 
+        },
         "normalizer": {
             "name": "normalizer_real_imag"
         },
@@ -68,11 +66,11 @@
             },
             "tensorboard": {
                 "folder": "./TensorBoard",
-                "histogram_freq": 1,
+                "histogram_freq": 0,
                 "write_graph": true,
                 "write_grads": false,
-                "write_images": true,
-                "embeddings_freq": 1,
+                "write_images": false,
+                "embeddings_freq": 0,
                 "update_freq": "batch"
             }
         },

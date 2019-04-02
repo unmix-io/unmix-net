@@ -23,14 +23,15 @@ from unmix.source.helpers import audiohandler
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, collection, choppers, normalizer):
+    def __init__(self, collection, chopper, normalizer):
         'Initialization'
         self.collection = collection
-        self.choppers = choppers
+        self.chopper = chopper
         self.normalizer = normalizer
         self.batch_size = Configuration.get("training.batch_size")
         self.shuffle = Configuration.get("training.epoch.shuffle")
-        self.shuffle_in_song = Configuration.get("training.shuffle_chops_in_song")
+        self.shuffle_in_song = Configuration.get(
+            "training.shuffle_chops_in_song")
         self.on_epoch_end()
 
     def generate_index(self):
@@ -38,17 +39,17 @@ class DataGenerator(keras.utils.Sequence):
         for file in self.collection:
             try:
                 song = Song(file)
-                if self.choppers:
-                    for chopper in self.choppers:
-                        batchitems = [BatchItem(song, i) 
-                            for i in range(chopper.calculate_chops(song.width))]
-                        if(self.shuffle_in_song):
-                            np.random.shuffle(batchitems)
-                        self.index = np.append(self.index, batchitems)
+                if self.chopper:
+                    batchitems = [BatchItem(song, i)
+                                  for i in range(self.chopper.calculate_chops(song.width))]
+                    if(self.shuffle_in_song):
+                        np.random.shuffle(batchitems)
+                    self.index = np.append(self.index, batchitems)
                 else:
                     self.index = np.append(self.index, BatchItem(song, 0))
             except Exception as e:
-                console.warn("Skip file while generating index: %s", str(e.args))
+                console.warn(
+                    "Skip file while generating index: %s", str(e.args))
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -74,10 +75,12 @@ class DataGenerator(keras.utils.Sequence):
         y = []
 
         for item in subset:
-            mix, vocals = item.load(self.choppers)
+            mix, vocals = item.load(self.chopper)
             if Configuration.get('training.save_chops'):
-                audiohandler.spectrogram_to_audio('%s-%s_vocals.wav' % (item.song.name, item.offset), vocals)
-                audiohandler.spectrogram_to_audio('%s-%s_mix.wav' % (item.song.name, item.offset), mix)
+                audiohandler.spectrogram_to_audio(
+                    '%s-%s_vocals.wav' % (item.song.name, item.offset), vocals)
+                audiohandler.spectrogram_to_audio(
+                    '%s-%s_mix.wav' % (item.song.name, item.offset), mix)
             X.append(self.normalizer.normalize(mix)[0])
             y.append(self.normalizer.normalize(vocals)[0])
 

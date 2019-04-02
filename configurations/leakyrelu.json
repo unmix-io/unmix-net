@@ -30,12 +30,10 @@
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": "False",
-        "choppers": {
-            "horizontal": {
-                "direction": "horizontal",
-                "mode": "split",
-                "size": "64"           
-            }
+        "chopper": {
+            "direction": "horizontal",
+            "mode": "split",
+            "size": "64"
         },
         "normalizer": {
             "name": "normalizer_real_imag"

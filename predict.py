@@ -15,7 +15,7 @@ import numpy as np
 import os
 import time
 
-from unmix.source.choppers.choppersfactory import ChoppersFactory
+from unmix.source.choppers.chopperfactory import ChopperFactory
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import console
 from unmix.source.normalizers.normalizerfactory import NormalizerFactory
@@ -53,14 +53,14 @@ if __name__ == "__main__":
     audio, sample_rate = librosa.load(args.file, mono=True, sr=args.sample_rate)
     stft = librosa.stft(audio, args.fft_window)
     
-    chopper = ChoppersFactory.build()[0]
+    chopper = ChopperFactory.build()
     chops = chopper.chop(stft)
-    chopshape = chops[0].shape
+    chop_shape = chopper.inner_shape
 
     engine = Engine()
     engine.load_weights(args.weights)
 
-    predictions = np.empty((chopshape[0], chopshape[1] * len(chops)), dtype=np.complex)
+    predictions = np.empty((chop_shape[0], chop_shape[1] * len(chops)), dtype=np.complex)
 
     # Predict each chop
     for i,c in enumerate(chops):
@@ -71,7 +71,7 @@ if __name__ == "__main__":
         normalized, normalizer_info = normalizer.normalize(realimag)
         predicted = engine.predict(np.array([normalized]))[0]
         predicted = normalizer.denormalize(predicted, c, normalizer_info)
-        predictions[:, chopshape[1] * i : (chopshape[1] * (i + 1))] = predicted
+        predictions[:, chop_shape[1] * i : (chop_shape[1] * (i + 1))] = predicted
 
     # Convert back to wav audio file
     data = librosa.istft(predictions)
