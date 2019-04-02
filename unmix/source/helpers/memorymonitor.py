@@ -33,7 +33,7 @@ def track(func):
         console.debug("Memory usage profile for '%s':\n\t" % func.__name__
                       + "Before: %d\n\t" % memory_before
                       + "After: %d\n\t" % memory_after
-                      + "Consumed: %d\n\t" % memory_after - memory_after
+                      + "Consumed: %d\n\t" % (memory_after - memory_after)
                       + "Runtime: %s\n\t" % elapsed_time)
         return result
     return wrapper

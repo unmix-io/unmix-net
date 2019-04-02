@@ -12,7 +12,6 @@ __email__ = "info@unmix.io"
 import datetime
 import os
 import time
-import librosa
 import numpy as np
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
