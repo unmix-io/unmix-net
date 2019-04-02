@@ -9,6 +9,7 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
+import commentjson
 import os
 import json
 from collections import namedtuple
@@ -30,7 +31,7 @@ class Configuration(object):
         Configuration.working_directory = working_directory if working_directory else os.getcwd()
         environmentvariables.set_environment_variables(extend=True)
         with open(Configuration.build_path(configuration_file), 'r') as f:
-            configuration = json.load(f, object_hook=lambda d: namedtuple(
+            configuration = commentjson.load(f, object_hook=lambda d: namedtuple(
                 'X', d.keys())(*map(lambda x: converter.try_eval(x), d.values())))
         return configuration
 
