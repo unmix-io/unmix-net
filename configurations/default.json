@@ -65,7 +65,7 @@
                 "min_learningrate": "0.001"
             },
             "tensorboard": {
-                "folder": "D:\\GitHub\\unmix.io\\unmix-net\\TensorBoard",
+                "folder": "./TensorBoard",
                 "histogram_freq": 1,
                 "write_graph": true,
                 "write_grads": false,
