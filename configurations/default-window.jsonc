@@ -21,9 +21,9 @@
         "name": "window",
         "options": {
     	    "size": 64,
-            "step": 32,
-            "shuffle": true,
-            "save_audio": true
+            "step": 64,
+            "shuffle": false,
+            "save_audio": false
         }
     },
     "training": {

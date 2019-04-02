@@ -13,6 +13,7 @@ import numpy as np
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import audiohandler
+from unmix.source.helpers import reducer
 from unmix.source.pipeline.choppers.chopper import Chopper
 import unmix.source.pipeline.normalizers.normalizer_real_imag as normalizer
 
@@ -28,14 +29,14 @@ class WindowTransformer:
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
-        input = self.chopper.get_chop(vocals, index, self.size)
-        target = self.chopper.get_chop(mix, index, self.size)
+        input = reducer.rflatter(self.chopper.get_chop(vocals, index, self.size))
+        target = reducer.rflatter(self.chopper.get_chop(mix, index, self.size))
 
         if self.save_audio:
             audiohandler.spectrogram_to_audio('%s_mix.wav' % name, input)
             audiohandler.spectrogram_to_audio('%s_vocals.wav' % name, target)
         
-        return normalizer.normalize(input), normalizer.normalize(target)
+        return normalizer.normalize(input)[0], normalizer.normalize(target)[0]
 
     def calculate_items(self, width):
         return self.chopper.calculate_chops(width)
