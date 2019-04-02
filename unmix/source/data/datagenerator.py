@@ -18,7 +18,6 @@ from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
 from unmix.source.helpers import console
 from unmix.source.helpers import audiohandler
-from unmix.source.helpers.memorymonitor import track
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -77,9 +76,9 @@ class DataGenerator(keras.utils.Sequence):
         for item in subset:
             mix, vocals = item.load(self.choppers)
             if Configuration.get('training.save_chops'):
-                audiohandler.save_spectrogram(f'{item.song.name}-{item.offset}_vocals.wav', vocals)
-                audiohandler.save_spectrogram(f'{item.song.name}-{item.offset}_mix.wav', mix)
-            X.append(self.normalizer.normalize(mix))
-            y.append(self.normalizer.normalize(vocals))
+                audiohandler.spectrogram_to_audio(f'{item.song.name}-{item.offset}_vocals.wav', vocals)
+                audiohandler.spectrogram_to_audio(f'{item.song.name}-{item.offset}_mix.wav', mix)
+            X.append(self.normalizer.normalize(mix)[0])
+            y.append(self.normalizer.normalize(vocals)[0])
 
         return np.array(X), np.array(y)
