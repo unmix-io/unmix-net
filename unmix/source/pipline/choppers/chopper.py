@@ -17,20 +17,13 @@ import unmix.source.helpers.transposer as transposer
 
 class Chopper:
 
-    def __init__(self, step, size, offset, save_audio):
+    def __init__(self, step):
         self.step = step
-        self.size = size
-        self.offset = offset
-        self.save_audio = save_audio
-        self.inner_shape = None
 
-    def get_chop(self, input, offset):
-        start = 0 if self.padding else self.offset
-        end = len()
-
-    def set_inner_shape(self, chops):
-        if chops.any():
-            self.inner_shape = chops[0].shape
+    def get_chop(self, input, index, size):
+        start = self.step * index - int(size / 2)
+        end = start + size
+        return input[start:end] # TODO: Pad zeros if outside boundaries
 
     def calculate_chops(self, width):
         return int(width / self.step)

@@ -13,6 +13,7 @@ import keras.backend as keras
 
 from unmix.source.configuration import Configuration
 from unmix.source.pipline.pipeline import Pipeline
+from unmix.source.pipline.pipelinedimension import PipelineDimension
 from unmix.source.exceptions.configurationerror import ConfigurationError
 
 
@@ -20,12 +21,15 @@ class PipelineFactory(object):
 
     @staticmethod
     def build():
-        input_config = Configuration.get('pipeline.input', False)
-
-        input_pipeline = Pipeline("input", input_config.chop, input_config.transform)
-        target_config = Configuration.get('pipeline.input', False)
-        target_pipeline = Pipeline("target", target_config.chop, target_config.transform)
-        
-        return input_pipeline, target_pipeline
-
-    
+        try:
+            chop = Configuration.get('pipeline.chop', False)
+            pipeline = Pipeline(chop.step, chop.save_audio)
+            input = Configuration.get('pipeline.input', False)
+            pipeline.input_dimension = PipelineDimension(
+                "input", input.chop.size, input.transform)
+            target = Configuration.get('pipeline.target', False)
+            pipeline.target_dimension = PipelineDimension(
+                "target", target.chop.size. target.transform)
+        except Exception as ex:
+            raise ConfigurationError('pipeline')
+        return pipeline

@@ -17,20 +17,20 @@
             "mode": "first"
         }
     },
-    "pipeline": {
-        "chop": {
+    "transformation": {
+        "type": "mask",
+        "options": {
+            "window": 64,
             "step": 1,
+            "shuffle": false,
             "save_audio": false
         },
-        "input": {
-            "size": 64,
-            
-            "transform": ["magnitude_normalize"]
-        },
-        "target": {
-            "size": 1,
-            "transform": ["magnitude_mask"]
-        }
+        // "window": {
+        //     "size": 64,
+        //     "step": 32,
+        //     "shuffle": false,
+        //     "save_audio": false
+        // }
     },
     "training": {
         "model": {
@@ -49,28 +49,28 @@
         "loss_function": "mean_absolute_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
-        "load_weights": "False",
+        "load_weights": false,
         "callbacks": {
             "model_checkpoint": {
                 "file_name": "callback_weights.h5",
                 "monitor": "loss",
-                "best_only": "True",
-                "weights_only": "False",
+                "best_only": true,
+                "weights_only": false,
                 "mode": "auto",
-                "period": "1",
-                "verbose": "1"
+                "period": 1,
+                "verbose": 1
             },
             "early_stopping": {
                 "monitor": "loss",
-                "min_delta": "0.000001",
-                "patience": "0.8",
-                "verbose": "1"
+                "min_delta": 0.000001,
+                "patience": 0.8,
+                "verbose": 1
             },
             "reduce_learningrate": {
                 "monitor": "loss",
-                "factor": "0.2",
-                "patience": "5",
-                "min_learningrate": "0.001"
+                "factor": 0.2,
+                "patience": 5,
+                "min_learningrate": 0.001
             },
             "tensorboard": {
                 "folder": "./TensorBoard",

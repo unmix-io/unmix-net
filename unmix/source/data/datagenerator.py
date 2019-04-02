@@ -28,10 +28,9 @@ class DataGenerator(keras.utils.Sequence):
         self.collection = collection
         self.chopper = chopper
         self.normalizer = normalizer
-        self.batch_size = Configuration.get("training.batch_size")
-        self.shuffle = Configuration.get("training.epoch.shuffle")
-        self.shuffle_in_song = Configuration.get(
-            "training.shuffle_chops_in_song")
+        self.batch_size = Configuration.get('training.batch_size')
+        self.shuffle = Configuration.get('training.epoch.shuffle')
+        self.inside_shuffle = Configuration.get('training.inside_shuffle')
         self.on_epoch_end()
 
     def generate_index(self):
@@ -42,7 +41,7 @@ class DataGenerator(keras.utils.Sequence):
                 if self.chopper:
                     batchitems = [BatchItem(song, i)
                                   for i in range(self.chopper.calculate_chops(song.width))]
-                    if(self.shuffle_in_song):
+                    if(self.inside_shuffle):
                         np.random.shuffle(batchitems)
                     self.index = np.append(self.index, batchitems)
                 else:
