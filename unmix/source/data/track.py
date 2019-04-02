@@ -9,13 +9,10 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import gc
 import h5py
 import numpy as np
-from functools import reduce
 
 from unmix.source.exceptions.dataerror import DataError
-import unmix.source.helpers.reducer as reducer
 
 
 class Track(object):
@@ -23,7 +20,6 @@ class Track(object):
     def __init__(self, track_type, height, width, depth, file=None, initilize=False):
         self.type = track_type
         self.initialized = False
-        self.chopped = False
         self.file = file
         self.height = height
         self.width = width
@@ -38,7 +34,7 @@ class Track(object):
             if not data:
                 data = h5py.File(self.file, 'r')
             if not data:
-                raise DataError('?', 'missing data to load')
+                raise DataError('?', "missing data to load")
             self.stereo = data['stereo'].value
             if self.stereo:
                 self.channels = np.array(
@@ -54,8 +50,7 @@ class Track(object):
         if self.initialized:
             return self
         first = tracks[0]
-        if not first.initialized:
-            first.load()
+        first.load()
         self.channels = np.copy(first.channels)
         for track in tracks[1:]:
             track.load()
@@ -63,20 +58,3 @@ class Track(object):
                 self.channels[i] += track.channels[i]
         self.initialized = True
         return self
-
-    def chop(self, chopper, force=False):
-        if self.chopped and not force:
-            return
-        if not self.initialized:
-            self.load()
-        self.chops = np.array([chopper.chop(channel)
-                               for channel in self.channels])
-        self.chops = reducer.rflatter(self.chops.transpose(1, 2, 3, 0, 4))
-        self.chopped = True
-
-    def clean_up(self, clean_chops):
-        if hasattr(self, 'channels'):
-            del self.channels
-        self.channels = []
-        self.initialized = False
-        gc.collect()

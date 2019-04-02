@@ -22,8 +22,7 @@
         "options": {
             "window": 64,
             "step": 1,
-            "shuffle": false,
-            "save_audio": false
+            "shuffle": false
         },
         // "window": {
         //     "size": 64,

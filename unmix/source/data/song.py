@@ -9,12 +9,10 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import gc
 import glob
 import h5py
 import os
 
-from unmix.source.choppers.emptychopper import EmptyChopper
 from unmix.source.data.track import Track
 from unmix.source.exceptions.dataerror import DataError
 
@@ -48,19 +46,11 @@ class Song(object):
         self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
 
-    def load(self, chopper=EmptyChopper(), offset=0):
-        if not self.mix.initialized and not self.mix.chopped:
+    def load(self):
+        if not self.mix.initialized:
             self.mix.mix(self.vocals, self.instrumental) # After this step all tracks are initialized
-        self.mix.chop(chopper)
-        self.vocals.chop(chopper)
-        self.clean_up(False)
-        return self.mix.chops[offset], self.vocals.chops[offset]
+        self.clean_up()
+        return self.mix.channels, self.vocals.channels
 
-    def clean_up(self, clean_chops):
-        self.vocals.clean_up(clean_chops)
-        self.mix.clean_up(clean_chops)
-        if self.instrumental:
-            self.instrumental.clean_up(clean_chops)
-            del self.instrumental
+    def clean_up(self):
         self.instrumental = []
-        gc.collect()

@@ -17,17 +17,15 @@ from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
 from unmix.source.helpers import console
-from unmix.source.helpers import audiohandler
 
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, collection, chopper, normalizer):
+    def __init__(self, collection, transformer):
         'Initialization'
         self.collection = collection
-        self.chopper = chopper
-        self.normalizer = normalizer
+        self.transformer = transformer
         self.batch_size = Configuration.get('training.batch_size')
         self.shuffle = Configuration.get('training.epoch.shuffle')
         self.inside_shuffle = Configuration.get('training.inside_shuffle')
@@ -38,14 +36,10 @@ class DataGenerator(keras.utils.Sequence):
         for file in self.collection:
             try:
                 song = Song(file)
-                if self.chopper:
-                    batchitems = [BatchItem(song, i)
-                                  for i in range(self.chopper.calculate_chops(song.width))]
-                    if(self.inside_shuffle):
-                        np.random.shuffle(batchitems)
-                    self.index = np.append(self.index, batchitems)
-                else:
-                    self.index = np.append(self.index, BatchItem(song, 0))
+                items = [BatchItem(song, i) for i in range(self.transformer.calculate_items(song.width))]
+                if(self.inside_shuffle):
+                    np.random.shuffle(items)
+                self.index = np.append(self.index, items)
             except Exception as e:
                 console.warn(
                     "Skip file while generating index: %s", str(e.args))
@@ -71,26 +65,12 @@ class DataGenerator(keras.utils.Sequence):
         'Generates data containing batch_size samples'
 
         X = []
-        y = []
+        Y = []
 
         for item in subset:
-            mix, vocals = item.load(self.chopper)
-            if Configuration.get('training.save_chops'):
-                audiohandler.spectrogram_to_audio(
-                    '%s-%s_vocals.wav' % (item.song.name, item.offset), vocals)
-                audiohandler.spectrogram_to_audio(
-                    '%s-%s_mix.wav' % (item.song.name, item.offset), mix)
+            mix, vocals = item.load()
+            x, y = self.transformer.run(item.name, mix, vocals, item.index)
+            X.append(x)
+            Y.append(y)
 
-            if self.mask:
-                mix_cut = self.cutter.cut(mix)
-                vocal_cut = self.cutter.cut(vocals)
-
-                mask = masker.mask(mix_cut, vocal_cut)
-
-                X.append(self.normalizer.normalize(mix)[0])
-                y.append(self.normalizer.normalize(vocals)[0])
-            else:
-                X.append(self.normalizer.normalize(mix)[0])
-                y.append(self.normalizer.normalize(vocals)[0])
-
-        return np.array(X), np.array(y)
+        return np.array(X), np.array(Y)

@@ -16,7 +16,7 @@ from unmix.source.configuration import Configuration
 
 def test_configuration_initialize():
     current_path = os.path.dirname(__file__)
-    config_file = os.path.join(os.path.dirname(__file__), 'test.json')
+    config_file = os.path.join(os.path.dirname(__file__), 'test.jsonc')
     Configuration.initialize(config_file, current_path)
     assert Configuration.get("test") == "test-root"
     assert Configuration.get("level1.level2.level3") == "test-level3"

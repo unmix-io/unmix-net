@@ -13,7 +13,6 @@ import os
 import keras.utils
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
-from unmix.source.choppers.chopperfactory import ChopperFactory
 from unmix.source.configuration import Configuration
 from unmix.source.data.datagenerator import DataGenerator
 from unmix.source.data.dataloader import DataLoader
@@ -23,20 +22,16 @@ from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
-from unmix.source.normalizers.normalizerfactory import NormalizerFactory
+from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 
 
 class Engine:
 
     def __init__(self):
+        self.callbacks = CallbacksFactory.build()
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build()
         metrics = MetricsFactory.build()
-        normalizer = NormalizerFactory.build()
-        self.callbacks = CallbacksFactory.build()
-        chopper = ChopperFactory.build()
-
-        training_songs, validation_songs = DataLoader.load()
 
         self.model = ModelFactory.build()
         self.model.compile(loss=loss_function,
@@ -47,10 +42,11 @@ class Engine:
         console.debug("Model initialized with %d parameters." %
                       self.model.count_params())
 
-        self.training_generator = DataGenerator(
-            training_songs, chopper, normalizer)
+        transformer = TransformerFactory.build()
+        training_songs, validation_songs = DataLoader.load()
+        self.training_generator = DataGenerator(training_songs, transformer)
         self.validation_generator = DataGenerator(
-            validation_songs, chopper, normalizer)
+            validation_songs, transformer)
 
     def plot_model(self):
         try:

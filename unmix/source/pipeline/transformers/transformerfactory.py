@@ -25,7 +25,7 @@ class TransformerFactory(object):
         options = Configuration.get('transformation.options', False)
         try:
             if name == MaskTransformer.NAME:
-                return MaskTransformer(options.window, options.step, options.shuffle, options.save_audio)
+                return MaskTransformer(options.window, options.step, options.shuffle)
             if name == WindowTransformer.NAME:
                 return WindowTransformer(options.size, options.step, options.shuffle, options.save_audio)
         except:

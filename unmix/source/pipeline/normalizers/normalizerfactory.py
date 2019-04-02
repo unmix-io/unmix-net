@@ -7,8 +7,8 @@ Builds a normalizer from configuration.
 
 from unmix.source.configuration import Configuration
 from unmix.source.exceptions.configurationerror import ConfigurationError
-from unmix.source.normalizers import normalizer_abs
-from unmix.source.normalizers import normalizer_real_imag
+from unmix.source.pipeline.normalizers import normalizer_abs
+from unmix.source.pipeline.normalizers import normalizer_real_imag
 
 normalizers = [ normalizer_abs, normalizer_real_imag ]
 

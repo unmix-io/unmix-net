@@ -9,14 +9,12 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-from unmix.source.choppers.emptychopper import EmptyChopper
-
-
 class BatchItem(object):
 
-    def __init__(self, song, offset):
+    def __init__(self, song, index):
         self.song = song
-        self.offset = offset
+        self.index = index
+        self.name = '%s-%i' % (song.name, index)
 
-    def load(self, chopper=EmptyChopper()):
-        return self.song.load(chopper, self.offset)
+    def load(self):
+        return self.song.load()

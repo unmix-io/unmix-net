@@ -11,5 +11,5 @@
     "int_explicit": "int(12)",
     "bool_implicit": "True",
     "bool_explicit": "str2bool('true')",
-    "path": "..\\test.json"
+    "path": "..\\test.json" // This is a comment
 }

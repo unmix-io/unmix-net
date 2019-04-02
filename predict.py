@@ -18,7 +18,7 @@ import time
 from unmix.source.choppers.chopperfactory import ChopperFactory
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import console
-from unmix.source.normalizers.normalizerfactory import NormalizerFactory
+from unmix.source.pipeline.normalizers.normalizerfactory import NormalizerFactory
 from unmix.source.engine import Engine
 
 

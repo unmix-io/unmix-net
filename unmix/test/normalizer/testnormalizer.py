@@ -11,7 +11,7 @@ __email__ = "info@unmix.io"
 
 import numpy as np
 
-from unmix.source.normalizers import normalizer
+from unmix.source.pipeline.normalizers import normalizer
 
 
 def test_normalize_denormalize():
