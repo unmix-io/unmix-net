@@ -68,9 +68,9 @@ if __name__ == "__main__":
         realimag[:, :, 0] = np.real(c)
         realimag[:, :, 1] = np.imag(c)
 
-        normalized = normalizer.normalize(realimag)
+        normalized, normalizer_info = normalizer.normalize(realimag)
         predicted = engine.predict(np.array([normalized]))[0]
-        predicted = normalizer.denormalize(predicted, c)
+        predicted = normalizer.denormalize(predicted, c, normalizer_info)
         predictions[:, chopshape[1] * i : (chopshape[1] * (i + 1))] = predicted
 
     # Convert back to wav audio file

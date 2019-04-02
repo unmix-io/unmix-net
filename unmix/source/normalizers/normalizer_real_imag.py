@@ -26,20 +26,24 @@ def normalize(realimag):
 
     if(percentile99 > 0):
         magnitude = magnitude / (percentile99 / 2)
+    
     magnitude = magnitude - 1
+    magnitude = np.reshape(magnitude, magnitude.shape + (1,))
+    return magnitude, (percentile99,)
 
-    return np.reshape(magnitude, magnitude.shape + (1,))
-
-def denormalize(magnitude_predicted, mix_complex):
+def denormalize(magnitude_predicted, mix_complex, normalizer_info):
     'Returns denormalized values as array of complex values (sft)'
+    percentile99 = normalizer_info[0]
     denorm = np.reshape(magnitude_predicted, magnitude_predicted.shape[0:2])
-
+    
     # Shift values to original space and clip values below zero
     denorm = denorm + 1
-    denorm = denorm.clip(0)
     
-    # Amplitude values cannot be higher than those in original mix amplitudes - take max values
-    denorm = np.minimum(denorm, np.abs(mix_complex))
+    print(np.max(denorm))
+    print("min: " + str(np.min(denorm)))
+    
+    denorm = denorm.clip(0)
+    denorm = denorm * (percentile99 / 2)
 
     denorm = denorm * np.exp( np.angle(mix_complex) * 1j )
     return denorm
