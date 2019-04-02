@@ -76,8 +76,8 @@ class DataGenerator(keras.utils.Sequence):
         for item in subset:
             mix, vocals = item.load(self.choppers)
             if Configuration.get('training.save_chops'):
-                audiohandler.spectrogram_to_audio(f'{item.song.name}-{item.offset}_vocals.wav', vocals)
-                audiohandler.spectrogram_to_audio(f'{item.song.name}-{item.offset}_mix.wav', mix)
+                audiohandler.spectrogram_to_audio('%s-%s_vocals.wav' % (item.song.name, item.offset), vocals)
+                audiohandler.spectrogram_to_audio('%s-%s_mix.wav' % (item.song.name, item.offset), mix)
             X.append(self.normalizer.normalize(mix)[0])
             y.append(self.normalizer.normalize(vocals)[0])
 
