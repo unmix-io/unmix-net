@@ -18,19 +18,13 @@
         }
     },
     "transformation": {
-        "name": "mask",
+        "name": "window",
         "options": {
-            "window": 64,
-            "step": 1,
-            "shuffle": false
-        }        
-        // "name": "window",
-        // "options": {
-    	//     "size": 64,
-        //     "step": 32,
-        //     "shuffle": true,
-        //     "save_audio": true
-        // }
+    	    "size": 64,
+            "step": 32,
+            "shuffle": true,
+            "save_audio": true
+        }
     },
     "training": {
         "model": {
@@ -42,7 +36,7 @@
         "batch_size": 8,
         "epoch": {
             "count": 10,
-            "shuffle": false
+            "shuffle": true
         },
         "verbose": 1,
         "loss_function": "mean_absolute_error",

@@ -28,7 +28,6 @@ class DataGenerator(keras.utils.Sequence):
         self.transformer = transformer
         self.batch_size = Configuration.get('training.batch_size')
         self.shuffle = Configuration.get('training.epoch.shuffle')
-        self.inside_shuffle = Configuration.get('training.inside_shuffle')
         self.on_epoch_end()
 
     def generate_index(self):
@@ -37,7 +36,7 @@ class DataGenerator(keras.utils.Sequence):
             try:
                 song = Song(file)
                 items = [BatchItem(song, i) for i in range(self.transformer.calculate_items(song.width))]
-                if(self.inside_shuffle):
+                if(self.transformer.shuffle):
                     np.random.shuffle(items)
                 self.index = np.append(self.index, items)
             except Exception as e:

@@ -10,15 +10,15 @@ __email__ = "info@unmix.io"
 
 
 import commentjson
+from collections import namedtuple
 import os
 import json
-from collections import namedtuple
 
-from unmix.source.helpers import reducer
-from unmix.source.helpers import converter
-from unmix.source.helpers import environmentvariables
 from unmix.source.exceptions.configurationerror import ConfigurationError
-
+from unmix.source.helpers import converter
+from unmix.source.helpers import console
+from unmix.source.helpers import environmentvariables
+from unmix.source.helpers import reducer
 
 
 class Configuration(object):
@@ -30,9 +30,12 @@ class Configuration(object):
         global configuration
         Configuration.working_directory = working_directory if working_directory else os.getcwd()
         environmentvariables.set_environment_variables(extend=True)
+        if not configuration_file:
+            configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')
+            console.info("Read configuration from environment variable: %s." % configuration_file)
         with open(Configuration.build_path(configuration_file), 'r') as f:
-            configuration = commentjson.load(f, object_hook=lambda d: namedtuple(
-                'X', d.keys())(*map(lambda x: converter.try_eval(x), d.values())))
+            configuration = commentjson.load(f, object_hook=lambda d: namedtuple('X', d.keys())
+                                (*map(lambda x: converter.try_eval(x), d.values())))
         return configuration
 
     @staticmethod

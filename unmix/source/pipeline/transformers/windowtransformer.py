@@ -28,16 +28,13 @@ class WindowTransformer:
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
-
         input = self.chopper.get_chop(vocals, index, self.size)
         target = self.chopper.get_chop(mix, index, self.size)
 
         if self.save_audio:
-            audiohandler.spectrogram_to_audio(
-                '%s-%s_mix.wav' % name, input)
-            audiohandler.spectrogram_to_audio(
-                '%s_vocals.wav' % name, target)
-
+            audiohandler.spectrogram_to_audio('%s_mix.wav' % name, input)
+            audiohandler.spectrogram_to_audio('%s_vocals.wav' % name, target)
+        
         return normalizer.normalize(input), normalizer.normalize(target)
 
     def calculate_items(self, width):

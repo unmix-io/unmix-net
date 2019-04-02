@@ -35,7 +35,7 @@ def test_right_1_1d():
     cutter = Cutter(Cutter.POSITION_RIGHT, 1)
     cut = cutter.cut(input)
     assert len(cut) == 1
-    assert cut[0] == input[-1:]
+    assert cut[0] == input[-1]
 
 
 def test_right_1_2d():
@@ -43,7 +43,7 @@ def test_right_1_2d():
     cutter = Cutter(Cutter.POSITION_RIGHT, 1)
     cut = cutter.cut(input)
     assert cut.shape[1] == 1
-    assert cut[0][0] == input[0][-1:]
+    assert cut[0][0] == input[0][-1]
 
 
 def test_center_1_1d():

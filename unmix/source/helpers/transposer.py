@@ -18,3 +18,6 @@ def pre_transpose(input):
 
 def post_transpose(input):
    return input.transpose(*POST_TRANSPOSE_DIMENSIONS[len(input.shape) - 1])
+
+def pre_post_transpose(input, func):
+   return post_transpose(func(pre_transpose(input)))
