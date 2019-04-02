@@ -18,7 +18,7 @@
         }
     },
     "transformation": {
-        "type": "mask",
+        "name": "mask",
         "options": {
             "window": 64,
             "step": 1,
