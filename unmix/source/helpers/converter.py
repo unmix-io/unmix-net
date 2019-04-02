@@ -9,8 +9,11 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import os
 import datetime
+import os
+import time
+import librosa
+import numpy as np
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 
@@ -39,6 +42,10 @@ def str2bool(value):
 
 def get_timestamp():
     return datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+
+
+def elapsed_since(start, format="%H:%M:%S"):
+    return time.strftime(format, time.gmtime(time.time() - start))
 
 
 def env(key):

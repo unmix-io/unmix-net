@@ -55,7 +55,6 @@ class Song(object):
         self.clean_up(False)
         return self.mix.chops[offset], self.vocals.chops[offset]
 
-
     def clean_up(self, clean_chops):
         self.vocals.clean_up(clean_chops)
         self.mix.clean_up(clean_chops)

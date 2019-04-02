@@ -35,27 +35,28 @@ class Track(object):
         if self.initialized and not force:
             return self
         try:
-            if not data:            
+            if not data:
                 data = h5py.File(self.file, 'r')
             if not data:
                 raise DataError('?', 'missing data to load')
             self.stereo = data['stereo'].value
             if self.stereo:
-                self.channels = np.array([data['spectrogram_left'].value, data['spectrogram_right'].value])
+                self.channels = np.array(
+                    [data['spectrogram_left'].value, data['spectrogram_right'].value])
             else:
                 self.channels = np.array([data['spectrogram'].value])
             self.initialized = True
             return self
-        except Exception as e:            
+        except Exception as e:
             raise DataError(self.file, str(e))
 
-    def mix(self, force=False, *tracks):
-        if self.initialized and not force:
+    def mix(self, *tracks):
+        if self.initialized:
             return self
         first = tracks[0]
         if not first.initialized:
             first.load()
-        self.channels = first.channels
+        self.channels = np.copy(first.channels)
         for track in tracks[1:]:
             track.load()
             for i in range(len(self.channels)):
@@ -68,9 +69,9 @@ class Track(object):
             return
         if not self.initialized:
             self.load()
-        self.chops = np.array([reduce((lambda input, chopper: chopper.chop(input)), [channel]  + choppers if choppers else [])
-                            for channel in self.channels])
-        self.chops = reducer.rflatter(self.chops.transpose(1,2,3,0,4))
+        self.chops = np.array([reduce((lambda input, chopper: chopper.chop(input)), [channel] + choppers if choppers else [])
+                               for channel in self.channels])
+        self.chops = reducer.rflatter(self.chops.transpose(1, 2, 3, 0, 4))
         self.chopped = True
 
     def clean_up(self, clean_chops):

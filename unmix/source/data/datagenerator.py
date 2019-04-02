@@ -17,6 +17,8 @@ from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
 from unmix.source.helpers import console
+from unmix.source.helpers import audiohandler
+from unmix.source.helpers.memorymonitor import track
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -30,7 +32,6 @@ class DataGenerator(keras.utils.Sequence):
         self.batch_size = Configuration.get("training.batch_size")
         self.shuffle = Configuration.get("training.epoch.shuffle")
         self.shuffle_in_song = Configuration.get("training.shuffle_chops_in_song")
-
         self.on_epoch_end()
 
     def generate_index(self):
@@ -74,7 +75,10 @@ class DataGenerator(keras.utils.Sequence):
         y = []
 
         for item in subset:
-            mix, vocals = item.song.load(self.choppers, item.offset)
+            mix, vocals = item.load(self.choppers)
+            if Configuration.get('training.save_chops'):
+                audiohandler.save_spectrogram(f'{item.song.name}-{item.offset}_vocals.wav', vocals)
+                audiohandler.save_spectrogram(f'{item.song.name}-{item.offset}_mix.wav', mix)
             X.append(self.normalizer.normalize(mix))
             y.append(self.normalizer.normalize(vocals))
 

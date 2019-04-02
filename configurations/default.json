@@ -6,6 +6,7 @@
             "file": "weights.h5"
         },
         "log_folder": "logs",
+        "temp_folder": "temp",
         "summary_line_length": "150",
         "model_plot_folder": "models"
     },
@@ -22,6 +23,7 @@
             "count": "10",
             "shuffle": "False"
         },
+        "save_chops": "True",
         "shuffle_chops_in_song": "True",
         "verbose": "1",
         "loss_function": "mean_absolute_error",
@@ -32,7 +34,7 @@
             "horizontal": {
                 "direction": "horizontal",
                 "mode": "split",
-                "size": "64"           
+                "size": "64"
             }
         },
         "cutter": {

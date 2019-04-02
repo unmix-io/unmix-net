@@ -47,8 +47,10 @@ class Engine:
         console.debug("Model initialized with %d parameters." %
                       self.model.count_params())
 
-        self.training_generator = DataGenerator(training_songs, choppers, normalizer)
-        self.validation_generator = DataGenerator(validation_songs, choppers, normalizer)
+        self.training_generator = DataGenerator(
+            training_songs, choppers, normalizer)
+        self.validation_generator = DataGenerator(
+            validation_songs, choppers, normalizer)
 
     def plot_model(self):
         try:
@@ -85,7 +87,8 @@ class Engine:
         self.model.save_weights(path, overwrite=True)
 
     def load_weights(self, path=None):
-        if not path:            
-            path = os.path.join(Configuration.get_path('environment.weights.folder'), Configuration.get('environment.weights.file'))
+        if not path:
+            path = os.path.join(Configuration.get_path(
+                'environment.weights.folder'), Configuration.get('environment.weights.file'))
         console.info("Load weights from: %s" % path)
         self.model.load_weights(path)

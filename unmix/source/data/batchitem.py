@@ -14,3 +14,6 @@ class BatchItem(object):
     def __init__(self, song, offset):
         self.song = song
         self.offset = offset
+
+    def load(self, choppers=[]):
+        return self.song.load(choppers, self.offset)
