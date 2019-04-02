@@ -23,7 +23,7 @@
             "count": "10",
             "shuffle": "False"
         },
-        "save_chops": "True",
+        "save_chops": "False",
         "shuffle_chops_in_song": "True",
         "verbose": "1",
         "loss_function": "mean_absolute_error",
