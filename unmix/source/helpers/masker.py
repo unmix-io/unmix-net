@@ -13,4 +13,4 @@ import numpy as np
 
 
 def mask(a, b, position=0):
-    return np.clip(a / b, 0, 1)
+    return np.clip(np.divide(a, b, out=np.zeros_like(a), where=b != 0), 0, 1)

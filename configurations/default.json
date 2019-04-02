@@ -7,41 +7,49 @@
         },
         "log_folder": "logs",
         "temp_folder": "temp",
-        "summary_line_length": "150",
+        "summary_line_length": 150,
         "model_plot_folder": "models"
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "validation": {
-            "ratio": "0.2",
+            "ratio": 0.2,
             "mode": "first"
         }
     },
-    "training": {
-        "batch_size": "8",
-        "epoch": {
-            "count": "10",
-            "shuffle": "False"
+    "pipeline": {
+        "chop": {
+            "step": 1,
+            "save_audio": false
         },
-        "save_chops": "False",
-        "shuffle_chops_in_song": "True",
-        "verbose": "1",
+        "input": {
+            "size": 64,
+            
+            "transform": ["magnitude_normalize"]
+        },
+        "target": {
+            "size": 1,
+            "transform": ["magnitude_mask"]
+        }
+    },
+    "training": {
+        "model": {
+            "name": "leakyrelu",
+            "alpha1": 0.1,
+            "alpha2": 0.01,
+            "rate": 0.1
+        },
+        "batch_size": 8,
+        "epoch": {
+            "count": 10,
+            "shuffle": false
+        },
+        "shuffle_chops_in_song": true,
+        "verbose": 1,
         "loss_function": "mean_absolute_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": "False",
-        "chopper": {
-            "direction": "horizontal",
-            "mode": "overlap",
-            "size": "64"
-        },
-        "cutter": {
-            "position": "center",
-            "size": "1"
-        },
-        "normalizer": {
-            "name": "normalizer_real_imag"
-        },
         "callbacks": {
             "model_checkpoint": {
                 "file_name": "callback_weights.h5",
@@ -73,12 +81,6 @@
                 "embeddings_freq": 0,
                 "update_freq": "batch"
             }
-        },
-        "model": {
-            "name": "leakyrelu",
-            "alpha1": "0.1",
-            "alpha2": "0.01",
-            "rate": "0.1"
         }
     }
 }

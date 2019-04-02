@@ -81,7 +81,17 @@ class DataGenerator(keras.utils.Sequence):
                     '%s-%s_vocals.wav' % (item.song.name, item.offset), vocals)
                 audiohandler.spectrogram_to_audio(
                     '%s-%s_mix.wav' % (item.song.name, item.offset), mix)
-            X.append(self.normalizer.normalize(mix)[0])
-            y.append(self.normalizer.normalize(vocals)[0])
+
+            if self.mask:
+                mix_cut = self.cutter.cut(mix)
+                vocal_cut = self.cutter.cut(vocals)
+
+                mask = masker.mask(mix_cut, vocal_cut)
+
+                X.append(self.normalizer.normalize(mix)[0])
+                y.append(self.normalizer.normalize(vocals)[0])
+            else:
+                X.append(self.normalizer.normalize(mix)[0])
+                y.append(self.normalizer.normalize(vocals)[0])
 
         return np.array(X), np.array(y)

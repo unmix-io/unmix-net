@@ -59,7 +59,7 @@ class Song(object):
     def clean_up(self, clean_chops):
         self.vocals.clean_up(clean_chops)
         self.mix.clean_up(clean_chops)
-        if hasattr(self, 'instrumental') and self.instrumental:
+        if self.instrumental:
             self.instrumental.clean_up(clean_chops)
             del self.instrumental
         self.instrumental = []
