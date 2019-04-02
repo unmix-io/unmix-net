@@ -15,7 +15,7 @@ name = 'unmix'
 
 def generate(alpha1, alpha2, rate, channels=2):
     
-    input_shape = (769, 64, 2)
+    input_shape = (769, 64, 1)
 
     model = Sequential()
     model.add(ZeroPadding2D(((1, 0), (0, 0)), input_shape=input_shape))
@@ -31,7 +31,7 @@ def generate(alpha1, alpha2, rate, channels=2):
 
     #model.add(UpSampling2D((2, 2)))
     model.add(UpSampling2D((2, 2)))
-    model.add(Dense(2))
+    model.add(Dense(1))
     model.add(Cropping2D(((1,0), (0,0))))
 
     return model
