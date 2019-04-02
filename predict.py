@@ -81,4 +81,4 @@ if __name__ == "__main__":
 
     end = time.time()
 
-    console.info("Finished processing in %d [ms]." % (end - start))
+    console.info("Finished processing in %d [s]." % (end - start))
