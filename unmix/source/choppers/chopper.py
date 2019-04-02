@@ -66,7 +66,7 @@ class Chopper:
         return chops
 
     def set_inner_shape(self, chops):
-        if chops and len(chops) > 0:
+        if chops.any():
             self.inner_shape = chops[0].shape
 
     def calculate_chops(self, width):
