@@ -22,10 +22,9 @@ class MaskTransformer:
 
     NAME = "mask"
 
-    def __init__(self, size, step, shuffle, save_audio):
+    def __init__(self, size, step, shuffle):
         self.size = size
         self.shuffle = shuffle
-        self.save_audio = save_audio
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
@@ -34,8 +33,11 @@ class MaskTransformer:
         # Calculate mask
         mask_index = self.get_mask_index(index)
         mix_slice = reducer.rflatter(self.chopper.get_chop(mix, mask_index, self.size))
+        mix_magnitude = self.get_magnitude(mix_slice)
         vocal_slice = reducer.rflatter(self.chopper.get_chop(vocals, mask_index, self.size))
-        target_mask = mask(vocal_slice, mix_slice)
+        vocal_magnitude = self.get_magnitude(vocal_slice)
+        target_mask = mask(vocal_magnitude, mix_magnitude)
+        target_mask = np.reshape(target_mask, target_mask.shape + (1,))
 
         return normalizer.normalize(input)[0], target_mask
 
@@ -54,3 +56,10 @@ class MaskTransformer:
 
     def get_mask_index(self, index):
          return index + int(self.size/2)
+
+    def get_magnitude(self, realimag):
+        real = realimag[:, :, 0]
+        imag = realimag[:, :, 1]
+        cplx = real + imag * 1j
+
+        return np.abs(cplx)
