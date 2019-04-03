@@ -12,5 +12,5 @@ __email__ = "info@unmix.io"
 import numpy as np
 
 
-def mask(a, b, position=0):
+def mask(a, b):
     return np.clip(np.divide(a, b, out=np.zeros_like(a), where=b != 0), 0, 1)
