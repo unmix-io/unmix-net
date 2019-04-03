@@ -51,6 +51,7 @@ class DataGenerator(keras.utils.Sequence):
         'Generate one batch of data'
         subset = self.index[i*self.batch_size:(i+1)*self.batch_size]
         X, y = self.__data_generation(subset)
+        # clear already used items from index to free up memory after a song has been used
         self.index[i*self.batch_size:(i+1)*self.batch_size] = None
         return X, y
 

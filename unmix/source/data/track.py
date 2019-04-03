@@ -27,8 +27,8 @@ class Track(object):
         if initilize:
             self.load
 
-    def load(self, data=None, force=False):
-        if self.initialized and not force:
+    def load(self, data=None, force_reload=False):
+        if self.initialized and not force_reload:
             return self
         try:
             if not data:
