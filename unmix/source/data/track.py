@@ -17,14 +17,14 @@ from unmix.source.exceptions.dataerror import DataError
 
 class Track(object):
 
-    def __init__(self, track_type, height, width, depth, file=None, initilize=False):
+    def __init__(self, track_type, height, width, depth, file=None, initialize=False):
         self.type = track_type
         self.initialized = False
         self.file = file
         self.height = height
         self.width = width
         self.depth = depth
-        if initilize:
+        if initialize:
             self.load
 
     def load(self, data=None, force_reload=False):
