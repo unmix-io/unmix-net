@@ -11,6 +11,7 @@ __email__ = "info@unmix.io"
 
 import os
 import keras.utils
+import numpy as np
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
@@ -42,11 +43,8 @@ class Engine:
         console.debug("Model initialized with %d parameters." %
                       self.model.count_params())
 
-        transformer = TransformerFactory.build()
-        training_songs, validation_songs = DataLoader.load()
-        self.training_generator = DataGenerator(training_songs, transformer)
-        self.validation_generator = DataGenerator(
-            validation_songs, transformer)
+        self.transformer = TransformerFactory.build()
+        
 
     def plot_model(self):
         try:
@@ -60,6 +58,11 @@ class Engine:
             console.error("Error while plotting model: %s." % str(e))
 
     def train(self, epoch_start=0):
+        training_songs, validation_songs = DataLoader.load()
+        self.training_generator = DataGenerator(training_songs, self.transformer)
+        self.validation_generator = DataGenerator(
+            validation_songs, self.transformer)
+        
         epoch_count = Configuration.get('training.epoch.count')
         history = self.model.fit_generator(
             generator=self.training_generator,
@@ -72,9 +75,21 @@ class Engine:
         self.save_weights()
         return history
 
-    def predict(self, data):
-        y = self.model.predict(data)
-        return y
+    def predict(self, mix):
+
+        length = self.transformer.calculate_items(mix.shape[1])
+        predictions = []
+
+        for i in range(length):
+            input, transform_info = self.transformer.prepare_input(mix, i)
+            predicted = self.model.predict(np.array([input]))[0]
+            predicted = self.transformer.untransform_target(mix, predicted, i, transform_info)
+            if predictions == []: # At this point, we know the shape of our predictions array - initialize
+                shape = predicted.shape
+                predictions = np.empty((shape[0], shape[1] * length))
+            predictions[:, shape[1] * i : shape[1] * (i+1)] = predicted
+        
+        return predictions
 
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
