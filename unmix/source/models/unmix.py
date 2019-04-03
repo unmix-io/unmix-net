@@ -5,7 +5,7 @@
 Keras model for training using the unmix.io architecture.
 """
 
-from keras.layers import Dropout, Conv2D, MaxPooling2D, Flatten, Dense, UpSampling2D, ZeroPadding2D, Cropping2D
+from keras.layers import Dropout, Conv2D, MaxPooling2D, Flatten, Dense, UpSampling2D, ZeroPadding2D, Cropping2D, Reshape
 from keras.models import Sequential
 
 from unmix.source.configuration import Configuration
@@ -31,7 +31,9 @@ def generate(alpha1, alpha2, rate, channels=2):
 
     #model.add(UpSampling2D((2, 2)))
     model.add(UpSampling2D((2, 2)))
-    model.add(Dense(1))
     model.add(Cropping2D(((1,0), (0,0))))
+    model.add(Dense(1, activation='relu'))
+    model.add(Reshape((input_shape[0], 1, input_shape[1])))
+    model.add(Dense(1))
 
     return model

@@ -24,6 +24,7 @@ class MaskTransformer:
 
     def __init__(self, size, step, shuffle):
         self.size = size
+        self.step = step
         self.shuffle = shuffle
         self.chopper = Chopper(step)
 
@@ -31,11 +32,11 @@ class MaskTransformer:
         input = reducer.rflatter(self.chopper.get_chop(mix, index, self.size))
 
         # Calculate mask
-        mask_index = self.get_mask_index(index)
-        mix_slice = reducer.rflatter(self.chopper.get_chop(mix, mask_index, self.size))
-        mix_magnitude = self.get_magnitude(mix_slice)
-        vocal_slice = reducer.rflatter(self.chopper.get_chop(vocals, mask_index, self.size))
-        vocal_magnitude = self.get_magnitude(vocal_slice)
+        mask_index = self.__get_mask_index(index)
+        mix_slice = reducer.rflatter(self.chopper.get_chop(mix, mask_index, self.step))
+        mix_magnitude = np.abs(self.__get_complex(mix_slice))
+        vocal_slice = reducer.rflatter(self.chopper.get_chop(vocals, mask_index, self.step))
+        vocal_magnitude = np.abs(self.__get_complex(vocal_slice))
         target_mask = mask(vocal_magnitude, mix_magnitude)
         target_mask = np.reshape(target_mask, target_mask.shape + (1,))
 
@@ -51,15 +52,18 @@ class MaskTransformer:
 
     def untransform_target(self, mix, predicted_mask, index, transform_info):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
-        mix_slice = self.chopper.get_chop(mix, self.get_mask_index(index), self.size)
-        return mix_slice * predicted_mask
+        mix_slice = self.chopper.get_chop(mix, self.__get_mask_index(index), self.step)
+        mix_complex = self.__get_complex(mix_slice)
+        mix_magnitude = np.abs(mix_complex)
+        vocal_magnitude = mix_magnitude * predicted_mask
+        vocals = vocal_magnitude * np.exp( np.angle(mix_complex) * 1j )
 
-    def get_mask_index(self, index):
+        return vocals
+
+    def __get_mask_index(self, index):
          return index + int(self.size/2)
 
-    def get_magnitude(self, realimag):
+    def __get_complex(self, realimag):
         real = realimag[:, :, 0]
         imag = realimag[:, :, 1]
-        cplx = real + imag * 1j
-
-        return np.abs(cplx)
+        return real + imag * 1j
