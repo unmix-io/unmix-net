@@ -11,9 +11,9 @@ __email__ = "info@unmix.io"
 
 import h5py
 import numpy as np
+from threading import Lock
 
 from unmix.source.exceptions.dataerror import DataError
-
 
 class Track(object):
 
@@ -24,10 +24,12 @@ class Track(object):
         self.height = height
         self.width = width
         self.depth = depth
+        self.mutex = Lock()
         if initialize:
             self.load
 
     def load(self, data=None, force_reload=False):
+        self.mutex.acquire() # make sure only one thread loads the file
         if self.initialized and not force_reload:
             return self
         try:
@@ -45,8 +47,11 @@ class Track(object):
             return self
         except Exception as e:
             raise DataError(self.file, str(e))
+        finally:
+            self.mutex.release()
 
     def mix(self, *tracks):
+        self.mutex.acquire()
         if self.initialized:
             return self
         first = tracks[0]
@@ -57,4 +62,5 @@ class Track(object):
             for i in range(len(self.channels)):
                 self.channels[i] += track.channels[i]
         self.initialized = True
+        self.mutex.release()
         return self
