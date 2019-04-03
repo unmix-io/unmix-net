@@ -70,6 +70,7 @@ class Engine:
             initial_epoch=epoch_start,
             epochs=epoch_start + epoch_count,
             shuffle=False,
+            max_queue_size=4,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
         self.save_weights()

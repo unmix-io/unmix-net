@@ -17,7 +17,7 @@ from unmix.source.exceptions.dataerror import DataError
 
 class Track(object):
 
-    def __init__(self, track_type, height, width, depth, file=None, initialize=False):
+    def __init__(self, track_type, height, width, depth, file=None):
         self.type = track_type
         self.initialized = False
         self.file = file
@@ -25,8 +25,6 @@ class Track(object):
         self.width = width
         self.depth = depth
         self.mutex = Lock()
-        if initialize:
-            self.load
 
     def load(self, data=None, force_reload=False):
         self.mutex.acquire() # make sure only one thread loads the file
