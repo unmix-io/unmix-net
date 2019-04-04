@@ -11,6 +11,7 @@ from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.models import acapellabot as AcapellaBotModel
 from unmix.source.models import leakyrelu as LeakyReLUModel
 from unmix.source.models import unmix as UnmixModel
+from unmix.source.models import mask as MaskModel
 from unmix.source.models import dummy as DummyModel
 
 class ModelFactory(object):
@@ -25,6 +26,8 @@ class ModelFactory(object):
                 return AcapellaBotModel.generate(0)
             elif model.name.lower() == UnmixModel.name:
                 return UnmixModel.generate(model.alpha1, model.alpha2, model.rate)
+            elif model.name.lower() == MaskModel.name:
+                return MaskModel.generate(model.alpha1, model.alpha2, model.rate)
             elif model.name.lower() == DummyModel.name:
                 return DummyModel.generate(model.alpha1, model.alpha2, model.rate)
         raise ConfigurationError('training.model.name')

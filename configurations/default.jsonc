@@ -20,21 +20,15 @@
     "transformation": {
         "name": "mask",
         "options": {
-            "window": 64,
+    	    "size": 64,
             "step": 1,
-            "shuffle": false
-        }        
-        // "name": "window",
-        // "options": {
-    	//     "size": 64,
-        //     "step": 32,
-        //     "shuffle": true,
-        //     "save_audio": true
-        // }
+            "shuffle": false,
+            "save_audio": false
+        }
     },
     "training": {
         "model": {
-            "name": "leakyrelu",
+            "name": "mask",
             "alpha1": 0.1,
             "alpha2": 0.01,
             "rate": 0.1
@@ -42,7 +36,7 @@
         "batch_size": 8,
         "epoch": {
             "count": 10,
-            "shuffle": false
+            "shuffle": true
         },
         "verbose": 1,
         "loss_function": "mean_absolute_error",
@@ -58,28 +52,28 @@
                 "mode": "auto",
                 "period": 1,
                 "verbose": 1
-            },
-            "early_stopping": {
-                "monitor": "loss",
-                "min_delta": 0.000001,
-                "patience": 0.8,
-                "verbose": 1
-            },
-            "reduce_learningrate": {
-                "monitor": "loss",
-                "factor": 0.2,
-                "patience": 5,
-                "min_learningrate": 0.001
-            },
-            "tensorboard": {
-                "folder": "./TensorBoard",
-                "histogram_freq": 0,
-                "write_graph": true,
-                "write_grads": false,
-                "write_images": false,
-                "embeddings_freq": 0,
-                "update_freq": "batch"
             }
+            // "early_stopping": {
+            //     "monitor": "loss",
+            //     "min_delta": 0.000001,
+            //     "patience": 0.8,
+            //     "verbose": 1
+            // },
+            // "reduce_learningrate": {
+            //     "monitor": "loss",
+            //     "factor": 0.2,
+            //     "patience": 5,
+            //     "min_learningrate": 0.001
+            // },
+            // "tensorboard": {
+            //     "folder": "./TensorBoard",
+            //     "histogram_freq": 0,
+            //     "write_graph": true,
+            //     "write_grads": false,
+            //     "write_images": false,
+            //     "embeddings_freq": 0,
+            //     "update_freq": "batch"
+            // }
         }
     }
 }

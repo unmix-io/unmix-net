@@ -29,6 +29,7 @@ class MaskTransformer:
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
+        'Returns shapes (769,size,1), (769,step,1)'
         input = self.chopper.chop_n_pad(mix[0], index, self.size)
 
         # Calculate mask
