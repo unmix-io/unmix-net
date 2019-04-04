@@ -26,11 +26,11 @@ class Track(object):
         self.depth = depth
         self.mutex = Lock()
 
-    def load(self, data=None, force_reload=False):
+    def load(self, data=None):
         self.mutex.acquire() # make sure only one thread loads the file
-        if self.initialized and not force_reload:
-            return self
         try:
+            if self.initialized:
+                return self
             if not data:
                 data = h5py.File(self.file, 'r')
             if not data:
@@ -50,15 +50,17 @@ class Track(object):
 
     def mix(self, *tracks):
         self.mutex.acquire()
-        if self.initialized:
+        try:
+            if self.initialized:
+                return self
+            first = tracks[0]
+            first.load()
+            self.channels = np.copy(first.channels)
+            for track in tracks[1:]:
+                track.load()
+                for i in range(len(self.channels)):
+                    self.channels[i] += track.channels[i]
+            self.initialized = True
             return self
-        first = tracks[0]
-        first.load()
-        self.channels = np.copy(first.channels)
-        for track in tracks[1:]:
-            track.load()
-            for i in range(len(self.channels)):
-                self.channels[i] += track.channels[i]
-        self.initialized = True
-        self.mutex.release()
-        return self
+        finally:
+            self.mutex.release()

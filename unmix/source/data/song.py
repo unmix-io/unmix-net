@@ -49,7 +49,7 @@ class Song(object):
     def load(self):
         if not self.mix.initialized:
             self.mix.mix(self.vocals, self.instrumental) # After this step all tracks are initialized
-        self.clean_up()
+            self.clean_up()
         return self.mix.channels, self.vocals.channels
 
     def clean_up(self):
