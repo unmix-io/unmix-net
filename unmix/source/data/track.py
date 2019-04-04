@@ -38,9 +38,9 @@ class Track(object):
             self.stereo = data['stereo'].value
             if self.stereo:
                 self.channels = np.array(
-                    [data['spectrogram_left'].value, data['spectrogram_right'].value])
+                    [self.to_complex(data['spectrogram_left'].value), self.to_complex(data['spectrogram_right'].value)])
             else:
-                self.channels = np.array([data['spectrogram'].value])
+                self.channels = np.array([self.to_complex(data['spectrogram'].value)])
             self.initialized = True
             return self
         except Exception as e:
@@ -64,3 +64,9 @@ class Track(object):
             return self
         finally:
             self.mutex.release()
+
+    def to_complex(self, realimag):
+        'Converts the real-imag array of the training values to complex values'
+        real = realimag[:, :, 0]
+        imag = realimag[:, :, 1]
+        return real + imag * 1j

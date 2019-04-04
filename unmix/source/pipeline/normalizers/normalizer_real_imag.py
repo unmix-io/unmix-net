@@ -14,11 +14,8 @@ import math
 
 name = 'normalizer_real_imag'
 
-def normalize(realimag):
+def normalize(cplx):
     'Normalizes training data to use only amplitudes'
-    real = realimag[:, :, 0]
-    imag = realimag[:, :, 1]
-    cplx = real + imag * 1j
 
     magnitude = np.abs(cplx)
     percentile99 = np.percentile(magnitude, 99)
