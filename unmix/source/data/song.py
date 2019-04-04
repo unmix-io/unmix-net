@@ -42,13 +42,16 @@ class Song(object):
         self.sample_rate = data['sample_rate'].value
         self.collection = data['collection'].value
         self.name = data['song'].value
-        self.vocals = Track("vocals", self.height, self.width, self.depth, vocals_file)
-        self.instrumental = Track("instrumental", self.height, self.width, self.depth, instrumental_file)
+        self.vocals = Track("vocals", self.height,
+                            self.width, self.depth, vocals_file)
+        self.instrumental = Track(
+            "instrumental", self.height, self.width, self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
 
     def load(self):
         if not self.mix.initialized:
-            self.mix.mix(self.vocals, self.instrumental) # After this step all tracks are initialized
+            # After this step all tracks are initialized
+            self.mix.mix(self.vocals, self.instrumental)
             self.clean_up()
         return self.mix.channels, self.vocals.channels
 

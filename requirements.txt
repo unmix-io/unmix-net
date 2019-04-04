@@ -5,4 +5,5 @@ Pillow
 matplotlib
 pydot
 numpy
+psutil
 commentjson

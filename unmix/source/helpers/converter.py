@@ -52,3 +52,10 @@ def env(key):
         return os.environ[key]
     except Exception:
         raise ConfigurationError(key)
+
+
+def to_complex(realimag):
+    'Converts the real-imag array of the training values to complex values'
+    real = realimag[:, :, 0]
+    imag = realimag[:, :, 1]
+    return real + imag * 1j

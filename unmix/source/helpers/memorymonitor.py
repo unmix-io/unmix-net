@@ -10,7 +10,6 @@ __email__ = "info@unmix.io"
 
 
 import os
-import psutil
 import time
 
 from unmix.source.helpers import console
@@ -18,6 +17,7 @@ from unmix.source.helpers import converter
 
 
 def get_process_memory():
+    import psutil
     process = psutil.Process(os.getpid())
     return process.memory_full_info().rss
 
