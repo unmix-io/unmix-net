@@ -41,8 +41,8 @@ class Chopper:
     def chop_n_pad(self, input, index, size):
         start = self.step * index - int(size / 2)
         end = start + size
-        pad_count_left = abs(max(0, -start))
-        pad_count_right = abs(max(0, end - input.shape[1]))
+        pad_count_left = -min(0, start)
+        pad_count_right = -min(0, input.shape[1] - end)
         chunk = input[:, max(0, start):min(end, input.shape[1])]
         return np.pad(chunk, ((0,0),(pad_count_left,pad_count_right)), "constant")
 
