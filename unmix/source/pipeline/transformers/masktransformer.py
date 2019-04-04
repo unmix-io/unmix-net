@@ -52,6 +52,7 @@ class MaskTransformer:
 
     def untransform_target(self, mix, predicted_mask, index, transform_info):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
+        predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
         mix_slice = self.chopper.chop_n_pad(mix, self.__get_mask_index(index), self.step)
         mix_magnitude = np.abs(mix_slice)
         vocal_magnitude = mix_magnitude * predicted_mask

@@ -21,19 +21,19 @@
         "name": "mask",
         "options": {
     	    "size": 64,
-            "step": 1,
+            "step": 64,
             "shuffle": false,
             "save_audio": false
         }
     },
     "training": {
         "model": {
-            "name": "unmix",
+            "name": "leakyrelu",
             "alpha1": 0.1,
             "alpha2": 0.01,
             "rate": 0.1
         },
-        "batch_size": 64,
+        "batch_size": 8,
         "epoch": {
             "count": 10,
             "shuffle": true
