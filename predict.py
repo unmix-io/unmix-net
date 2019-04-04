@@ -46,11 +46,7 @@ if __name__ == "__main__":
     # Load song and create spectrogram with librosa
     audio, sample_rate = librosa.load(args.file, mono=True, sr=args.sample_rate)
     mix = librosa.stft(audio, args.fft_window)
-    # Bring input data into format which corresponds to the training data
-    #mix = np.empty(stft.shape + (2,))
-    #mix[:, :, 0] = np.real(stft)
-    #mix[:, :, 1] = np.imag(stft)
-
+    
     engine = Engine()
     engine.load_weights(args.weights)
     predicted_vocals = engine.predict(mix)

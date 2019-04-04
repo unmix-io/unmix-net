@@ -87,7 +87,7 @@ class Engine:
             predicted = self.transformer.untransform_target(mix, predicted, i, transform_info)
             if predictions == []: # At this point, we know the shape of our predictions array - initialize
                 shape = predicted.shape
-                predictions = np.empty((shape[0], shape[1] * length))
+                predictions = np.empty((shape[0], shape[1] * length), np.complex)
             predictions[:, shape[1] * i : shape[1] * (i+1)] = predicted
         
         return predictions
