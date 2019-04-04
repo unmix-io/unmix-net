@@ -20,15 +20,8 @@ from unmix.source.helpers import console
 
 
 def spectrogram_to_audio(file, spectrogram):
-    audio = np.array(librosa.istft(generate_stft(spectrogram)))
+    audio = np.array(librosa.istft(spectrogram))
     path = os.path.join(Configuration.get_path(
         'environment.temp_folder'), file)
     librosa.output.write_wav(path, audio, 11025, norm=False)
     console.info("Generated audio file from spectrogram: %s" % path)
-
-
-def generate_stft(spectrogram):
-    real_part = spectrogram[:, :, 0]
-    imag_part = spectrogram[:, :, 1]
-    stft = real_part + imag_part * 1j
-    return stft
