@@ -28,9 +28,8 @@ def normalize(cplx):
     magnitude = np.reshape(magnitude, magnitude.shape + (1,))
     return magnitude, (percentile99,)
 
-def denormalize(magnitude_predicted, mix, normalizer_info):
+def denormalize(magnitude_predicted, mix_complex, normalizer_info):
     'Returns denormalized values as array of complex values (sft)'
-    mix_complex = mix[:, :, 0] + mix[:, :, 1] * 1j
     percentile99 = normalizer_info[0]
     denorm = np.reshape(magnitude_predicted, magnitude_predicted.shape[0:2])
     
