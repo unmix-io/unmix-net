@@ -62,5 +62,7 @@ class Track(object):
                                  map(lambda track: track.load().channels, tracks))
             self.initialized = True
             return self
+        except Exception as e:
+            raise DataError(self.file, str(e))
         finally:
             self.mutex.release()
