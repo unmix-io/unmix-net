@@ -19,12 +19,12 @@ def normalize(cplx):
 
     magnitude = np.abs(cplx)
     percentile99 = np.percentile(magnitude, 99)
-    magnitude = np.clip(magnitude, 0, percentile99)
+    #magnitude = np.clip(magnitude, 0, percentile99)
 
-    if(percentile99 > 0):
-        magnitude = magnitude / (percentile99 / 2)
+    #if(percentile99 > 0):
+    #    magnitude = magnitude / (percentile99 / 2)
     
-    magnitude = magnitude - 1
+    #magnitude = magnitude - 1
     magnitude = np.reshape(magnitude, magnitude.shape + (1,))
     return magnitude, (percentile99,)
 
@@ -34,13 +34,13 @@ def denormalize(magnitude_predicted, mix_complex, normalizer_info):
     denorm = np.reshape(magnitude_predicted, magnitude_predicted.shape[0:2])
     
     # Shift values to original space and clip values below zero
-    denorm = denorm + 1
+    #denorm = denorm + 1
     
     print(np.max(denorm))
     print("min: " + str(np.min(denorm)))
     
     denorm = denorm.clip(0)
-    denorm = denorm * (percentile99 / 2)
+    #denorm = denorm * (percentile99 / 2)
 
     denorm = denorm * np.exp( np.angle(mix_complex) * 1j )
     return denorm
