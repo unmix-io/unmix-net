@@ -62,4 +62,4 @@ class MaskTransformer:
         return vocals
 
     def __get_mask_index(self, index):
-         return index + int(self.size/2) - int(self.step / 2)
+         return index + int(self.size / 2) - int(self.step / 2)

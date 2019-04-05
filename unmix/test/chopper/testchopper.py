@@ -33,6 +33,7 @@ def test_end():
     assert np.all(chop[:, 0:5] == 1)
     assert np.all(chop[:, 5:] == 0)
 
+
 def test_end_odd():
     input = np.ones((1000,9))
     chopper = Chopper(7)
@@ -41,6 +42,7 @@ def test_end_odd():
     assert chop.shape[0] == 1000
     assert np.all(chop[:, 0:4] == 1)
     assert np.all(chop[:, 4:] == 0)
+
 
 def test_middle():
     input = np.ones((1000,2000))
@@ -58,6 +60,7 @@ def test_lengths():
     assert chopper.calculate_chops(6, 2) == 4
     assert chopper.calculate_chops(7, 2) == 4
     assert chopper.calculate_chops(8, 2) == 5
+
 
 def test_chopping():
     size = 10
@@ -78,11 +81,22 @@ def test_chopping():
         else:
             assert np.all(chop[:, :] == 1)
 
+
+def test_end_of_the_world():
+    size = 1
+    input = np.ones((1000,2000))
+    chopper = Chopper(size)
+    chop = chopper.chop_n_pad(input, 2004, size)
+    assert chop.shape[1] == 1
+
+
 if __name__ == "__main__":
+    test_end_of_the_world()
     test_start()
     test_end()
     test_end_odd()
     test_middle()
     test_lengths()
     test_chopping()
+
     print("Test run successful.")
