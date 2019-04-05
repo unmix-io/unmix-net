@@ -27,7 +27,6 @@ class Track(object):
         self.height = height
         self.width = width
         self.depth = depth
-        self.channels = np.empty((depth))
         self.mutex = Lock()
 
     def load(self, data=None):
@@ -42,10 +41,10 @@ class Track(object):
             self.stereo = data['stereo'][()]
             if self.stereo:
                 self.channels = np.array(
-                    [converter.to_complex(data['spectrogram_left'][()][:self.width]), converter.to_complex(data['spectrogram_right'][()][:self.width])])
+                    [converter.to_complex(data['spectrogram_left'][()][:,:self.width]), converter.to_complex(data['spectrogram_right'][()][:,:self.width])])
             else:
                 self.channels = np.array(
-                    [converter.to_complex(data['spectrogram'][()][:self.width])])
+                    [converter.to_complex(data['spectrogram'][()][:,:self.width])])
             self.initialized = True
             return self
         except Exception as e:

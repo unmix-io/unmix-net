@@ -54,9 +54,10 @@ class Song(object):
             try:
                 # After this step all tracks are initialized
                 self.mix.mix(self.vocals, self.instrumental)
-                self.clean_up()
             except Exception as e:
                 raise DataError(self.folder, str(e))
+            finally:
+                self.clean_up()
         return self.mix.channels, self.vocals.channels
 
     def clean_up(self):
