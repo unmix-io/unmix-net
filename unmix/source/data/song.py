@@ -37,7 +37,7 @@ class Song(object):
         data_instrumental = h5py.File(vocals_file, 'r')
         self.folder = folder
         self.height = data_vocals['height'][()]
-        self.width = min(data_vocals['width'][()], data_instrumental['width'][()])
+        self.width = min(int(data_vocals['width'][()]), int(data_instrumental['width'][()]))
         self.depth = data_vocals['depth'][()]
         self.fft_window = data_vocals['fft_window'][()]
         self.sample_rate = data_vocals['sample_rate'][()]
