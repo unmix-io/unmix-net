@@ -56,7 +56,7 @@
             "early_stopping": {
                 "monitor": "loss",
                 "min_delta": 0.000001,
-                "patience": 0.8,
+                "patience": 15,
                 "verbose": 1
             },
             "reduce_learningrate": {
