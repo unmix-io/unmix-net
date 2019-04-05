@@ -9,6 +9,7 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
+from functools import reduce
 import h5py
 import numpy as np
 from threading import Lock
@@ -26,6 +27,7 @@ class Track(object):
         self.height = height
         self.width = width
         self.depth = depth
+        self.channels = np.empty((depth))
         self.mutex = Lock()
 
     def load(self, data=None):
@@ -37,13 +39,13 @@ class Track(object):
                 data = h5py.File(self.file, 'r')
             if not data:
                 raise DataError('?', "missing data to load")
-            self.stereo = data['stereo'].value
+            self.stereo = data['stereo'][()]
             if self.stereo:
                 self.channels = np.array(
-                    [converter.to_complex(data['spectrogram_left'].value), converter.to_complex(data['spectrogram_right'].value)])
+                    [converter.to_complex(data['spectrogram_left'][()][:self.width]), converter.to_complex(data['spectrogram_right'][()][:self.width])])
             else:
                 self.channels = np.array(
-                    [converter.to_complex(data['spectrogram'].value)])
+                    [converter.to_complex(data['spectrogram'][()][:self.width])])
             self.initialized = True
             return self
         except Exception as e:
@@ -56,13 +58,8 @@ class Track(object):
         try:
             if self.initialized:
                 return self
-            first = tracks[0]
-            first.load()
-            self.channels = np.copy(first.channels)
-            for track in tracks[1:]:
-                track.load()
-                for i in range(len(self.channels)):
-                    self.channels[i] += track.channels[i]
+            self.channels = reduce((lambda x, y: x + y),
+                                 map(lambda track: track.load().channels, tracks))
             self.initialized = True
             return self
         finally:

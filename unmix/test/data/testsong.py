@@ -11,7 +11,7 @@ __email__ = "info@unmix.io"
 
 import numpy as np
 
-from unmix.source.choppers.chopper import Chopper
+from unmix.source.pipeline.choppers.chopper import Chopper
 import unmix.source.helpers.reducer as reducer
 from unmix.source.data.song import Song
 

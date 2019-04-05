@@ -33,19 +33,20 @@ class Song(object):
             break
         if not (instrumental_file and vocals_file):
             raise DataError(folder, 'missing vocal or instrumental track')
-        data = h5py.File(vocals_file, 'r')
+        data_vocals = h5py.File(vocals_file, 'r')
+        data_instrumental = h5py.File(vocals_file, 'r')
         self.folder = folder
-        self.height = data['height'].value
-        self.width = data['width'].value
-        self.depth = data['depth'].value
-        self.fft_window = data['fft_window'].value
-        self.sample_rate = data['sample_rate'].value
-        self.collection = data['collection'].value
-        self.name = data['song'].value
-        self.vocals = Track("vocals", self.height,
-                            self.width, self.depth, vocals_file)
-        self.instrumental = Track(
-            "instrumental", self.height, self.width, self.depth, instrumental_file)
+        self.height = data_vocals['height'][()]
+        self.width = min(data_vocals['width'][()], data_instrumental['width'][()])
+        self.depth = data_vocals['depth'][()]
+        self.fft_window = data_vocals['fft_window'][()]
+        self.sample_rate = data_vocals['sample_rate'][()]
+        self.collection = data_vocals['collection'][()]
+        self.name = data_vocals['song'][()]
+        self.vocals = Track("vocals", self.height, self.width,
+                                self.depth, vocals_file)
+        self.instrumental = Track("instrumental", self.height, self.width, 
+                                self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
 
     def load(self):
