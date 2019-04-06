@@ -11,7 +11,7 @@ __email__ = "info@unmix.io"
 
 import commentjson
 from collections import namedtuple
-
+import getpass
 import json
 import os
 import shutil
@@ -62,7 +62,7 @@ class Configuration(object):
             "data_collection": Configuration.get('collection.folder'),
             "configuration_file": configuration_file,
             "working_directory": working_directory,
-            "user": os.getlogin(),
+            "user": getpass.getuser(),
             "repository": repo.working_dir if repo else "",
             "branch": repo.active_branch.name if repo else "",
             "commit": repo.head.object.hexsha if repo else "",
