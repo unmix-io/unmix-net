@@ -11,7 +11,7 @@ __email__ = "info@unmix.io"
 
 import commentjson
 from collections import namedtuple
-import git
+
 import json
 import os
 import shutil
@@ -53,6 +53,7 @@ class Configuration(object):
             Configuration.output_directory, 'configuration.jsonc'))
         repo = False
         try:
+            import git
             repo = git.Repo(search_parent_directories=True)
         except:
             pass
