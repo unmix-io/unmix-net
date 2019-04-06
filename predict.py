@@ -39,7 +39,7 @@ if __name__ == "__main__":
                         type=str, help="Pretrained weights file (overwrites configuration).")
 
     args = parser.parse_args()
-    config = Configuration.initialize(args.configuration, args.workingdir)
+    Configuration.initialize(args.configuration, args.workingdir)
     console.info("Arguments: ", str(args))
     start = time.time()
 

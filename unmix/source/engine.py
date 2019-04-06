@@ -37,8 +37,7 @@ class Engine:
         self.model = ModelFactory.build()
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
-        self.model.summary(Configuration.get(
-            'environment.summary_line_length'))
+        self.model.summary()
         self.plot_model()
         console.debug("Model initialized with %d parameters." %
                       self.model.count_params())
@@ -48,7 +47,7 @@ class Engine:
 
     def plot_model(self):
         try:
-            path = Configuration.get_path('environment.model_plot_folder')
+            path = Configuration.get_path('environment.plot_folder')
             if path:
                 name = Configuration.get('training.model').name
                 file_name = os.path.join(
@@ -77,7 +76,6 @@ class Engine:
         return history
 
     def predict(self, mix):
-
         length = self.transformer.calculate_items(mix.shape[1])
         predictions = []
 

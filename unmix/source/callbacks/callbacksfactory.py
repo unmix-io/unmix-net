@@ -11,7 +11,7 @@ __email__ = "info@unmix.io"
 
 import os
 
-from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping, ReduceLROnPlateau
+from keras.callbacks import ModelCheckpoint, TensorBoard, CSVLogger, EarlyStopping, ReduceLROnPlateau
 
 from unmix.source.callbacks.errorvisualization import ErrorVisualization
 from unmix.source.configuration import Configuration
@@ -25,13 +25,18 @@ class CallbacksFactory(object):
         configs = Configuration.get('training.callbacks', False)
         callbacks = []
         if hasattr(configs, 'model_checkpoint'):
-            callbacks.append(CallbacksFactory.model_checkpoint(configs.model_checkpoint))
-        if hasattr(configs, 'early_stopping'):
-            callbacks.append(CallbacksFactory.early_stopping(configs.early_stopping))
+            callbacks.append(CallbacksFactory.model_checkpoint(
+                configs.model_checkpoint))
         if hasattr(configs, 'tensorboard'):
             callbacks.append(CallbacksFactory.tensorboard(configs.tensorboard))
+        if hasattr(configs, 'csv_logger'):
+            callbacks.append(CallbacksFactory.csv_logger(configs.csv_logger))
+        if hasattr(configs, 'early_stopping'):
+            callbacks.append(CallbacksFactory.early_stopping(
+                configs.early_stopping))
         if hasattr(configs, 'reduce_learningrate'):
-            callbacks.append(CallbacksFactory.reduce_learningrate(configs.reduce_learningrate))
+            callbacks.append(CallbacksFactory.reduce_learningrate(
+                configs.reduce_learningrate))
         return callbacks
 
     @staticmethod
@@ -44,22 +49,6 @@ class CallbacksFactory(object):
                                mode=config.mode, period=config.period, verbose=config.verbose)
 
     @staticmethod
-    def early_stopping(config):
-        return EarlyStopping(monitor=config.monitor,
-                             min_delta=config.min_delta,
-                             patience=config.patience,
-                             verbose=config.verbose)
-    
-    @staticmethod
-    def reduce_learningrate(config):
-        return ReduceLROnPlateau(monitor=config.monitor, factor=config.factor,
-                                 patience=config.patience, min_lr=config.min_learningrate)
-
-    @staticmethod
-    def error_visualization(bot):
-        return ErrorVisualization(bot)  # TODO ???
-
-    @staticmethod
     def tensorboard(config):
         path = Configuration.get_path("training.callbacks.tensorboard.folder")
         return TensorBoard(log_dir=path,
@@ -70,3 +59,25 @@ class CallbacksFactory(object):
                            embeddings_freq=config.embeddings_freq,
                            update_freq=config.update_freq,
                            batch_size=Configuration.get("training.batch_size"))
+
+    @staticmethod
+    def csv_logger(config):
+        path = os.path.join(Configuration.output_directory, config.file_name)
+        #open(path, 'a').close()
+        return CSVLogger(filename=path, separator=config.separator, append=config.append)
+
+    @staticmethod
+    def early_stopping(config):
+        return EarlyStopping(monitor=config.monitor,
+                             min_delta=config.min_delta,
+                             patience=config.patience,
+                             verbose=config.verbose)
+
+    @staticmethod
+    def reduce_learningrate(config):
+        return ReduceLROnPlateau(monitor = config.monitor, factor = config.factor,
+                                 patience = config.patience, min_lr = config.min_learningrate)
+
+    @staticmethod
+    def error_visualization(bot):
+        return ErrorVisualization(bot)  # TODO ???

@@ -7,3 +7,4 @@ pydot
 numpy
 psutil
 commentjson
+gitpython
