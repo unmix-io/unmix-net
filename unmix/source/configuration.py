@@ -51,7 +51,11 @@ class Configuration(object):
     def log_environment(configuration_file, working_directory):
         shutil.copy(configuration_file, os.path.join(
             Configuration.output_directory, 'configuration.jsonc'))
-        repo = git.Repo(search_parent_directories=True)
+        repo = False
+        try:
+            repo = git.Repo(search_parent_directories=True)
+        except:
+            pass
         enviornment = {
             "time": converter.get_timestamp(),
             "data_collection": Configuration.get('collection.folder'),
