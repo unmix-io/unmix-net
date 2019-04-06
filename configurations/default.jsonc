@@ -35,7 +35,7 @@
         },
         "batch_size": 8,
         "epoch": {
-            "count": 20,
+            "count": 10,
             "shuffle": true
         },
         "verbose": 1,
