@@ -72,7 +72,7 @@
                 "min_delta": 0.000001,
                 "patience": 15,
                 "verbose": 1
-            },
+            }//,
             // "reduce_learningrate": {
             //     "monitor": "loss",
             //     "factor": 0.2,
