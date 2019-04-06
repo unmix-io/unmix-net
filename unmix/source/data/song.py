@@ -34,7 +34,7 @@ class Song(object):
         if not (instrumental_file and vocals_file):
             raise DataError(folder, 'missing vocal or instrumental track')
         data_vocals = h5py.File(vocals_file, 'r')
-        data_instrumental = h5py.File(vocals_file, 'r')
+        data_instrumental = h5py.File(instrumental_file, 'r')
         self.folder = folder
         self.height = data_vocals['height'][()]
         self.width = min(int(data_vocals['width'][()]), int(data_instrumental['width'][()]))
