@@ -9,8 +9,8 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import time as sysTime
-
+import colorama
+import time as sys_time
 
 class Colors:
     END = "\033[0m"
@@ -36,7 +36,9 @@ class Colors:
     DK_WHITE = "\033[47m"
 
 
+CLEAR_SCREEN = '\033[2J'
 timers = {}
+colorama.init()
 
 
 def fmt(iterable):
@@ -74,12 +76,12 @@ def error(*args):
 
 
 def time(key):
-    timers[key] = sysTime.time()
+    timers[key] = sys_time.time()
 
 
 def time_end(key):
     if key in timers:
-        t = sysTime.time() - timers[key]
+        t = sys_time.time() - timers[key]
         print("\t" + str(t) + Colors.DIM + " s \t" + key + Colors.END)
         del timers[key]
 
