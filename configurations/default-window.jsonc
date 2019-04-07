@@ -22,7 +22,7 @@
         "options": {
             "size": 64,
             "step": 64,
-            "shuffle": false,
+            "shuffle": true,
             "save_audio": false
         }
     },
@@ -35,11 +35,11 @@
         },
         "batch_size": 8,
         "epoch": {
-            "count": 10,
+            "count": 30,
             "shuffle": true
         },
         "verbose": 1,
-        "loss_function": "mean_absolute_error",
+        "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,

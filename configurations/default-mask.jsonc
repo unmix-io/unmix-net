@@ -39,7 +39,7 @@
             "shuffle": true
         },
         "verbose": 1,
-        "loss_function": "mean_absolute_error",
+        "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,

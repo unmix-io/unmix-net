@@ -25,7 +25,7 @@ from unmix.source.helpers import reducer
 
 class Configuration(object):
 
-    working_directory = ''
+    output_directory = ''
 
     @staticmethod
     def initialize(configuration_file, working_directory=None):
