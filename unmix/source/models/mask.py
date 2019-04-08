@@ -37,6 +37,6 @@ def generate(alpha1, alpha2, rate, channels=2):
     model.add(LeakyReLU(alpha=alpha1))                                  # leaky_re_lu_5
     model.add(Dropout(0.1))                                            # dropout_3
 
-    model.add(Dense(769))                                               # dense_2
-    model.add(Reshape((769, 1, 1)))
+    model.add(Dense(769, activation='relu'))                                               # dense_2
+    model.add(Reshape((769,1,1)))
     return model
