@@ -12,6 +12,7 @@ __email__ = "info@unmix.io"
 import os
 import keras.utils
 import numpy as np
+import progressbar
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
@@ -77,15 +78,16 @@ class Engine:
         length = self.transformer.calculate_items(mix.shape[1])
         predictions = []
 
-        for i in range(length):
-            input, transform_info = self.transformer.prepare_input(mix, i)
-            predicted = self.model.predict(np.array([input]))[0]
-            predicted = self.transformer.untransform_target(mix, predicted, i, transform_info)
-            if predictions == []: # At this point, we know the shape of our predictions array - initialize
-                shape = predicted.shape
-                predictions = np.empty((shape[0], shape[1] * length), np.complex)
-            predictions[:, shape[1] * i : shape[1] * (i+1)] = predicted
-        
+        with progressbar.ProgressBar(max_value=length) as bar:
+            for i in range(length):
+                input, transform_info = self.transformer.prepare_input(mix, i)
+                predicted = self.model.predict(np.array([input]))[0]
+                predicted = self.transformer.untransform_target(mix, predicted, i, transform_info)
+                if predictions == []: # At this point, we know the shape of our predictions array - initialize
+                    shape = predicted.shape
+                    predictions = np.empty((shape[0], shape[1] * length), np.complex)
+                predictions[:, shape[1] * i : shape[1] * (i+1)] = predicted
+                bar.update(i)        
         return predictions
 
     def save_weights(self):
