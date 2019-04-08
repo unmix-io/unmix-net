@@ -42,8 +42,8 @@ class Configuration(object):
             'environment.output_path'), Configuration.get('environment.output_folder'))
         if create_output and not os.path.exists(Configuration.output_directory):
             os.makedirs(Configuration.output_directory)
-        
-        Configuration.log_environment(configuration_file, working_directory)
+        if create_output:
+            Configuration.log_environment(configuration_file, working_directory)
 
     @staticmethod
     def log_environment(configuration_file, working_directory):
