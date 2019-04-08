@@ -70,14 +70,14 @@ if __name__ == "__main__":
                 song_files.append(file)
 
     Logger.info("Found %d songs to predict." % len(song_files))
+        
+    engine = Engine()
+    engine.load_weights(args.weights)
 
     for song_file in song_files:
         # Load song and create spectrogram with librosa
         audio, sample_rate = librosa.load(song_file, mono=True, sr=args.sample_rate)
         mix = librosa.stft(audio, args.fft_window)
-        
-        engine = Engine()
-        engine.load_weights(args.weights)
         predicted_vocals = engine.predict(mix)
 
         # Convert back to wav audio file
