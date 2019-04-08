@@ -33,10 +33,9 @@ class MaskTransformer:
         input = self.chopper.chop_n_pad(mix[0], index, self.size)
 
         # Calculate mask
-        mask_index = self.__get_mask_index(index)
-        mix_slice = self.chopper.chop_n_pad(mix[0], mask_index, self.step)
+        mix_slice = self.chopper.chop_n_pad(mix[0], index, self.step)
         mix_magnitude = np.abs(mix_slice)
-        vocal_slice = self.chopper.chop_n_pad(vocals[0], mask_index, self.step)
+        vocal_slice = self.chopper.chop_n_pad(vocals[0], index, self.step)
         vocal_magnitude = np.abs(vocal_slice)
         target_mask = mask(vocal_magnitude, mix_magnitude)
         target_mask = np.reshape(target_mask, target_mask.shape + (1,))
@@ -54,12 +53,9 @@ class MaskTransformer:
     def untransform_target(self, mix, predicted_mask, index, transform_info):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
         predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
-        mix_slice = self.chopper.chop_n_pad(mix, self.__get_mask_index(index), self.step)
+        mix_slice = self.chopper.chop_n_pad(mix, index, self.step)
         mix_magnitude = np.abs(mix_slice)
         vocal_magnitude = mix_magnitude * predicted_mask
         vocals = vocal_magnitude * np.exp( np.angle(mix_slice) * 1j )
 
         return vocals
-
-    def __get_mask_index(self, index):
-         return index + int(self.size / 2) - int(self.step / 2)
