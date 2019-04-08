@@ -32,18 +32,21 @@ class Configuration(object):
         if not working_directory:
             working_directory = os.getcwd()
         environmentvariables.set_environment_variables(extend=True)
+
         if not configuration_file:
             configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')
         with open(Configuration.build_path(configuration_file), 'r') as f:
             configuration = commentjson.load(f, object_hook=lambda d: namedtuple('X', d.keys())
                                              (*map(lambda x: converter.try_eval(x), d.values())))
 
-        Configuration.output_directory = os.path.join(working_directory, Configuration.get(
-            'environment.output_path'), Configuration.get('environment.output_folder'))
-        if create_output and not os.path.exists(Configuration.output_directory):
-            os.makedirs(Configuration.output_directory)
         if create_output:
+            Configuration.output_directory = os.path.join(working_directory, Configuration.get(
+                'environment.output_path'), Configuration.get('environment.output_folder'))
+            if not os.path.exists(Configuration.output_directory):
+                os.makedirs(Configuration.output_directory)
             Configuration.log_environment(configuration_file, working_directory)
+        else:
+            Configuration.output_directory = working_directory
 
     @staticmethod
     def log_environment(configuration_file, working_directory):
@@ -88,14 +91,19 @@ class Configuration(object):
     def get_path(key='', create=True, optional=True):
         path = Configuration.get(key, optional)
         return Configuration.build_path(path)
+    
+    @staticmethod
+    def build_abspath(path, working_directory=''):        
+        if not os.path.isabs(path):
+            path = os.path.join(working_directory if working_directory else Configuration.output_directory, path)
+        return path
 
     @staticmethod
     def build_path(path, create=True):
         """
         Generates an absolute path if a relative is passed.
         """
-        if not os.path.isabs(path):
-            path = os.path.join(Configuration.output_directory, path)
+        path = Configuration.build_abspath(path)
         if create and not os.path.exists(path):
             os.makedirs(path)
         return path

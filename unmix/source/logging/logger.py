@@ -37,7 +37,7 @@ class Logger(object):
 
     @staticmethod
     def h1(*args):
-        print(Colors.BRIGHT, Logger.format(args), Colors.END)
+        print(Colors.DK_WHITE + Logger.format(args) + Colors.END)
         Logger._write_log("", Logger.format(args))
 
     @staticmethod
@@ -47,7 +47,7 @@ class Logger(object):
 
     @staticmethod
     def info(*args):
-        print(Colors.BLUE + "\t", Logger.format(args), Colors.END)
+        print(Colors.DIM + "\t", Logger.format(args), Colors.END)
         Logger._write_log("Info", Logger.format(args))
 
     @staticmethod
