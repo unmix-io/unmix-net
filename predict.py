@@ -39,9 +39,10 @@ if __name__ == "__main__":
                         type=str, help="Pretrained weights file (overwrites configuration).")
 
     args = parser.parse_args()
-    Configuration.initialize(args.configuration, args.workingdir)
     console.info("Arguments: ", str(args))
     start = time.time()
+
+    Configuration.initialize(args.configuration, args.workingdir, False)
 
     # Load song and create spectrogram with librosa
     audio, sample_rate = librosa.load(args.file, mono=True, sr=args.sample_rate)

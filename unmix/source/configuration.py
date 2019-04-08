@@ -28,7 +28,7 @@ class Configuration(object):
     output_directory = ''
 
     @staticmethod
-    def initialize(configuration_file, working_directory=None):
+    def initialize(configuration_file, working_directory=None, create_output=True):
         global configuration
         if not working_directory:
             working_directory = os.getcwd()
@@ -42,7 +42,7 @@ class Configuration(object):
 
         Configuration.output_directory = os.path.join(working_directory, Configuration.get(
             'environment.output_path'), Configuration.get('environment.output_folder'))
-        if not os.path.exists(Configuration.output_directory):
+        if create_output and not os.path.exists(Configuration.output_directory):
             os.makedirs(Configuration.output_directory)
 
         Configuration.log_environment(configuration_file, working_directory)
