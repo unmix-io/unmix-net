@@ -1,0 +1,84 @@
+{
+    "environment": {
+        "name": "default-mask",
+        "output_path": "runs",
+        "output_folder": "get_timestamp()",
+        "log_file": "logs.txt",
+        "plot_folder": "plots",
+        "weights": {
+            "folder": "weights",
+            "file": "weights.h5"
+        }
+    },
+    "collection": {
+        "folder": "env('UNMIX_COLLECTION_DIR')",
+        "validation": {
+            "ratio": 0.2,
+            "mode": "first"
+        }
+    },
+    "transformation": {
+        "name": "mask_ibm",
+        "options": {
+            "size": 25,
+            "step": 1,
+            "shuffle": false,
+            "save_audio": false
+        }
+    },
+    "training": {
+        "model": {
+            "name": "mask",
+            "alpha1": 0.1,
+            "alpha2": 0.01,
+            "rate": 0.1
+        },
+        "batch_size": 8,
+        "epoch": {
+            "count": 10,
+            "shuffle": true
+        },
+        "verbose": 1,
+        "loss_function": "mean_squared_error",
+        "optimizer": "adam",
+        "metrics": ["mean_pred"],
+        "load_weights": false,
+        "callbacks": {
+            "model_checkpoint": {
+                "file_name": "callback_weights_{epoch:02d}.h5",
+                "monitor": "loss",
+                "best_only": true,
+                "weights_only": false,
+                "mode": "auto",
+                "period": 1,
+                "verbose": 1
+            },
+            // "tensorboard": {
+            //     "folder": "TensorBoard",
+            //     "histogram_freq": 0,
+            //     "write_graph": true,
+            //     "write_grads": false,
+            //     "write_images": false,
+            //     "embeddings_freq": 0,
+            //     "update_freq": "batch"
+            // },
+            "csv_logger": {
+                "file_name": "results.csv",
+                "separator": ";",
+                "append": true
+            },
+            "early_stopping": {
+                "monitor": "loss",
+                "min_delta": 0.000001,
+                "patience": 15,
+                "verbose": 1
+            }//,
+            // "reduce_learningrate": {
+            //     "monitor": "loss",
+            //     "factor": 0.2,
+            //     "patience": 5,
+            //     "min_learningrate": 0.001
+            // }
+        }
+    }
+}
