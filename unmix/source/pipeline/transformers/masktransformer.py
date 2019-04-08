@@ -55,6 +55,7 @@ class MaskTransformer:
         predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
         mix_slice = self.chopper.chop_n_pad(mix, index, self.step)
         mix_magnitude = np.abs(mix_slice)
+        predicted_mask = np.clip(predicted_mask, 0, 1)
         vocal_magnitude = mix_magnitude * predicted_mask
         vocals = vocal_magnitude * np.exp( np.angle(mix_slice) * 1j )
 
