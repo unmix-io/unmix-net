@@ -52,17 +52,18 @@ if __name__ == "__main__":
         args.workingdir = Configuration.build_abspath(args.run_folder, os.getcwd())
         args.configuration = os.path.join(args.workingdir, 'configuration.jsonc')
         args.weights = os.path.join(args.workingdir, 'weights', 'weights.h5')
+        prediction_folder = Configuration.build_path('predictions')
+    else:
+        prediction_folder = ''
     
     Configuration.initialize(args.configuration, args.workingdir, False)
     Logger.initialize(False)
 
     Logger.info("Arguments: ", str(args))
-
-    prediction_folder = Configuration.build_path('predictions')
-
+  
     song_files = []
     if args.song:
-        song_files = song_files.append(args.song)
+        song_files = [args.song]
     if args.songs:
         for file in glob.iglob(Configuration.build_abspath(args.songs, os.getcwd()) + '**/*', recursive=True):
             extension = os.path.splitext(file)[1].lower()
@@ -78,13 +79,18 @@ if __name__ == "__main__":
         # Load song and create spectrogram with librosa
         audio, sample_rate = librosa.load(song_file, mono=True, sr=args.sample_rate)
         mix = librosa.stft(audio, args.fft_window)
+        
+        Logger.info("Start predicting song: %s." % song_file)
         predicted_vocals = engine.predict(mix)
 
         # Convert back to wav audio file
         data = librosa.istft(predicted_vocals)
         audio = np.array(data)
 
-        output_file = os.path.join(prediction_folder, os.path.basename(song_file) + "_predicted.wav")
+        if prediction_folder:
+            output_file = os.path.join(prediction_folder, os.path.basename(song_file) + "_predicted.wav")
+        else:
+            output_file = song_file + "_predicted.wav"
         Logger.info("Output prediction file: %s." % output_file)
         librosa.output.write_wav(output_file, audio, sample_rate, norm=False)
 
