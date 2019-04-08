@@ -60,6 +60,7 @@ if __name__ == "__main__":
     if Configuration.get('training.load_weights'):
         engine.load_weights()
 
+    engine.plot_model()
     engine.train()
 
     end = time.time()

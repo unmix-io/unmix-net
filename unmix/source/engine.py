@@ -38,9 +38,7 @@ class Engine:
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
         self.model.summary(print_fn=Logger.info)
-        self.plot_model()
-        Logger.debug("Model initialized with %d parameters." %
-                      self.model.count_params())
+        Logger.debug("Model initialized with %d parameters." % self.model.count_params())
 
         self.transformer = TransformerFactory.build()
         
