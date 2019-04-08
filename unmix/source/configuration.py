@@ -58,7 +58,7 @@ class Configuration(object):
             repo = git.Repo(search_parent_directories=True)
         except:
             pass
-        enviornment = {
+        environment = {
             "time": converter.get_timestamp(),
             "data_collection": Configuration.get('collection.folder'),
             "configuration_file": configuration_file,
@@ -69,8 +69,8 @@ class Configuration(object):
             "commit": repo.head.object.hexsha if repo else "",
             "variables": dict(os.environ)
         }
-        with open(os.path.join(Configuration.output_directory, 'enviornment.json'), 'w') as file:
-            json.dump(enviornment, file, indent=4)
+        with open(os.path.join(Configuration.output_directory, 'environment.json'), 'w') as file:
+            json.dump(environment, file, indent=4)
 
     @staticmethod
     def get(key='', optional=True):
