@@ -13,7 +13,6 @@ import numpy as np
 from functools import reduce
 
 
-
 def test_mix_reduce():
     a = np.array([0, 1, 2])
     b = np.array([1, 2, 3])

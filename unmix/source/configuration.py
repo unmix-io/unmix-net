@@ -18,7 +18,6 @@ import shutil
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import converter
-from unmix.source.helpers import console
 from unmix.source.helpers import environmentvariables
 from unmix.source.helpers import reducer
 
@@ -35,7 +34,6 @@ class Configuration(object):
         environmentvariables.set_environment_variables(extend=True)
         if not configuration_file:
             configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')
-            console.info("Read configuration from environment variable: %s." % configuration_file)
         with open(Configuration.build_path(configuration_file), 'r') as f:
             configuration = commentjson.load(f, object_hook=lambda d: namedtuple('X', d.keys())
                                              (*map(lambda x: converter.try_eval(x), d.values())))
@@ -44,7 +42,7 @@ class Configuration(object):
             'environment.output_path'), Configuration.get('environment.output_folder'))
         if create_output and not os.path.exists(Configuration.output_directory):
             os.makedirs(Configuration.output_directory)
-
+        
         Configuration.log_environment(configuration_file, working_directory)
 
     @staticmethod

@@ -17,7 +17,7 @@ import time
 
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 from unmix.source.configuration import Configuration
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
 from unmix.source.engine import Engine
 
 
@@ -39,10 +39,12 @@ if __name__ == "__main__":
                         type=str, help="Pretrained weights file (overwrites configuration).")
 
     args = parser.parse_args()
-    console.info("Arguments: ", str(args))
     start = time.time()
 
     Configuration.initialize(args.configuration, args.workingdir, False)
+    Logger.initialize(False)
+
+    Logger.info("Arguments: ", str(args))
 
     # Load song and create spectrogram with librosa
     audio, sample_rate = librosa.load(args.file, mono=True, sr=args.sample_rate)
@@ -60,4 +62,4 @@ if __name__ == "__main__":
 
     end = time.time()
 
-    console.info("Finished processing in %d [s]." % (end - start))
+    Logger.info("Finished processing in %d [s]." % (end - start))

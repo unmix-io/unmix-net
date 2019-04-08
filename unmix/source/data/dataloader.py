@@ -15,7 +15,7 @@ import random
 
 from unmix.source.configuration import Configuration
 from unmix.source.data.song import Song
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
 
 
 class DataLoader(object):
@@ -43,7 +43,7 @@ class DataLoader(object):
             validation_files = files[-validation_count:]
         training_files = list(set(files) - set(validation_files))
 
-        console.debug("Found %d songs for traing and %d songs for validation."
+        Logger.debug("Found %d songs for traing and %d songs for validation."
                       % (len(training_files), len(validation_files)))
 
         return training_files, validation_files

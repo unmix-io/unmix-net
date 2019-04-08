@@ -17,7 +17,7 @@ from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
 from unmix.source.data.datagenerator import DataGenerator
 from unmix.source.data.dataloader import DataLoader
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
 from unmix.source.helpers import converter
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
@@ -37,9 +37,9 @@ class Engine:
         self.model = ModelFactory.build()
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
-        self.model.summary()
+        self.model.summary(print_fn=Logger.info)
         self.plot_model()
-        console.debug("Model initialized with %d parameters." %
+        Logger.debug("Model initialized with %d parameters." %
                       self.model.count_params())
 
         self.transformer = TransformerFactory.build()
@@ -54,7 +54,7 @@ class Engine:
                     path, ('%s_%s-model.png' % (converter.get_timestamp(), name)))
                 keras.utils.plot_model(self.model, file_name)
         except Exception as e:
-            console.error("Error while plotting model: %s." % str(e))
+            Logger.warn("Error while plotting model: %s" % str(e))
 
     def train(self, epoch_start=0):
         training_songs, validation_songs = DataLoader.load()
@@ -93,12 +93,12 @@ class Engine:
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
             'environment.weights.folder'), Configuration.get('environment.weights.file'))
-        console.info("Saved weights to: %s" % path)
+        Logger.info("Saved weights to: %s" % path)
         self.model.save_weights(path, overwrite=True)
 
     def load_weights(self, path=None):
         if not path:
             path = os.path.join(Configuration.get_path(
                 'environment.weights.folder'), Configuration.get('environment.weights.file'))
-        console.info("Load weights from: %s" % path)
+        Logger.info("Load weights from: %s" % path)
         self.model.load_weights(path)

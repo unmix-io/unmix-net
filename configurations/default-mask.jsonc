@@ -3,7 +3,7 @@
         "name": "default-mask",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
-        "log_folder": "logs",
+        "log_file": "logs.txt",
         "plot_folder": "plots",
         "weights": {
             "folder": "weights",

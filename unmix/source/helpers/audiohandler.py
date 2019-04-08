@@ -16,7 +16,7 @@ import librosa
 import numpy as np
 
 from unmix.source.configuration import Configuration
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
 
 
 def spectrogram_to_audio(file, spectrogram):
@@ -24,4 +24,4 @@ def spectrogram_to_audio(file, spectrogram):
     path = os.path.join(Configuration.get_path(
         'environment.temp_folder'), file)
     librosa.output.write_wav(path, audio, 11025, norm=False)
-    console.info("Generated audio file from spectrogram: %s" % path)
+    Logger.info("Generated audio file from spectrogram: %s" % path)

@@ -16,7 +16,7 @@ import numpy as np
 from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -40,8 +40,7 @@ class DataGenerator(keras.utils.Sequence):
                     np.random.shuffle(items)
                 self.index = np.append(self.index, items)
             except Exception as e:
-                console.warn(
-                    "Skip file while generating index: %s", str(e.args))
+                Logger.warn("Skip file while generating index: %s", str(e.args))
 
     def __len__(self):
         'Denotes the number of batches per epoch'
