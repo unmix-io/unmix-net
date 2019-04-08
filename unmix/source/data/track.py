@@ -41,7 +41,8 @@ class Track(object):
             self.stereo = data['stereo'][()]
             if self.stereo:
                 self.channels = np.array(
-                    [converter.to_complex(data['spectrogram_left'][()][:,:self.width]), converter.to_complex(data['spectrogram_right'][()][:,:self.width])])
+                    [converter.to_complex(data['spectrogram_left'][()][:,:self.width]), 
+                     converter.to_complex(data['spectrogram_right'][()][:,:self.width])])
             else:
                 self.channels = np.array(
                     [converter.to_complex(data['spectrogram'][()][:,:self.width])])

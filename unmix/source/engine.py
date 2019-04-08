@@ -12,7 +12,6 @@ __email__ = "info@unmix.io"
 import os
 import keras.utils
 import numpy as np
-import progressbar
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
@@ -75,6 +74,8 @@ class Engine:
         return history
 
     def predict(self, mix):
+        import progressbar
+        
         length = self.transformer.calculate_items(mix.shape[1])
         predictions = []
 
