@@ -36,9 +36,6 @@ def denormalize(magnitude_predicted, mix_complex, normalizer_info):
     # Shift values to original space and clip values below zero
     #denorm = denorm + 1
     
-    print(np.max(denorm))
-    print("min: " + str(np.min(denorm)))
-    
     denorm = denorm.clip(0)
     #denorm = denorm * (percentile99 / 2)
 
