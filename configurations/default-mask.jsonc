@@ -20,7 +20,7 @@
     "transformation": {
         "name": "mask",
         "options": {
-            "size": 64,
+            "size": 25,
             "step": 1,
             "shuffle": false,
             "save_audio": false
