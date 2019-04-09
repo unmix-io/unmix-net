@@ -53,7 +53,7 @@ if __name__ == "__main__":
         args.workingdir = filehelper.build_abspath(args.run_folder, os.getcwd())
         args.configuration = os.path.join(args.workingdir, 'configuration.jsonc')
         args.weights = filehelper.get_latest(os.path.join(args.workingdir, 'weights'), '*weights*.h5')
-    
+          
     Configuration.initialize(args.configuration, args.workingdir, False)
     Logger.initialize(False)
  
@@ -62,6 +62,10 @@ if __name__ == "__main__":
     else:
         prediction_folder = ''
 
+    if os.path.isdir(args.song):
+        args.songs = args.song
+        args.song = ''
+    
     Logger.info("Arguments: ", str(args))
   
     song_files = []
@@ -79,23 +83,26 @@ if __name__ == "__main__":
     engine.load_weights(args.weights)
 
     for song_file in song_files:
-        # Load song and create spectrogram with librosa
-        audio, sample_rate = librosa.load(song_file, mono=True, sr=args.sample_rate)
-        mix = librosa.stft(audio, args.fft_window)
-        
-        Logger.info("Start predicting song: %s." % song_file)
-        predicted_vocals = engine.predict(mix)
+        try:
+            # Load song and create spectrogram with librosa
+            audio, sample_rate = librosa.load(song_file, mono=True, sr=args.sample_rate)
+            mix = librosa.stft(audio, args.fft_window)
+            
+            Logger.info("Start predicting song: %s." % song_file)
+            predicted_vocals = engine.predict(mix)
 
-        # Convert back to wav audio file
-        data = librosa.istft(predicted_vocals)
-        audio = np.array(data)
+            # Convert back to wav audio file
+            data = librosa.istft(predicted_vocals)
+            audio = np.array(data)
 
-        if prediction_folder:
-            output_file = os.path.join(prediction_folder, os.path.basename(song_file) + "_predicted.wav")
-        else:
-            output_file = song_file + "_predicted.wav"
-        Logger.info("Output prediction file: %s." % output_file)
-        librosa.output.write_wav(output_file, audio, sample_rate, norm=False)
+            if prediction_folder:
+                output_file = os.path.join(prediction_folder, os.path.basename(song_file) + "_predicted.wav")
+            else:
+                output_file = song_file + "_predicted.wav"
+            Logger.info("Output prediction file: %s." % output_file)
+            librosa.output.write_wav(output_file, audio, sample_rate, norm=False)
+        except Exception as e:
+            Logger.error("Error while predicting song '%s': %s." % (song_file, str(e)))
 
     end = time.time()
 
