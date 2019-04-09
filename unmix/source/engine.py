@@ -78,21 +78,26 @@ class Engine:
         import progressbar
 
         length = self.transformer.calculate_items(mix.shape[1])
-        predictions = []
+        vocals = []
+        instrumental = []
 
         with progressbar.ProgressBar(max_value=length) as bar:
             for i in range(length):
                 input, transform_info = self.transformer.prepare_input(mix, i)
                 predicted = self.model.predict(np.array([input]))[0]
-                predicted = self.transformer.untransform_target(
+                predicted_vocals, predicted_instrumental = self.transformer.untransform_target(
                     mix, predicted, i, transform_info)
-                if predictions == []:  # At this point, we know the shape of our predictions array - initialize
-                    shape = predicted.shape
-                    predictions = np.empty(
+                if vocals == []:  # At this point, we know the shape of our predictions array - initialize
+                    shape = predicted_vocals.shape
+                    vocals = np.empty(
                         (shape[0], shape[1] * length), np.complex)
-                predictions[:, shape[1] * i: shape[1] * (i+1)] = predicted
+                    instrumental = np.empty(
+                        (shape[0], shape[1] * length), np.complex)
+                vocals[:, shape[1] * i: shape[1] * (i+1)] = predicted_vocals
+                instrumental[:, shape[1] * i: shape[1] * (i+1)] = predicted_instrumental
                 bar.update(i)
-        return predictions
+        
+        return vocals, instrumental
 
     def save_weights(self):
         path = os.path.join(Configuration.get_path(

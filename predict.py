@@ -18,6 +18,7 @@ import time
 
 from unmix.source.engine import Engine
 from unmix.source.helpers import filehelper
+from unmix.source.helpers import converter
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 from unmix.source.configuration import Configuration
 from unmix.source.logging.logger import Logger
@@ -89,18 +90,22 @@ if __name__ == "__main__":
             mix = librosa.stft(audio, args.fft_window)
             
             Logger.info("Start predicting song: %s." % song_file)
-            predicted_vocals = engine.predict(mix)
+            predicted_vocals, predicted_instrumental = engine.predict(mix)
 
             # Convert back to wav audio file
-            data = librosa.istft(predicted_vocals)
-            audio = np.array(data)
+            vocals = np.array(librosa.istft(predicted_vocals))
+            instrumental = np.array(librosa.istft(predicted_instrumental))
 
             if prediction_folder:
-                output_file = os.path.join(prediction_folder, os.path.basename(song_file) + "_predicted.wav")
+                output_file = os.path.join(prediction_folder, converter.get_timestamp() + "_" + os.path.basename(song_file) + '_predicted_%s.wav')
             else:
                 output_file = song_file + "_predicted.wav"
-            Logger.info("Output prediction file: %s." % output_file)
-            librosa.output.write_wav(output_file, audio, sample_rate, norm=False)
+
+            librosa.output.write_wav(output_file % "vocals", vocals, sample_rate, norm=False)
+            Logger.info("Output prediction file: %s." % (output_file % "vocals"))
+
+            librosa.output.write_wav(output_file % "instrumental", instrumental, sample_rate, norm=False)
+            Logger.info("Output prediction file: %s." % (output_file % "instrumental"))
         except Exception as e:
             Logger.error("Error while predicting song '%s': %s." % (song_file, str(e)))
 

@@ -2,7 +2,7 @@
 # coding: utf8
 
 """
-Transform input to normalized amplitude spectrograms, target to a probability mask for vocals
+Transform input to normalized amplitude spectrograms, target to a ideal binary mask (IBM) for vocals
 """
 
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
@@ -63,6 +63,6 @@ class IBMMaskTransformer:
         mix_magnitude = np.abs(mix_slice)
         predicted_mask = np.clip(predicted_mask, 0, 1)
         vocal_magnitude = mix_magnitude * predicted_mask
-        vocals = vocal_magnitude * np.exp( np.angle(mix_slice) * 1j )
+        vocals = vocal_magnitude * np.exp(np.angle(mix_slice) * 1j)
 
-        return vocals
+        return vocals, mix_slice - vocals

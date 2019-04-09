@@ -75,4 +75,5 @@ class WindowTransformer:
         if mean and variance:
             predicted = normalizer_zmuv.denormalize(predicted, mean, variance)
         
-        return normalizer_real_imag.denormalize(predicted, mix_slice, transform_info)
+        denormalized = normalizer_real_imag.denormalize(predicted, mix_slice, transform_info)
+        return denormalized, mix_slice - denormalized

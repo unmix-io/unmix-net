@@ -39,5 +39,5 @@ def denormalize(magnitude_predicted, mix_complex, normalizer_info):
     denorm = denorm.clip(0)
     #denorm = denorm * (percentile99 / 2)
 
-    denorm = denorm * np.exp( np.angle(mix_complex) * 1j )
+    denorm = denorm * np.exp(np.angle(mix_complex) * 1j)
     return denorm
