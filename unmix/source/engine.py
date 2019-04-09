@@ -17,6 +17,7 @@ from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
 from unmix.source.data.datagenerator import DataGenerator
 from unmix.source.data.dataloader import DataLoader
+from unmix.source.data.prediction import Prediction
 from unmix.source.logging.logger import Logger
 from unmix.source.helpers import converter
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
@@ -75,29 +76,9 @@ class Engine:
         return history
 
     def predict(self, mix):
-        import progressbar
-
-        length = self.transformer.calculate_items(mix.shape[1])
-        vocals = []
-        instrumental = []
-
-        with progressbar.ProgressBar(max_value=length) as bar:
-            for i in range(length):
-                input, transform_info = self.transformer.prepare_input(mix, i)
-                predicted = self.model.predict(np.array([input]))[0]
-                predicted_vocals, predicted_instrumental = self.transformer.untransform_target(
-                    mix, predicted, i, transform_info)
-                if vocals == []:  # At this point, we know the shape of our predictions array - initialize
-                    shape = predicted_vocals.shape
-                    vocals = np.empty(
-                        (shape[0], shape[1] * length), np.complex)
-                    instrumental = np.empty(
-                        (shape[0], shape[1] * length), np.complex)
-                vocals[:, shape[1] * i: shape[1] * (i+1)] = predicted_vocals
-                instrumental[:, shape[1] * i: shape[1] * (i+1)] = predicted_instrumental
-                bar.update(i)
-        
-        return vocals, instrumental
+        prediction = Prediction(mix, self.model, self.transformer)
+        prediction.run()
+        return prediction.vocals, prediction.instrumental
 
     def save_weights(self):
         path = os.path.join(Configuration.get_path(

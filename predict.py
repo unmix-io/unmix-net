@@ -38,13 +38,13 @@ if __name__ == "__main__":
                         type=str, help="Pretrained weights file (overwrites configuration).")
     parser.add_argument('--workingdir', default=os.getcwd(), 
                         type=str, help="Working directory (default: current directory).")
-    parser.add_argument('--sample_rate', default=11025, 
+    parser.add_argument('--sample_rate', default=22050, 
                         type=str, help="Target sample rate which the model can process.")
     parser.add_argument('--fft_window', default=1536, 
                         type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--song', default='',
                         type=str, help="Input audio file to split vocals and instrumental.")
-    parser.add_argument('--songs', default='',
+    parser.add_argument('--songs', default='temp/songs',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
 
     args = parser.parse_args()
