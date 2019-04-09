@@ -33,10 +33,7 @@ class WindowTransformer:
     def run(self, name, mix, vocals, index):
         input = self.chopper.chop_n_pad(mix[0], index, self.size) # we select input[0] here because we just use the left or mono channel for now
         target = self.chopper.chop_n_pad(vocals[0], index, self.size)
-
-        #input = reducer.rflatter(self.chopper.get_chop(mix, index, self.size)) # todo: without save_audio, this could use prepare_input below
-        #target = reducer.rflatter(self.chopper.get_chop(vocals, index, self.size))
-
+        
         if self.save_audio:
             audiohandler.spectrogram_to_audio('%s_mix.wav' % name, input)
             audiohandler.spectrogram_to_audio('%s_vocals.wav' % name, target)
