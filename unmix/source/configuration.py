@@ -20,6 +20,7 @@ from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import converter
 from unmix.source.helpers import environmentvariables
 from unmix.source.helpers import reducer
+from unmix.source.helpers import filehelper
 
 
 class Configuration(object):
@@ -40,8 +41,9 @@ class Configuration(object):
                                              (*map(lambda x: converter.try_eval(x), d.values())))
 
         if create_output:
-            Configuration.output_directory = os.path.join(working_directory, Configuration.get(
-                'environment.output_path'), Configuration.get('environment.output_folder'))
+            Configuration.output_directory = os.path.join(working_directory,
+                 Configuration.get('environment.output_path'),
+                 Configuration.get('environment.output_folder'))
             if not os.path.exists(Configuration.output_directory):
                 os.makedirs(Configuration.output_directory)
             Configuration.log_environment(configuration_file, working_directory)
@@ -91,19 +93,13 @@ class Configuration(object):
     def get_path(key='', create=True, optional=True):
         path = Configuration.get(key, optional)
         return Configuration.build_path(path)
-    
-    @staticmethod
-    def build_abspath(path, working_directory=''):        
-        if not os.path.isabs(path):
-            path = os.path.join(working_directory if working_directory else Configuration.output_directory, path)
-        return path
 
     @staticmethod
     def build_path(path, create=True):
         """
         Generates an absolute path if a relative is passed.
         """
-        path = Configuration.build_abspath(path)
+        path = filehelper.build_abspath(path, Configuration.output_directory)
         if create and not os.path.exists(path):
             os.makedirs(path)
         return path

@@ -16,10 +16,11 @@ import numpy as np
 import os
 import time
 
+from unmix.source.engine import Engine
+from unmix.source.helpers import filehelper
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 from unmix.source.configuration import Configuration
 from unmix.source.logging.logger import Logger
-from unmix.source.engine import Engine
 
 
 AUDIO_FILE_EXTENSIONS = ['.wav', '.mp3']
@@ -49,15 +50,17 @@ if __name__ == "__main__":
     start = time.time()
 
     if args.run_folder:
-        args.workingdir = Configuration.build_abspath(args.run_folder, os.getcwd())
+        args.workingdir = filehelper.build_abspath(args.run_folder, os.getcwd())
         args.configuration = os.path.join(args.workingdir, 'configuration.jsonc')
-        args.weights = os.path.join(args.workingdir, 'weights', 'weights.h5')
-        prediction_folder = Configuration.build_path('predictions')
-    else:
-        prediction_folder = ''
+        args.weights = filehelper.get_latest(os.path.join(args.workingdir, 'weights'), '*weights*.h5')
     
     Configuration.initialize(args.configuration, args.workingdir, False)
     Logger.initialize(False)
+ 
+    if args.run_folder:
+        prediction_folder = Configuration.build_path('predictions')        
+    else:
+        prediction_folder = ''
 
     Logger.info("Arguments: ", str(args))
   
@@ -65,7 +68,7 @@ if __name__ == "__main__":
     if args.song:
         song_files = [args.song]
     if args.songs:
-        for file in glob.iglob(Configuration.build_abspath(args.songs, os.getcwd()) + '**/*', recursive=True):
+        for file in glob.iglob(filehelper.build_abspath(args.songs, os.getcwd()) + '**/*', recursive=True):
             extension = os.path.splitext(file)[1].lower()
             if extension in AUDIO_FILE_EXTENSIONS:
                 song_files.append(file)

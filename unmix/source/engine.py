@@ -38,10 +38,10 @@ class Engine:
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
         self.model.summary(print_fn=Logger.info)
-        Logger.debug("Model initialized with %d parameters." % self.model.count_params())
+        Logger.debug("Model '%s' initialized with %d parameters." %
+                     (Configuration.get('training.model.name'), self.model.count_params()))
 
         self.transformer = TransformerFactory.build()
-        
 
     def plot_model(self):
         try:
@@ -56,10 +56,11 @@ class Engine:
 
     def train(self, epoch_start=0):
         training_songs, validation_songs = DataLoader.load()
-        self.training_generator = DataGenerator(training_songs, self.transformer)
+        self.training_generator = DataGenerator(
+            training_songs, self.transformer)
         self.validation_generator = DataGenerator(
             validation_songs, self.transformer)
-        
+
         epoch_count = Configuration.get('training.epoch.count')
         history = self.model.fit_generator(
             generator=self.training_generator,
@@ -75,7 +76,7 @@ class Engine:
 
     def predict(self, mix):
         import progressbar
-        
+
         length = self.transformer.calculate_items(mix.shape[1])
         predictions = []
 
@@ -83,12 +84,14 @@ class Engine:
             for i in range(length):
                 input, transform_info = self.transformer.prepare_input(mix, i)
                 predicted = self.model.predict(np.array([input]))[0]
-                predicted = self.transformer.untransform_target(mix, predicted, i, transform_info)
-                if predictions == []: # At this point, we know the shape of our predictions array - initialize
+                predicted = self.transformer.untransform_target(
+                    mix, predicted, i, transform_info)
+                if predictions == []:  # At this point, we know the shape of our predictions array - initialize
                     shape = predicted.shape
-                    predictions = np.empty((shape[0], shape[1] * length), np.complex)
-                predictions[:, shape[1] * i : shape[1] * (i+1)] = predicted
-                bar.update(i)        
+                    predictions = np.empty(
+                        (shape[0], shape[1] * length), np.complex)
+                predictions[:, shape[1] * i: shape[1] * (i+1)] = predicted
+                bar.update(i)
         return predictions
 
     def save_weights(self):
