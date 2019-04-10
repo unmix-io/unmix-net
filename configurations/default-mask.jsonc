@@ -13,7 +13,7 @@
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "validation": {
-            "ratio": 0.25,
+            "ratio": 0.2,
             "mode": "first"
         }
     },
