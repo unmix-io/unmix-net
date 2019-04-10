@@ -38,7 +38,7 @@ if __name__ == "__main__":
                         type=str, help="Pretrained weights file (overwrites configuration).")
     parser.add_argument('--workingdir', default=os.getcwd(), 
                         type=str, help="Working directory (default: current directory).")
-    parser.add_argument('--sample_rate', default=22050, 
+    parser.add_argument('--sample_rate', default=11025,
                         type=str, help="Target sample rate which the model can process.")
     parser.add_argument('--fft_window', default=1536, 
                         type=str, help="FFT window size the model was trained on.")
