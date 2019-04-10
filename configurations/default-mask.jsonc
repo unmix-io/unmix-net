@@ -13,14 +13,14 @@
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "validation": {
-            "ratio": 0.2,
+            "ratio": 0.25,
             "mode": "first"
         }
     },
     "transformation": {
         "name": "mask",
         "options": {
-            "size": 25,
+            "size": 9,
             "step": 1,
             "shuffle": false,
             "save_audio": false
