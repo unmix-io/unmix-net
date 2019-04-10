@@ -17,7 +17,6 @@ from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
 from unmix.source.data.datagenerator import DataGenerator
 from unmix.source.data.dataloader import DataLoader
-from unmix.source.data.prediction import Prediction
 from unmix.source.logging.logger import Logger
 from unmix.source.helpers import converter
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
@@ -76,6 +75,8 @@ class Engine:
         return history
 
     def predict(self, mix):
+        from unmix.source.data.prediction import Prediction
+        
         prediction = Prediction(mix, self.model, self.transformer)
         prediction.run()
         return prediction.vocals, prediction.instrumental
