@@ -57,7 +57,6 @@ class Prediction(object):
     def init_shapes(self, shape):
         self.vocals = np.empty(
             (shape[0], shape[1] * self.length), np.complex)
-        self.instrumental = np.empty(
-            (shape[0], shape[1] * self.length), np.complex)
+        self.instrumental = np.empty_like(self.vocals)
         self.step = self.vocals.shape[1]
         self.initialized = True

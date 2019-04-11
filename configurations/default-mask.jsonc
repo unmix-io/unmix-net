@@ -23,7 +23,7 @@
             "size": 9,
             "step": 1,
             "shuffle": false,
-            "save_audio": false
+            "save_image": false
         }
     },
     "training": {

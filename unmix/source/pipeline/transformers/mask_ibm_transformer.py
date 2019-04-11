@@ -12,20 +12,22 @@ __email__ = "info@unmix.io"
 import numpy as np
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
-from unmix.source.helpers import audiohandler
+from unmix.source.helpers import spectrogramhandler
 from unmix.source.helpers import reducer
 from unmix.source.pipeline.choppers.chopper import Chopper
 import unmix.source.pipeline.normalizers.normalizer_real_imag as normalizer
 from unmix.source.helpers.masker import mask
+from unmix.source.helpers import spectrogramhandler
 
 class IBMMaskTransformer:
 
     NAME = "mask_ibm"
 
-    def __init__(self, size, step, shuffle):
+    def __init__(self, size, step, shuffle, save_image):
         self.size = size
         self.step = step
         self.shuffle = shuffle
+        self.save_image = save_image
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
@@ -45,6 +47,10 @@ class IBMMaskTransformer:
         target_mask[instrumental_magnitude <= vocal_magnitude] = 1
         target_mask[instrumental_magnitude > vocal_magnitude] = 0
         target_mask = np.reshape(target_mask, target_mask.shape + (1,))
+
+        if self.save_image:
+            spectrogramhandler.to_image('%s-%d_Target.png' % (name, index), target_mask)
+            spectrogramhandler.to_image('%s-%d_Input.png' % (name, index), normalizer.normalize(input)[0])
 
         return normalizer.normalize(input)[0], target_mask
 

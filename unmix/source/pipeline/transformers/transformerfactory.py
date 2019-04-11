@@ -25,12 +25,12 @@ class TransformerFactory(object):
         name = Configuration.get('transformation.name', False)
         options = Configuration.get('transformation.options', False)
         try:
-            if name == MaskTransformer.NAME:
-                return MaskTransformer(options.size, options.step, options.shuffle)
             if name == WindowTransformer.NAME:
                 return WindowTransformer(options.size, options.step, options.shuffle, options.save_audio)
+            if name == MaskTransformer.NAME:
+                return MaskTransformer(options.size, options.step, options.shuffle, options.save_image)
             if name == IBMMaskTransformer.NAME:
-                return IBMMaskTransformer(options.size, options.step, options.shuffle)
+                return IBMMaskTransformer(options.size, options.step, options.shuffle, options.save_image)
         except:
             raise ConfigurationError('transformation.options')
         raise ConfigurationError('transformation.name')

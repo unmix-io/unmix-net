@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-window",
+        "name": "default-mask",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -15,29 +15,27 @@
         "validation": {
             "ratio": 0.2,
             "mode": "first"
-        },
-        "mean": 0.4265994829115264, // expected data mean over all training data
-        "variance": 2.59734488467731  //expected data variance over all training data
+        }
     },
     "transformation": {
-        "name": "window",
+        "name": "mask",
         "options": {
             "size": 64,
-            "step": 32,
+            "step": 1,
             "shuffle": false,
-            "save_audio": false
+            "save_image": true
         }
     },
     "training": {
         "model": {
-            "name": "leakyrelu",
+            "name": "mask",
             "alpha1": 0.1,
             "alpha2": 0.01,
             "rate": 0.1
         },
         "batch_size": 8,
         "epoch": {
-            "count": 30,
+            "count": 100,
             "shuffle": true
         },
         "verbose": 1,
@@ -80,7 +78,7 @@
             //     "factor": 0.2,
             //     "patience": 5,
             //     "min_learningrate": 0.001
-            // }        
+            // }
         }
     }
 }

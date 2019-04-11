@@ -12,7 +12,7 @@ __email__ = "info@unmix.io"
 import numpy as np
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
-from unmix.source.helpers import audiohandler
+from unmix.source.helpers import spectrogramhandler
 from unmix.source.helpers import reducer
 from unmix.source.pipeline.choppers.chopper import Chopper
 import unmix.source.pipeline.normalizers.normalizer_real_imag as normalizer_real_imag
@@ -35,8 +35,8 @@ class WindowTransformer:
         target = self.chopper.chop_n_pad(vocals[0], index, self.size)
         
         if self.save_audio:
-            audiohandler.spectrogram_to_audio('%s_mix.wav' % name, input)
-            audiohandler.spectrogram_to_audio('%s_vocals.wav' % name, target)
+            spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), input)
+            spectrogramhandler.to_audio('%s-%d_Target.wav' % (name, index), target)
 
         normalized_input = normalizer_real_imag.normalize(input)[0]
         normalized_target = normalizer_real_imag.normalize(target)[0]
