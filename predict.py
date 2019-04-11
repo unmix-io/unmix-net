@@ -97,7 +97,7 @@ if __name__ == "__main__":
             instrumental = np.array(librosa.istft(predicted_instrumental))
 
             if prediction_folder:
-                output_file = os.path.join(prediction_folder, converter.get_timestamp() + "_" + os.path.basename(song_file) + '_predicted_%s.wav')
+                output_file = os.path.join(prediction_folder, converter.get_timestamp() + "_" + os.path.splitext(os.path.basename(song_file))[0])
             else:
                 output_file = os.path.splitext(song_file)[0]
 
