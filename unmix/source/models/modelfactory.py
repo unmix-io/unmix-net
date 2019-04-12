@@ -5,29 +5,25 @@
 Builds a keras model from configuration.
 """
 
+import importlib
 
 from unmix.source.configuration import Configuration
 from unmix.source.exceptions.configurationerror import ConfigurationError
-from unmix.source.models import acapellabot as AcapellaBotModel
-from unmix.source.models import leakyrelu as LeakyReLUModel
-from unmix.source.models import unmix as UnmixModel
-from unmix.source.models import mask as MaskModel
-from unmix.source.models import dummy as DummyModel
+from unmix.source.models.basemodel import BaseModel
+
+# Load all models
+from os.path import dirname, basename, isfile
+import glob
+modules = glob.glob(dirname(__file__)+"/*.py")
+for module in [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py') and not f == "modelfactory"]:
+    __import__("unmix.source.models." + module)
 
 class ModelFactory(object):
 
     @staticmethod
     def build():
-        model = Configuration.get('training.model', False)
-        if model.name:
-            if model.name.lower() == LeakyReLUModel.name.lower():
-                return LeakyReLUModel.generate(model.alpha1, model.alpha2, model.rate)
-            elif model.name.lower() == AcapellaBotModel.name.lower():
-                return AcapellaBotModel.generate(0)
-            elif model.name.lower() == UnmixModel.name:
-                return UnmixModel.generate(model.alpha1, model.alpha2, model.rate)
-            elif model.name.lower() == MaskModel.name:
-                return MaskModel.generate(model.alpha1, model.alpha2, model.rate)
-            elif model.name.lower() == DummyModel.name:
-                return DummyModel.generate(model.alpha1, model.alpha2, model.rate)
+        model_config = Configuration.get('training.model', False)
+        all_models = BaseModel.__subclasses__()
+        if model_config.name:
+            return [m().build(model_config) for m in all_models if m.name.lower() == model_config.name.lower()][0]
         raise ConfigurationError('training.model.name')
