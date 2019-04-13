@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-mask",
+        "name": "default-window",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -13,29 +13,29 @@
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "validation": {
-            "ratio": 0.2,
+            "ratio": 0.3,
             "mode": "first"
         }
         //,"mean": 0.4265994829115264, // expected data mean over all training data
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "mask",
+        "name": "window",
         "options": {
             "size": 64,
-            "step": 1,
-            "shuffle": false,
-            "save_image": true
+            "step": 64,
+            "shuffle": true,
+            "save_audio": false
         }
     },
     "training": {
         "model": {
-            "name": "mask",
+            "name": "leakyrelu",
             "alpha1": 0.1,
             "alpha2": 0.01,
             "rate": 0.1
         },
-        "batch_size": 8,
+        "batch_size": 16,
         "epoch": {
             "count": 100,
             "shuffle": true
@@ -80,7 +80,7 @@
             //     "factor": 0.2,
             //     "patience": 5,
             //     "min_learningrate": 0.001
-            // }
+            // }        
         }
     }
 }
