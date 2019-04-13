@@ -15,9 +15,9 @@
         "validation": {
             "ratio": 0.2,
             "mode": "first"
-        },
-        "mean": 0.4265994829115264, // expected data mean over all training data
-        "variance": 2.59734488467731  //expected data variance over all training data
+        }
+        //,"mean": 0.4265994829115264, // expected data mean over all training data
+        //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
         "name": "window",
