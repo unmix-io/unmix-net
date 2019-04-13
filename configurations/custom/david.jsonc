@@ -24,7 +24,7 @@
         "options": {
             "size": 64,
             "step": 64,
-            "shuffle": true,
+            "shuffle": false,
             "save_audio": false
         }
     },
