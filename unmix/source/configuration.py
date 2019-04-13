@@ -86,8 +86,9 @@ class Configuration(object):
                     raise ConfigurationError(key)
                 return value
             except:
-                raise ConfigurationError(key)
-        return key
+                if not optional:
+                    raise ConfigurationError(key)
+        return None
 
     @staticmethod
     def get_path(key='', create=True, optional=True):
