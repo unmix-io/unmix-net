@@ -19,56 +19,36 @@ class MaskModel(BaseModel):
     name = 'mask'
 
     def build(self, config):
-        # input_shape = (769, 108, 1)
-        #
-        # model = Sequential()
-        # model.add(Conv2D(32, (3, 3), activation='relu', padding='same',
-        #                  input_shape=input_shape))  # conv2d_1
-        # model.add(LeakyReLU(alpha=alpha1))  # leaky_re_lu_1
-        # model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))  # conv2d_2
-        # model.add(LeakyReLU(alpha=alpha1))  # leaky_re_lu_2
-        # model.add(MaxPooling2D(pool_size=(3, 3), padding='same'))  # max_pooling2d_1
-        # model.add(Dropout(0.5))  # dropout_1
-        #
-        # model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))  # conv2d_3
-        # model.add(LeakyReLU(alpha=alpha1))  # leaky_re_lu_3
-        # model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))  # conv2d_4
-        # model.add(LeakyReLU(alpha=alpha1))  # leaky_re_lu_4
-        # model.add(MaxPooling2D(pool_size=(4, 4), padding='same'))  # max_pooling2d_2
-        # model.add(Dropout(0.5))  # dropout_2
-        #
-        # model.add(Flatten())  # flatten_1
-        # model.add(Dense(128))  # dense_1
-        # model.add(LeakyReLU(alpha=alpha1))  # leaky_re_lu_5
-        # model.add(Dropout(0.5))  # dropout_3
-        #
-        # model.add(Dense(769))  # dense_2
-        # model.add(Reshape((769, 1, 1)))
-        #
-        # return model
+
+        transformation = Configuration.get('transformation.options', True)
 
 
-        batch_size = Configuration.get("training.batch_size")
-        window_size = Configuration.get('transformation.options.size')
-        input = Input(shape=(769, window_size, 1), name='input')
-        model = Conv2D(32, (3, 3), activation='relu', padding='same')(input)
-        # model = ReLU(alpha=alpha1)(model)
-        model = Conv2D(16, (3, 3), activation='relu', padding='same')(model)
-        # model = LeakyReLU(alpha=alpha1)(model)
-        model = MaxPooling2D(pool_size=(2, 2))(model)
-        model = Conv2D(64, (3, 3), activation='relu', padding='same')(model)
-        # model = LeakyReLU(alpha=alpha1)(model)
-        model = Conv2D(32, (3, 3), activation='relu', padding='same')(model)
-        # model = LeakyReLU(alpha=alpha1)(model)
-        model = MaxPooling2D(pool_size=(2, 2))(model)
-        model = Dropout(0.5)(model)
-        dimensions = model.shape.dims
-        # model = Flatten()(model)
-        model = Reshape((reduce((lambda x, y: x * y), dimensions[1:]).value,))(model)
-        # model = Dense(384, activation='relu', )(model)
-        # model = LeakyReLU(alpha=alpha1)(model)
-        # model = Dropout(0.5)(model)
-        model = Dense(769, activation='relu', )(model)
-        model = Reshape((769, 1, 1))(model)
-        print(model.shape)
-        return Model(input=input, outputs=model)
+        input_shape = (769, transformation.size, 1)
+
+        alpha1 = 0.3
+        
+        model = Sequential()
+        model.add(Conv2D(32, (3, 3), activation='relu', padding='same',
+                         input_shape=input_shape))
+        model.add(LeakyReLU(alpha=alpha1))
+        model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))
+        model.add(LeakyReLU(alpha=config.alpha1))
+        model.add(MaxPooling2D(pool_size=(3, 3), padding='same'))
+        model.add(Dropout(0.5))
+        
+        model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+        model.add(LeakyReLU(alpha=alpha1))
+        model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))
+        model.add(LeakyReLU(alpha=alpha1))
+        model.add(MaxPooling2D(pool_size=(4, 4), padding='same'))
+        model.add(Dropout(0.5)) 
+        
+        model.add(Flatten())
+        model.add(Dense(128))
+        model.add(LeakyReLU(alpha=alpha1))
+        model.add(Dropout(0.5))
+        
+        model.add(Dense(769 * transformation.step))
+        model.add(Reshape((769, transformation.step, 1)))
+        
+        return model
