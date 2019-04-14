@@ -48,7 +48,7 @@
         "callbacks": {
             "model_checkpoint": {
                 "file_name": "callback_weights_{epoch:02d}.h5",
-                "monitor": "loss",
+                "monitor": "val_loss",
                 "best_only": true,
                 "weights_only": false,
                 "mode": "auto",
