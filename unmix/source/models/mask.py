@@ -5,11 +5,15 @@
 Keras model for training using a mask based appoach.
 """
 
+
 from keras.layers import Dropout, Conv2D, MaxPooling2D, Flatten, Dense, LeakyReLU, Reshape, Input, ReLU, Activation
 from keras.models import Sequential, Model
 from keras.activations import sigmoid
+from functools import reduce 
+
 from unmix.source.configuration import Configuration
 from unmix.source.models.basemodel import BaseModel
+
 
 class MaskModel(BaseModel):
     name = 'mask'
@@ -46,7 +50,7 @@ class MaskModel(BaseModel):
 
         batch_size = Configuration.get("training.batch_size")
         window_size = Configuration.get('transformation.options.size')
-        input = Input(batch_shape=(None, 769, window_size, 1), name='input')
+        input = Input(shape=(769, window_size, 1), name='input')
         model = Conv2D(32, (3, 3), activation='relu', padding='same')(input)
         # model = ReLU(alpha=alpha1)(model)
         model = Conv2D(16, (3, 3), activation='relu', padding='same')(model)
@@ -58,7 +62,9 @@ class MaskModel(BaseModel):
         # model = LeakyReLU(alpha=alpha1)(model)
         model = MaxPooling2D(pool_size=(2, 2))(model)
         model = Dropout(0.5)(model)
-        model = Flatten()(model)
+        dimensions = model.shape.dims
+        # model = Flatten()(model)
+        model = Reshape((reduce((lambda x, y: x * y), dimensions[1:]).value,))(model)
         # model = Dense(384, activation='relu', )(model)
         # model = LeakyReLU(alpha=alpha1)(model)
         # model = Dropout(0.5)(model)
