@@ -70,13 +70,13 @@
                 "append": true
             },
             "early_stopping": {
-                "monitor": "loss",
+                "monitor": "val_loss",
                 "min_delta": 0.000001,
                 "patience": 15,
                 "verbose": 1
             }//,
             // "reduce_learningrate": {
-            //     "monitor": "loss",
+            //     "monitor": "val_loss",
             //     "factor": 0.2,
             //     "patience": 5,
             //     "min_learningrate": 0.001
