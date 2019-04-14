@@ -9,6 +9,7 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
+from keras import backend as K
 from keras import losses
 
 from unmix.source.configuration import Configuration
@@ -36,3 +37,7 @@ class LossFunctionFactory(object):
     @staticmethod
     def squared_hinge(y_true, y_pred):
         return losses.squared_hinge(y_true, y_pred)
+
+    @staticmethod
+    def root_mean_squared_error(y_true, y_pred):
+        return K.sqrt(K.mean(K.square(y_pred - y_true))) 
