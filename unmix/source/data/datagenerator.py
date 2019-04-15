@@ -18,19 +18,19 @@ from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
 from unmix.source.logging.logger import Logger
 from unmix.source.metrics.accuracy import Accuracy
+from unmix.source.helpers import memorymonitor
 
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
     def __init__(self, engine, collection, transformer):
-        'Initialization'
         self.collection = collection
         self.transformer = transformer
         self.batch_size = Configuration.get('training.batch_size')
-        self.shuffle = Configuration.get('training.epoch.shuffle')
-        self.on_epoch_end()
+        self.epoch_shuffle = Configuration.get('training.epoch.shuffle')
         self.engine = engine
+        self.on_epoch_end()
 
     def generate_index(self):
         self.index = np.array([])
@@ -38,7 +38,7 @@ class DataGenerator(keras.utils.Sequence):
             try:
                 song = Song(file)
                 items = [BatchItem(song, i) for i in range(self.transformer.calculate_items(song.width))]
-                if(self.transformer.shuffle):
+                if self.transformer.shuffle:
                     np.random.shuffle(items)
                 self.index = np.append(self.index, items)
             except Exception as e:
@@ -59,15 +59,13 @@ class DataGenerator(keras.utils.Sequence):
     def on_epoch_end(self):
         'Updates index after each epoch'
         self.generate_index()
-        if self.transformer.shuffle:
+        if self.epoch_shuffle:
             np.random.shuffle(self.index)
         self.accuracy = Accuracy(self.engine)
         self.accuracy.evaluate()
 
-
     def __data_generation(self, subset):
         'Generates data containing batch_size samples'
-
         X = []
         Y = []
 

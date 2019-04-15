@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-window",
+        "name": "default",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -23,7 +23,7 @@
         "options": {
             "size": 64,
             "step": 64,
-            "shuffle": false,
+            "shuffle": true,
             "save_audio": false
         }
     },
@@ -32,12 +32,12 @@
             "name": "leakyrelu",
             "alpha1": 0.1,
             "alpha2": 0.01,
-            "rate": 0.1
+            "dropout_rate": 0.2
         },
-        "batch_size": 8,
+        "batch_size": 16,
         "epoch": {
-            "count": 100,
-            "shuffle": true
+            "count": 100000,
+            "shuffle": false
         },
         "verbose": 1,
         "loss_function": "mean_squared_error",
@@ -70,8 +70,8 @@
             },
             "early_stopping": {
                 "monitor": "val_loss",
-                "min_delta": 0.000001,
-                "patience": 15,
+                "min_delta": 0.00001,
+                "patience": 10,
                 "verbose": 1
             }//,
             // "reduce_learningrate": {
@@ -79,7 +79,7 @@
             //     "factor": 0.2,
             //     "patience": 5,
             //     "min_learningrate": 0.001
-            // }        
+            // }
         }
     }
 }

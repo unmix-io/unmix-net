@@ -37,7 +37,7 @@
         "batch_size": 8,
         "epoch": {
             "count": 30,
-            "shuffle": true
+            "shuffle": false
         },
         "verbose": 1,
         "loss_function": "mean_squared_error",
