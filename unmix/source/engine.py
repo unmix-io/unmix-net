@@ -11,6 +11,7 @@ __email__ = "info@unmix.io"
 
 import os
 import keras.utils
+import tensorflow as tf
 import numpy as np
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
@@ -43,6 +44,8 @@ class Engine:
                      (Configuration.get('training.model.name'), self.model.count_params()))
 
         self.transformer = TransformerFactory.build()
+        self.test_songs = None
+        self.graph = tf.get_default_graph()
 
     def plot_model(self):
         try:
@@ -78,9 +81,9 @@ class Engine:
 
     def predict(self, mix):
         from unmix.source.data.prediction import Prediction
-        
-        prediction = Prediction(mix, self.model, self.transformer)
-        prediction.run()
+        with self.graph.as_default():
+            prediction = Prediction(mix, self.model, self.transformer)
+            prediction.run()
         return prediction.vocals, prediction.instrumental
 
     def save_weights(self):

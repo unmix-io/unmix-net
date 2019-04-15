@@ -32,6 +32,7 @@ class DataGenerator(keras.utils.Sequence):
         self.engine = engine
         self.on_epoch_end()
 
+
     def generate_index(self):
         self.index = np.array([])
         for file in self.collection:
@@ -61,8 +62,9 @@ class DataGenerator(keras.utils.Sequence):
         self.generate_index()
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
-        self.accuracy = Accuracy(self.engine)
-        self.accuracy.evaluate()
+        if self.engine.test_songs is not None:
+            self.accuracy = Accuracy(self.engine)
+            self.accuracy.evaluate()
 
     def __data_generation(self, subset):
         'Generates data containing batch_size samples'
