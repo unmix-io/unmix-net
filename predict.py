@@ -41,10 +41,27 @@ def save_prediction(type, prediction, sample_rate, file, folder=''):
     Logger.info("Output prediction file: %s" % output_file)
 
 
+def youtube_audio(link):
+    import youtube_dl
+
+    options = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }    
+    with youtube_dl.YoutubeDL(options) as ydl:
+       data = ydl.download([link])
+    return data
+
+
 if __name__ == "__main__":
     global config
 
-    parser = argparse.ArgumentParser(description="Executes a training session.")
+    parser = argparse.ArgumentParser(
+        description="Executes a training session.")
     parser.add_argument('--run_folder', default='',
                         type=str, help="General training input folder (overwrites other parameters)")
     parser.add_argument('--configuration', default='',
@@ -61,6 +78,8 @@ if __name__ == "__main__":
                         type=str, help="Input audio file to split vocals and instrumental.")
     parser.add_argument('--songs', default='temp/songs',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
+    parser.add_argument('--youtube', default='', type=str,
+                        help="Audio stream from a youtube video.")
 
     args = parser.parse_args()
     start = time.time()
@@ -97,6 +116,9 @@ if __name__ == "__main__":
                 song_files.append(file)
 
     Logger.info("Found %d songs to predict." % len(song_files))
+
+    if args.youtube:
+        youtube_audio(args.youtube)
 
     engine = Engine()
     engine.load_weights(args.weights)
