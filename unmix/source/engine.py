@@ -63,7 +63,7 @@ class Engine:
         self.training_generator = DataGenerator(
             self, training_songs, self.transformer)
         self.validation_generator = DataGenerator(
-            self, validation_songs, self.transformer)
+            self, validation_songs, self.transformer, True)
         self.test_songs = test_songs
 
         epoch_count = Configuration.get('training.epoch.count')

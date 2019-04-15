@@ -10,3 +10,4 @@ commentjson
 gitpython
 colorama
 progressbar2
+mir_eval

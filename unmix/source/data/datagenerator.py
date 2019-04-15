@@ -24,12 +24,13 @@ from unmix.source.helpers import memorymonitor
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, engine, collection, transformer):
+    def __init__(self, engine, collection, transformer, run_tests=False):
         self.collection = collection
         self.transformer = transformer
         self.batch_size = Configuration.get('training.batch_size')
         self.epoch_shuffle = Configuration.get('training.epoch.shuffle')
         self.engine = engine
+        self.run_tests = run_tests
         self.on_epoch_end()
 
 
@@ -62,7 +63,7 @@ class DataGenerator(keras.utils.Sequence):
         self.generate_index()
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
-        if self.engine.test_songs is not None:
+        if self.engine.test_songs and self.run_tests:
             self.accuracy = Accuracy(self.engine)
             self.accuracy.evaluate()
 
