@@ -71,8 +71,8 @@
             },
             "early_stopping": {
                 "monitor": "val_loss",
-                "min_delta": 0.000001,
-                "patience": 15,
+                "min_delta": 0.00001,
+                "patience": 10,
                 "verbose": 1
             }//,
             // "reduce_learningrate": {
