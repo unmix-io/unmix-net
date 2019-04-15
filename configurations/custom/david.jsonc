@@ -12,10 +12,9 @@
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
-        "validation": {
-            "ratio": 0.3,
-            "mode": "first"
-        }
+        "songs_limit": 0, // Number of tracks
+        "validation_ratio": 0.2,
+        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))" // Run tests every n epoch
         //,"mean": 0.4265994829115264, // expected data mean over all training data
         //"variance": 2.59734488467731  //expected data variance over all training data
     },

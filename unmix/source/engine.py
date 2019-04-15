@@ -55,11 +55,12 @@ class Engine:
             Logger.warn("Error while plotting model: %s" % str(e))
 
     def train(self, epoch_start=0):
-        training_songs, validation_songs = DataLoader.load()
+        training_songs, validation_songs, test_songs = DataLoader.load()
         self.training_generator = DataGenerator(
             training_songs, self.transformer)
         self.validation_generator = DataGenerator(
             validation_songs, self.transformer)
+        self.test_songs = test_songs
 
         epoch_count = Configuration.get('training.epoch.count')
         history = self.model.fit_generator(

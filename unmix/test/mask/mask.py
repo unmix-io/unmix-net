@@ -35,7 +35,7 @@ if __name__ == "__main__":
     Logger.info("Arguments: ", str(args))
 
     engine = Engine()
-    training_songs, validation_songs = DataLoader.load()
+    training_songs, validation_songs, test_songs = DataLoader.load()
     song = Song(training_songs[0])
     vocals = song.vocals.load().channels
     instrumentals = song.instrumental.load().channels
