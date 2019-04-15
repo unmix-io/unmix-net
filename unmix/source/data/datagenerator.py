@@ -42,7 +42,7 @@ class DataGenerator(keras.utils.Sequence):
                     np.random.shuffle(items)
                 self.index = np.append(self.index, items)
             except Exception as e:
-                Logger.warn("Skip file while generating index: %s", str(e.args))
+                Logger.warn("Skip file while generating index: %s" % str(e.args))
 
     def __len__(self):
         'Denotes the number of batches per epoch'
