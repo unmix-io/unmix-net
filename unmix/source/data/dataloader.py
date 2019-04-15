@@ -39,13 +39,13 @@ class DataLoader(object):
             test_files = files[-DataLoader.TEST_DATA_COUNT:]
             files = files[:len(files) - DataLoader.TEST_DATA_COUNT]
 
-        songs_limit = Configuration.get('collection.songs_limit')
+        song_limit = Configuration.get('collection.song_limit')
 
-        if songs_limit and songs_limit > 0:
-            if songs_limit <= 1:  # Configuration as percentage share
-                songs_limit = songs_limit * len(files)
-            songs_limit = min(songs_limit, len(files))
-            files = files[:songs_limit]
+        if song_limit and song_limit > 0:
+            if song_limit <= 1:  # Configuration as percentage share
+                song_limit = song_limit * len(files)
+            song_limit = min(song_limit, len(files))
+            files = files[:song_limit]
 
         validation_ratio = Configuration.get('collection.validation_ratio')
         validation_files = files[:int(len(files) * validation_ratio)]
