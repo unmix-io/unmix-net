@@ -16,18 +16,20 @@ import numpy as np
 from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
+from unmix.source.metrics.accuracy import Accuracy
+from unmix.source.helpers import memorymonitor
 
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, collection, transformer):
-        'Initialization'
+    def __init__(self, engine, collection, transformer):
         self.collection = collection
         self.transformer = transformer
         self.batch_size = Configuration.get('training.batch_size')
-        self.shuffle = Configuration.get('training.epoch.shuffle')
+        self.epoch_shuffle = Configuration.get('training.epoch.shuffle')
+        self.engine = engine
         self.on_epoch_end()
 
     def generate_index(self):
@@ -36,12 +38,11 @@ class DataGenerator(keras.utils.Sequence):
             try:
                 song = Song(file)
                 items = [BatchItem(song, i) for i in range(self.transformer.calculate_items(song.width))]
-                if(self.transformer.shuffle):
+                if self.transformer.shuffle:
                     np.random.shuffle(items)
                 self.index = np.append(self.index, items)
             except Exception as e:
-                console.warn(
-                    "Skip file while generating index: %s", str(e.args))
+                Logger.warn("Skip file while generating index: %s" % str(e.args))
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -58,12 +59,13 @@ class DataGenerator(keras.utils.Sequence):
     def on_epoch_end(self):
         'Updates index after each epoch'
         self.generate_index()
-        if self.transformer.shuffle:
+        if self.epoch_shuffle:
             np.random.shuffle(self.index)
+        self.accuracy = Accuracy(self.engine)
+        self.accuracy.evaluate()
 
     def __data_generation(self, subset):
         'Generates data containing batch_size samples'
-
         X = []
         Y = []
 

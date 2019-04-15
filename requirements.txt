@@ -8,3 +8,5 @@ numpy
 psutil
 commentjson
 gitpython
+colorama
+progressbar2

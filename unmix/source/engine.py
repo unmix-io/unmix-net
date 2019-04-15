@@ -17,7 +17,7 @@ from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
 from unmix.source.data.datagenerator import DataGenerator
 from unmix.source.data.dataloader import DataLoader
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
 from unmix.source.helpers import converter
 from unmix.source.lossfunctions.lossfunctionfactory import LossFunctionFactory
 from unmix.source.metrics.metricsfactory import MetricsFactory
@@ -37,13 +37,12 @@ class Engine:
         self.model = ModelFactory.build()
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
-        self.model.summary()
-        self.plot_model()
-        console.debug("Model initialized with %d parameters." %
-                      self.model.count_params())
+        self.model.summary(print_fn=Logger.info)
+        
+        Logger.debug("Model '%s' initialized with %d parameters." %
+                     (Configuration.get('training.model.name'), self.model.count_params()))
 
         self.transformer = TransformerFactory.build()
-        
 
     def plot_model(self):
         try:
@@ -54,14 +53,16 @@ class Engine:
                     path, ('%s_%s-model.png' % (converter.get_timestamp(), name)))
                 keras.utils.plot_model(self.model, file_name)
         except Exception as e:
-            console.error("Error while plotting model: %s." % str(e))
+            Logger.warn("Error while plotting model: %s" % str(e))
 
     def train(self, epoch_start=0):
-        training_songs, validation_songs = DataLoader.load()
-        self.training_generator = DataGenerator(training_songs, self.transformer)
+        training_songs, validation_songs, test_songs = DataLoader.load()
+        self.training_generator = DataGenerator(
+            self, training_songs, self.transformer)
         self.validation_generator = DataGenerator(
-            validation_songs, self.transformer)
-        
+            self, validation_songs, self.transformer)
+        self.test_songs = test_songs
+
         epoch_count = Configuration.get('training.epoch.count')
         history = self.model.fit_generator(
             generator=self.training_generator,
@@ -76,29 +77,21 @@ class Engine:
         return history
 
     def predict(self, mix):
-        length = self.transformer.calculate_items(mix.shape[1])
-        predictions = []
-
-        for i in range(length):
-            input, transform_info = self.transformer.prepare_input(mix, i)
-            predicted = self.model.predict(np.array([input]))[0]
-            predicted = self.transformer.untransform_target(mix, predicted, i, transform_info)
-            if predictions == []: # At this point, we know the shape of our predictions array - initialize
-                shape = predicted.shape
-                predictions = np.empty((shape[0], shape[1] * length), np.complex)
-            predictions[:, shape[1] * i : shape[1] * (i+1)] = predicted
+        from unmix.source.data.prediction import Prediction
         
-        return predictions
+        prediction = Prediction(mix, self.model, self.transformer)
+        prediction.run()
+        return prediction.vocals, prediction.instrumental
 
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
             'environment.weights.folder'), Configuration.get('environment.weights.file'))
-        console.info("Saved weights to: %s" % path)
+        Logger.info("Saved weights to: %s" % path)
         self.model.save_weights(path, overwrite=True)
 
     def load_weights(self, path=None):
         if not path:
             path = os.path.join(Configuration.get_path(
                 'environment.weights.folder'), Configuration.get('environment.weights.file'))
-        console.info("Load weights from: %s" % path)
+        Logger.info("Load weights from: %s" % path)
         self.model.load_weights(path)

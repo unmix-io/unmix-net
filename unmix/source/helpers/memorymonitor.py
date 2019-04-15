@@ -12,7 +12,7 @@ __email__ = "info@unmix.io"
 import os
 import time
 
-from unmix.source.helpers import console
+from unmix.source.logging.logger import Logger
 from unmix.source.helpers import converter
 
 
@@ -30,7 +30,7 @@ def track(func):
         elapsed_time = converter.elapsed_since(start)
         memory_after = get_process_memory() / 1000
 
-        console.debug("Memory usage profile for '%s':\n\t" % func.__name__
+        Logger.debug("Memory usage profile for '%s':\n\t" % func.__name__
                       + "Before: %d\n\t" % memory_before
                       + "After: %d\n\t" % memory_after
                       + "Consumed: %d\n\t" % (memory_after - memory_after)

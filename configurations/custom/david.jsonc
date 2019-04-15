@@ -34,7 +34,7 @@
             "alpha2": 0.01,
             "dropout_rate": 0.2
         },
-        "batch_size": 8,
+        "batch_size": 16,
         "epoch": {
             "count": 100000,
             "shuffle": false

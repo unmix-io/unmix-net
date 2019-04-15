@@ -14,6 +14,7 @@ import keras.backend as keras
 from unmix.source.configuration import Configuration
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.pipeline.transformers.masktransformer import MaskTransformer
+from unmix.source.pipeline.transformers.mask_ibm_transformer import IBMMaskTransformer
 from unmix.source.pipeline.transformers.windowtransformer import WindowTransformer
 
 
@@ -24,10 +25,12 @@ class TransformerFactory(object):
         name = Configuration.get('transformation.name', False)
         options = Configuration.get('transformation.options', False)
         try:
-            if name == MaskTransformer.NAME:
-                return MaskTransformer(options.size, options.step, options.shuffle)
             if name == WindowTransformer.NAME:
                 return WindowTransformer(options.size, options.step, options.shuffle, options.save_audio)
+            if name == MaskTransformer.NAME:
+                return MaskTransformer(options.size, options.step, options.shuffle, options.save_image)
+            if name == IBMMaskTransformer.NAME:
+                return IBMMaskTransformer(options.size, options.step, options.shuffle, options.save_image)
         except:
             raise ConfigurationError('transformation.options')
         raise ConfigurationError('transformation.name')

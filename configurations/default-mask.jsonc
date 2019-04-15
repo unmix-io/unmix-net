@@ -3,7 +3,7 @@
         "name": "default-mask",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
-        "log_folder": "logs",
+        "log_file": "logs.txt",
         "plot_folder": "plots",
         "weights": {
             "folder": "weights",
@@ -12,41 +12,39 @@
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
-        "validation": {
-            "ratio": 0.2,
-            "mode": "first"
-        }
+        "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
+        "validation_ratio": 0.2,
+        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))" // Run tests every n epoch
+        //,"mean": 0.4265994829115264, // expected data mean over all training data
+        //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
         "name": "mask",
         "options": {
-            "size": 64,
+            "size": 9,
             "step": 1,
-            "shuffle": false,
-            "save_audio": false
+            "shuffle": true,
+            "save_image": false
         }
     },
     "training": {
         "model": {
-            "name": "mask",
-            "alpha1": 0.1,
-            "alpha2": 0.01,
-            "rate": 0.1
+            "name": "mask"
         },
         "batch_size": 8,
         "epoch": {
-            "count": 10,
-            "shuffle": true
+            "count": 10000,
+            "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "mean_absolute_error",
+        "loss_function": "binary_crossentropy",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,
         "callbacks": {
             "model_checkpoint": {
                 "file_name": "callback_weights_{epoch:02d}.h5",
-                "monitor": "loss",
+                "monitor": "val_loss",
                 "best_only": true,
                 "weights_only": false,
                 "mode": "auto",
@@ -68,13 +66,13 @@
                 "append": true
             },
             "early_stopping": {
-                "monitor": "loss",
-                "min_delta": 0.000001,
-                "patience": 15,
+                "monitor": "val_loss",
+                "min_delta": 0.00001,
+                "patience": 10,
                 "verbose": 1
-            },
+            }//,
             // "reduce_learningrate": {
-            //     "monitor": "loss",
+            //     "monitor": "val_loss",
             //     "factor": 0.2,
             //     "patience": 5,
             //     "min_learningrate": 0.001

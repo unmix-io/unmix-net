@@ -11,60 +11,68 @@ __email__ = "info@unmix.io"
 
 import commentjson
 from collections import namedtuple
-import git
+import getpass
 import json
 import os
 import shutil
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import converter
-from unmix.source.helpers import console
 from unmix.source.helpers import environmentvariables
 from unmix.source.helpers import reducer
+from unmix.source.helpers import filehelper
 
 
 class Configuration(object):
 
-    working_directory = ''
+    output_directory = ''
 
     @staticmethod
-    def initialize(configuration_file, working_directory=None):
+    def initialize(configuration_file, working_directory=None, create_output=True):
         global configuration
         if not working_directory:
             working_directory = os.getcwd()
         environmentvariables.set_environment_variables(extend=True)
+
         if not configuration_file:
             configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')
-            console.info("Read configuration from environment variable: %s." % configuration_file)
         with open(Configuration.build_path(configuration_file), 'r') as f:
             configuration = commentjson.load(f, object_hook=lambda d: namedtuple('X', d.keys())
                                              (*map(lambda x: converter.try_eval(x), d.values())))
 
-        Configuration.output_directory = os.path.join(working_directory, Configuration.get(
-            'environment.output_path'), Configuration.get('environment.output_folder'))
-        if not os.path.exists(Configuration.output_directory):
-            os.makedirs(Configuration.output_directory)
-
-        Configuration.log_environment(configuration_file, working_directory)
+        if create_output:
+            Configuration.output_directory = os.path.join(working_directory,
+                 Configuration.get('environment.output_path'),
+                 Configuration.get('environment.output_folder'))
+            if not os.path.exists(Configuration.output_directory):
+                os.makedirs(Configuration.output_directory)
+            Configuration.log_environment(configuration_file, working_directory)
+        else:
+            Configuration.output_directory = working_directory
 
     @staticmethod
     def log_environment(configuration_file, working_directory):
         shutil.copy(configuration_file, os.path.join(
             Configuration.output_directory, 'configuration.jsonc'))
-        repo = git.Repo(search_parent_directories=True)
-        enviornment = {
+        repo = False
+        try:
+            import git
+            repo = git.Repo(search_parent_directories=True)
+        except:
+            pass
+        environment = {
             "time": converter.get_timestamp(),
             "data_collection": Configuration.get('collection.folder'),
             "configuration_file": configuration_file,
             "working_directory": working_directory,
-            "user": os.getlogin(),
+            "user": getpass.getuser(),
             "repository": repo.working_dir if repo else "",
             "branch": repo.active_branch.name if repo else "",
             "commit": repo.head.object.hexsha if repo else "",
             "variables": dict(os.environ)
         }
-        with open(os.path.join(Configuration.output_directory, 'enviornment.json'), 'w') as file:
-            json.dump(enviornment, file, indent=4)
+        with open(os.path.join(Configuration.output_directory, 'environment.json'), 'w') as file:
+            json.dump(environment, file, indent=4)
 
     @staticmethod
     def get(key='', optional=True):
@@ -78,8 +86,9 @@ class Configuration(object):
                     raise ConfigurationError(key)
                 return value
             except:
-                raise ConfigurationError(key)
-        return key
+                if not optional:
+                    raise ConfigurationError(key)
+        return None
 
     @staticmethod
     def get_path(key='', create=True, optional=True):
@@ -91,8 +100,7 @@ class Configuration(object):
         """
         Generates an absolute path if a relative is passed.
         """
-        if not os.path.isabs(path):
-            path = os.path.join(Configuration.output_directory, path)
+        path = filehelper.build_abspath(path, Configuration.output_directory)
         if create and not os.path.exists(path):
             os.makedirs(path)
         return path

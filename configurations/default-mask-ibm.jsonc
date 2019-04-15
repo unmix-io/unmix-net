@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default",
+        "name": "default-mask",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -19,28 +19,25 @@
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "window",
+        "name": "mask_ibm",
         "options": {
-            "size": 64,
-            "step": 64,
+            "size": 25,
+            "step": 1,
             "shuffle": true,
-            "save_audio": false
+            "save_image": false
         }
     },
     "training": {
         "model": {
-            "name": "leakyrelu",
-            "alpha1": 0.1,
-            "alpha2": 0.01,
-            "dropout_rate": 0.2
+            "name": "mask"
         },
         "batch_size": 8,
         "epoch": {
-            "count": 100000,
+            "count": 10000,
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "mean_squared_error",
+        "loss_function": "binary_crossentropy",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,

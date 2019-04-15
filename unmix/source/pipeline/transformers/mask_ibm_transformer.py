@@ -2,7 +2,7 @@
 # coding: utf8
 
 """
-Transform input to normalized amplitude spectrograms, target to a probability mask for vocals
+Transform input to normalized amplitude spectrograms, target to a ideal binary mask (IBM) for vocals
 """
 
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
@@ -11,15 +11,17 @@ __email__ = "info@unmix.io"
 
 import numpy as np
 
-from unmix.source.configuration import Configuration
+from unmix.source.exceptions.configurationerror import ConfigurationError
+from unmix.source.helpers import spectrogramhandler
+from unmix.source.helpers import reducer
 from unmix.source.pipeline.choppers.chopper import Chopper
 import unmix.source.pipeline.normalizers.normalizer_real_imag as normalizer
 from unmix.source.helpers.masker import mask
 from unmix.source.helpers import spectrogramhandler
 
-class MaskTransformer:
+class IBMMaskTransformer:
 
-    NAME = "mask"
+    NAME = "mask_ibm"
 
     def __init__(self, size, step, shuffle, save_image):
         self.size = size
@@ -34,15 +36,22 @@ class MaskTransformer:
 
         # Calculate mask
         mix_slice = self.chopper.chop_n_pad(mix[0], index, self.step)
-        mix_magnitude = np.abs(mix_slice)
         vocal_slice = self.chopper.chop_n_pad(vocals[0], index, self.step)
-        vocal_magnitude = np.abs(vocal_slice)
-        target_mask = mask(vocal_magnitude, mix_magnitude)
-        target_mask = np.reshape(target_mask, target_mask.shape + (1,))
+
+        instrumental_slice = mix_slice - vocal_slice
         
+        instrumental_magnitude = np.abs(instrumental_slice)
+        vocal_magnitude = np.abs(vocal_slice)
+
+        target_mask = np.empty_like(instrumental_magnitude)
+        target_mask[instrumental_magnitude <= vocal_magnitude] = 1
+        target_mask[instrumental_magnitude > vocal_magnitude] = 0
+        target_mask = np.reshape(target_mask, target_mask.shape + (1,))
+
         if self.save_image:
             spectrogramhandler.to_image('%s-%d_Target.png' % (name, index), target_mask)
             spectrogramhandler.to_image('%s-%d_Input.png' % (name, index), normalizer.normalize(input)[0])
+
         return normalizer.normalize(input)[0], target_mask
 
     def calculate_items(self, width):

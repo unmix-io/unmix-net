@@ -11,10 +11,10 @@ __email__ = "info@unmix.io"
 
 import numpy as np
 
-from unmix.source.helpers.memorymonitor import track
+from unmix.source.helpers import memorymonitor
 
 
-@track
+@memorymonitor.track
 def test_list_create():
     x = [1] * 1000
     return x
