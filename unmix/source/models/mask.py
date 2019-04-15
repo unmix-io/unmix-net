@@ -28,17 +28,17 @@ class MaskModel(BaseModel):
         alpha1 = 0.3
         
         model = Sequential()
-        model.add(Conv2D(32, (3, 3), activation='relu', padding='same',
+        model.add(Conv2D(32, (3, 3), padding='same',
                          input_shape=input_shape))
         model.add(LeakyReLU(alpha=alpha1))
-        model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(16, (3, 3), padding='same'))
         model.add(LeakyReLU(alpha=alpha1))
         model.add(MaxPooling2D(pool_size=(3, 3), padding='same'))
         model.add(Dropout(0.1))
         
-        model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(64, (3, 3), padding='same'))
         model.add(LeakyReLU(alpha=alpha1))
-        model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(16, (3, 3), padding='same'))
         model.add(LeakyReLU(alpha=alpha1))
         model.add(MaxPooling2D(pool_size=(4, 4), padding='same'))
         model.add(Dropout(0.1)) 
@@ -50,5 +50,5 @@ class MaskModel(BaseModel):
         
         model.add(Dense(769 * transformation.step))
         model.add(Reshape((769, transformation.step, 1)))
-        
+        model.add(Activation("sigmoid"))
         return model
