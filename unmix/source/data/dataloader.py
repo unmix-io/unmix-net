@@ -57,4 +57,8 @@ class DataLoader(object):
             Logger.debug("Use %d songs for tests after every %d epoch."
                          % (len(test_files), test_frequency))
 
+        if len(training_files) == 0:
+            Logger.error("No training files assigned.")
+        if len(validation_files) == 0:
+            Logger.warn("No validation files assigned.")
         return training_files, validation_files, test_files

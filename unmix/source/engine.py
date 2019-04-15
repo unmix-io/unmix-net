@@ -38,6 +38,7 @@ class Engine:
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
         self.model.summary(print_fn=Logger.info)
+        
         Logger.debug("Model '%s' initialized with %d parameters." %
                      (Configuration.get('training.model.name'), self.model.count_params()))
 
