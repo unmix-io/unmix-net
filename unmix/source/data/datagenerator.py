@@ -17,18 +17,20 @@ from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
 from unmix.source.logging.logger import Logger
+from unmix.source.metrics.accuracy import Accuracy
 
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, collection, transformer):
+    def __init__(self, engine, collection, transformer):
         'Initialization'
         self.collection = collection
         self.transformer = transformer
         self.batch_size = Configuration.get('training.batch_size')
         self.shuffle = Configuration.get('training.epoch.shuffle')
         self.on_epoch_end()
+        self.engine = engine
 
     def generate_index(self):
         self.index = np.array([])
@@ -59,6 +61,9 @@ class DataGenerator(keras.utils.Sequence):
         self.generate_index()
         if self.transformer.shuffle:
             np.random.shuffle(self.index)
+        self.accuracy = Accuracy(self.engine)
+        self.accuracy.evaluate()
+
 
     def __data_generation(self, subset):
         'Generates data containing batch_size samples'
