@@ -71,14 +71,20 @@ class Prediction(object):
         if not self.initialized:
             self.__init_shapes(predicted_vocals.shape)
 
-        self.vocals[:,
-                    predicted_vocals.shape[1] * i:
-                    predicted_vocals.shape[1] * (i+1)] = predicted_vocals
-        self.instrumental[:,
-                          predicted_instrumental.shape[1] * i:
-                          predicted_instrumental.shape[1] * (i+1)] = predicted_instrumental
+        self.__expand_track(predicted_vocals, self.vocals, i)
+        self.__expand_track(predicted_instrumental, self.instrumental, i)
+
         self.progress += 1
         self.progressbar.update(self.progress)
+
+    
+    def __expand_track(self, prediction, track, i):
+        left = prediction.shape[1] * i
+        right = prediction.shape[1] * (i+1)
+        size = track.shape[1]
+        if size < right:
+            track = np.append(track, np.zeros((track.shape[0], right - size)), axis=1)
+        track[:,left:right] = prediction
 
     def __init_shapes(self, shape):
         self.vocals = np.empty(

@@ -55,7 +55,7 @@ class StreamPrediction(Prediction):
         if len(self.mix) <= 0:
             self.mix = mix
         else:
-            np.concatenate((self.mix, mix), axis=1)        
+            self.mix = np.concatenate((self.mix, mix), axis=1)
         input, transform_info = self.transformer.prepare_input(mix, 0)
         self.predict_part(self.progress, input, transform_info)
         return None
