@@ -13,7 +13,7 @@ import mir_eval
 
 from unmix.source.logging.logger import Logger
 from unmix.source.data.song import Song
-
+from unmix.source.data.prediction import Prediction
 
 class Accuracy(object):
 
@@ -28,7 +28,8 @@ class Accuracy(object):
                 instrumentals = song.instrumental.load().channels
                 mix = vocals + instrumentals
 
-                predicted_vocals, predicted_instrumental = self.engine.predict(mix[0])
+                prediction = Prediction(self.engine)
+                predicted_vocals, predicted_instrumental = prediction.predict_mix(mix[0])
 
                 # TODO Hacky until prediction unpadding is fixed -> Beautify
                 predicted_vocals = predicted_vocals[:,32:-(32-(vocals.shape[-1] - int(vocals.shape[-1] / 64)*64))] 

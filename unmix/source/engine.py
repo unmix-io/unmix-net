@@ -78,14 +78,7 @@ class Engine:
             callbacks=self.callbacks)
         self.save_weights()
         return history
-
-    def predict(self, mix):
-        from unmix.source.data.prediction import Prediction
-        with self.graph.as_default():
-            prediction = Prediction(mix, self.model, self.transformer)
-            prediction.run()
-        return prediction.vocals, prediction.instrumental
-
+    
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
             'environment.weights.folder'), Configuration.get('environment.weights.file'))

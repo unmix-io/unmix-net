@@ -10,7 +10,6 @@ __email__ = "info@unmix.io"
 
 
 import argparse
-import librosa
 import glob
 import numpy as np
 import os
@@ -19,6 +18,7 @@ import time
 from unmix.source.engine import Engine
 from unmix.source.helpers import filehelper
 from unmix.source.helpers import converter
+from unmix.source.data.prediction import Prediction
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 from unmix.source.configuration import Configuration
 from unmix.source.logging.logger import Logger
@@ -26,43 +26,12 @@ from unmix.source.logging.logger import Logger
 
 AUDIO_FILE_EXTENSIONS = ['.wav', '.mp3']
 
-
-def save_prediction(type, prediction, sample_rate, file, folder=''):
-    track = np.array(librosa.istft(prediction))
-    name = os.path.splitext(os.path.basename(file))[0]
-    file_name = converter.get_timestamp() + "_" + name + '_predicted_%s.wav' % type
-    if folder:
-        output_file = os.path.join(
-            folder, file_name)
-    else:
-        output_file = os.path.join(os.path.dirname(file), file_name)
-
-    librosa.output.write_wav(output_file, track, sample_rate, norm=False)
-    Logger.info("Output prediction file: %s" % output_file)
-
-
-def youtube_audio(link):
-    import youtube_dl
-
-    options = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }    
-    with youtube_dl.YoutubeDL(options) as ydl:
-       data = ydl.download([link])
-    return data
-
-
 if __name__ == "__main__":
     global config
 
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
-    parser.add_argument('--run_folder', default='',
+    parser.add_argument('--run_folder', default='G:\\home-flurydav\\scripts\\runs\\20190413-145821',
                         type=str, help="General training input folder (overwrites other parameters)")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
@@ -70,7 +39,7 @@ if __name__ == "__main__":
                         type=str, help="Pretrained weights file (overwrites configuration).")
     parser.add_argument('--workingdir', default=os.getcwd(),
                         type=str, help="Working directory (default: current directory).")
-    parser.add_argument('--sample_rate', default=11025,
+    parser.add_argument('--sample_rate', default=22050,
                         type=str, help="Target sample rate which the model can process.")
     parser.add_argument('--fft_window', default=1536,
                         type=str, help="FFT window size the model was trained on.")
@@ -78,7 +47,7 @@ if __name__ == "__main__":
                         type=str, help="Input audio file to split vocals and instrumental.")
     parser.add_argument('--songs', default='temp/songs',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
-    parser.add_argument('--youtube', default='', type=str,
+    parser.add_argument('--youtube', default='', type=str, # https://www.youtube.com/watch?v=tjKrWswYKJs
                         help="Audio stream from a youtube video.")
 
     args = parser.parse_args()
@@ -117,30 +86,22 @@ if __name__ == "__main__":
 
     Logger.info("Found %d songs to predict." % len(song_files))
 
-    if args.youtube:
-        youtube_audio(args.youtube)
-
     engine = Engine()
     engine.load_weights(args.weights)
 
     for song_file in song_files:
         try:
-            # Load song and create spectrogram with librosa
-            audio, sample_rate = librosa.load(
-                song_file, mono=True, sr=args.sample_rate)
-            mix = librosa.stft(audio, args.fft_window)
-
-            Logger.info("Start predicting song: %s." % song_file)
-            predicted_vocals, predicted_instrumental = engine.predict(mix)
-
-            # Convert back to wav audio file
-            save_prediction("vocals", predicted_vocals,
-                            args.sample_rate, song_file, prediction_folder)
-            save_prediction("instrumental", predicted_instrumental,
-                            args.sample_rate, song_file, prediction_folder)
+            prediction = Prediction(engine)
+            prediction.predict_file(song_file, args.sample_rate)
+            prediction.save_vocals(song_file, prediction_folder)
+            prediction.save_instrumental(song_file, prediction_folder)
         except Exception as e:
             Logger.error(
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
+
+    if args.youtube:
+        prediction = Prediction(engine)
+        prediction.predict_youtube(args.youtube)
 
     end = time.time()
     Logger.info("Finished processing in %d [s]." % (end - start))
