@@ -95,6 +95,8 @@ class Prediction(object):
         with progressbar.ProgressBar(max_value=self.length) as progbar:
             self.progressbar = progbar
             [self.__predict_part(i) for i in range(self.length)]
+            self.vocals = self.vocals[:, int(self.transformer.size/2):- (self.transformer.size - ((int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
+            self.instrumental = self.instrumental[:, int(self.transformer.size/2):- (self.transformer.size - ((int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
 
     def __predict_part(self, i):
         input, transform_info = self.transformer.prepare_input(self.mix, i)
