@@ -27,9 +27,13 @@ from unmix.source.logging.logger import Logger
 
 class StreamPrediction(Prediction):
 
+    CHUNK_SIZE = 8192
+    PREDICTION_SIZE = 128
+
     def __init__(self, engine, sample_rate=22050, fft_window=1536):
         super().__init__(engine, sample_rate, fft_window)
         self.length = 1
+        self.cursor = 0
 
     def run(self, link):
         'Predicts an audio stream from youtube.'
@@ -40,7 +44,7 @@ class StreamPrediction(Prediction):
         audio = yt.streams.filter(only_audio=True, subtype='mp4').first()
         self.sample_rate_origin = int(audio.audio_sample_rate)
         path = Configuration.get_path('environment.temp_folder')
-        with progressbar.ProgressBar(max_value=math.ceil(int(audio.filesize) / 8192)) as progbar:
+        with progressbar.ProgressBar(max_value=math.ceil(int(audio.filesize) / (StreamPrediction.CHUNK_SIZE))) as progbar:
             self.progressbar = progbar
             audio.download(path)
         return False
@@ -49,13 +53,24 @@ class StreamPrediction(Prediction):
         self.__predict_chunk(chunk)
 
     def __predict_chunk(self, chunk):
-        audio = np.fromstring(chunk, dtype=np.float32)
-        audio = librosa.resample(audio, self.sample_rate_origin, self.sample_rate)
-        mix = librosa.stft(audio, self.fft_window)
-        if len(self.mix) <= 0:
-            self.mix = mix
-        else:
-            self.mix = np.concatenate((self.mix, mix), axis=1)
-        input, transform_info = self.transformer.prepare_input(mix, 0)
-        self.predict_part(self.progress, input, transform_info)
+        try:
+            data = np.nan_to_num(np.fromstring(chunk, dtype=np.float32))
+            audio = librosa.resample(
+                data, self.sample_rate_origin, self.sample_rate)
+            mix = librosa.stft(audio, self.fft_window)
+            if len(self.mix) <= 0:
+                self.mix = mix
+            else:
+                self.mix = np.concatenate((self.mix, mix), axis=1)
+
+            position = int(self.mix.shape[1] /
+                           StreamPrediction.PREDICTION_SIZE)
+            if position > self.cursor:
+                input, transform_info = self.transformer.prepare_input(
+                    self.mix[:, StreamPrediction.PREDICTION_SIZE*(position-1):StreamPrediction.PREDICTION_SIZE*position], 0)
+                # TODO Move prediction to isolated thread?
+                self.predict_part(self.progress, input, transform_info)
+                self.cursor += 1
+        except Exception as e:
+            Logger.error("Error while predicting stream chunk: %s." % str(e))
         return None
