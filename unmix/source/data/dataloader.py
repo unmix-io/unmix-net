@@ -31,7 +31,7 @@ class DataLoader(object):
 
         # Sort files by hash value of folder to guarantee a consistent order
         files.sort(key=lambda x: hashlib.md5(
-            os.path.basename(x).encode('utf-8')).hexdigest())
+            os.path.basename(x).encode('utf-8', 'surrogatepass')).hexdigest())
 
         test_files = None
         test_frequency = Configuration.get('collection.test_frequency')
