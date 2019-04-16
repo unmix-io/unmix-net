@@ -18,7 +18,8 @@ import time
 from unmix.source.engine import Engine
 from unmix.source.helpers import filehelper
 from unmix.source.helpers import converter
-from unmix.source.data.prediction import Prediction
+from unmix.source.prediction.fileprediction import FilePrediction
+from unmix.source.prediction.streamprediction import StreamPrediction
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 from unmix.source.configuration import Configuration
 from unmix.source.logging.logger import Logger
@@ -45,9 +46,9 @@ if __name__ == "__main__":
                         type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--song', default='',
                         type=str, help="Input audio file to split vocals and instrumental.")
-    parser.add_argument('--songs', default='temp/songs',
+    parser.add_argument('--songs', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
-    parser.add_argument('--youtube', default='', type=str, # https://www.youtube.com/watch?v=tjKrWswYKJs
+    parser.add_argument('--youtube', default='http://youtube.com/watch?v=9bZkp7q19f0', type=str,
                         help="Audio stream from a youtube video.")
 
     args = parser.parse_args()
@@ -91,8 +92,8 @@ if __name__ == "__main__":
 
     for song_file in song_files:
         try:
-            prediction = Prediction(engine)
-            prediction.predict_file(song_file, args.sample_rate)
+            prediction = FilePrediction(engine)
+            prediction.run(song_file, args.sample_rate)
             prediction.save_vocals(song_file, prediction_folder)
             prediction.save_instrumental(song_file, prediction_folder)
         except Exception as e:
@@ -100,8 +101,8 @@ if __name__ == "__main__":
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
 
     if args.youtube:
-        prediction = Prediction(engine)
-        prediction.predict_youtube(args.youtube)
+        prediction = StreamPrediction(engine)
+        prediction.run(args.youtube)
 
     end = time.time()
     Logger.info("Finished processing in %d [s]." % (end - start))

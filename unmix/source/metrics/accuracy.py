@@ -14,7 +14,7 @@ import numpy as np
 
 from unmix.source.logging.logger import Logger
 from unmix.source.data.song import Song
-from unmix.source.data.prediction import Prediction
+from unmix.source.prediction.fileprediction import FilePrediction
 
 class Accuracy(object):
 
@@ -31,8 +31,8 @@ class Accuracy(object):
                 instrumentals = song.instrumental.load().channels
                 mix = vocals + instrumentals
 
-                prediction = Prediction(self.engine)
-                predicted_vocals, predicted_instrumental = prediction.predict_mix(mix[0])
+                prediction = FilePrediction(self.engine)
+                predicted_vocals, predicted_instrumental = prediction.run(mix[0])
 
                 audio_vocals = librosa.istft(vocals[0])
                 audio_instrumentals = librosa.istft(instrumentals[0])

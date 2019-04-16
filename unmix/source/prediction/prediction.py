@@ -12,10 +12,12 @@ __email__ = "info@unmix.io"
 import glob
 import h5py
 import os
+import math
 import numpy as np
 import progressbar
 import librosa
 
+from unmix.source.configuration import Configuration
 from unmix.source.data.track import Track
 from unmix.source.exceptions.dataerror import DataError
 from unmix.source.helpers import converter
@@ -24,50 +26,19 @@ from unmix.source.logging.logger import Logger
 
 class Prediction(object):
 
-    def __init__(self, engine):
+    def __init__(self, engine, sample_rate=22050, fft_window=1536):
         self.model = engine.model
         self.transformer = engine.transformer
         self.graph = engine.graph
+        self.sample_rate = sample_rate
+        self.sample_rate_origin = 0
+        self.fft_window = fft_window
+        self.mix = []
         self.vocals = []
         self.instrumental = []
         self.progress = 0
         self.initialized = False
-        self.sample_rate = 22050
-
-    def predict_file(self, file, sample_rate=22050, fft_window=1536):
-        'Predicts an audio file by loading the spectrogram and mixing the tracks.'
-        self.sample_rate = sample_rate
-        audio, sample_rate = librosa.load(
-            file, mono=True, sr=sample_rate)
-        mix = librosa.stft(audio, fft_window)
-        Logger.info("Start predicting file: %s." % file)
-        return self.predict_mix(mix)
-
-    def predict_mix(self, mix):
-        'Predicts a mixed sftf soung representation.'
-        self.mix = mix
-        self.length = self.transformer.calculate_items(mix.shape[1])
-        Logger.info("Start predicting mix.")
-        with self.graph.as_default():
-            self.__run()
-        return self.vocals, self.instrumental
-
-    def predict_youtube(self, link):
-        'Predicts an audio stream from youtube.'
-        from pytube import YouTube
-        Logger.info("Start predicting stream from youtube link: %s." % link)
-        yt = YouTube(link)
-        yt.streams \
-            .filter(progressive=True, only_audio=True) \
-            .order_by('resolution') \
-            .desc() \
-            .first() \
-            .download()
-        yt.register_on_progress_callback(self.__youtube_stream_callback)
-        return False
-
-    def __youtube_stream_callback(self, stream, chunk, file_handle, bytes_remaining):
-        print("Hello there.")
+        self.length = 0
 
     def save_vocals(self, file, folder='', extension='wav'):
         'Saves the predicted instrumental track to an audio file'
@@ -94,13 +65,14 @@ class Prediction(object):
     def __run(self):
         with progressbar.ProgressBar(max_value=self.length) as progbar:
             self.progressbar = progbar
-            [self.__predict_part(i) for i in range(self.length)]
-            self.vocals = self.vocals[:, int(self.transformer.size/2):- (self.transformer.size - ((int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
-            self.instrumental = self.instrumental[:, int(self.transformer.size/2):- (self.transformer.size - ((int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
+            for i in range(self.length):
+                input, transform_info = self.transformer.prepare_input(
+                    self.mix, i)
+                self.__predict_part(i, input, transform_info)
 
-    def __predict_part(self, i):
-        input, transform_info = self.transformer.prepare_input(self.mix, i)
-        predicted = self.model.predict(np.array([input]))[0]
+    def __predict_part(self, i, part, transform_info):
+        with self.graph.as_default():
+            predicted = self.model.predict(np.array([part]))[0]
         predicted_vocals, predicted_instrumental = \
             self.transformer.untransform_target(
                 self.mix, predicted, i, transform_info)
@@ -122,3 +94,9 @@ class Prediction(object):
         self.instrumental = np.empty_like(self.vocals)
         self.step = self.vocals.shape[1]
         self.initialized = True
+
+    def __unpad(self):
+        self.vocals = self.vocals[:, int(self.transformer.size/2): -(self.transformer.size - (
+            (int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
+        self.instrumental = self.instrumental[:, int(self.transformer.size/2):- (self.transformer.size - (
+            (int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
