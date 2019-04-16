@@ -62,15 +62,7 @@ class Prediction(object):
             output_file, track, self.sample_rate, norm=False)
         Logger.info("Output prediction file: %s" % output_file)
 
-    def __run(self):
-        with progressbar.ProgressBar(max_value=self.length) as progbar:
-            self.progressbar = progbar
-            for i in range(self.length):
-                input, transform_info = self.transformer.prepare_input(
-                    self.mix, i)
-                self.__predict_part(i, input, transform_info)
-
-    def __predict_part(self, i, part, transform_info):
+    def predict_part(self, i, part, transform_info):
         with self.graph.as_default():
             predicted = self.model.predict(np.array([part]))[0]
         predicted_vocals, predicted_instrumental = \
@@ -95,7 +87,7 @@ class Prediction(object):
         self.step = self.vocals.shape[1]
         self.initialized = True
 
-    def __unpad(self):
+    def unpad(self):
         self.vocals = self.vocals[:, int(self.transformer.size/2): -(self.transformer.size - (
             (int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
         self.instrumental = self.instrumental[:, int(self.transformer.size/2):- (self.transformer.size - (
