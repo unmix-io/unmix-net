@@ -61,7 +61,7 @@ class Engine:
     def train(self, epoch_start=0):
         training_songs, validation_songs, test_songs = DataLoader.load()
         self.training_generator = DataGenerator(
-            self, training_songs, self.transformer)
+            self, training_songs, self.transformer, True)
         self.validation_generator = DataGenerator(
             self, validation_songs, self.transformer, True)
         self.test_songs = test_songs

@@ -43,44 +43,42 @@ class Accuracy(object):
                 audio_predicted_instrumentals = librosa.istft(
                     predicted_instrumental)
 
-
-                result = mir_eval.separation.bss_eval_sources(audio_instrumentals, audio_predicted_instrumentals)
-                entry = {
-                    sdr: result[0][0],
-                    sir: result[1][0]
+                result_vocals = mir_eval.separation.bss_eval_sources(audio_vocals, audio_predicted_vocals)
+                entry_vocals = {
+                    'sdr': result_vocals[0][0],
+                    'sir': result_vocals[1][0],
+                    'sar': result_vocals[2][0],
+                    'perm': result_vocals[3][0]
                 }
-                self.accuracy_vocals.append(entry)
-                Logger.info("mir_eval vocals: %s" % (str(entry))
+                self.accuracy_vocals.append(entry_vocals)
+                Logger.info("mir_eval vocals: %s" % (str(entry_vocals)))
 
-
-                self.accuracy_vocals = [np.append(self.accuracy_vocals[i], result[0]) for i, result in enumerate(
-                    mir_eval.separation.bss_eval_sources(audio_vocals, audio_predicted_vocals))]
-                [self.accuracy_vocals[i] = np.append(self.accuracy_instrumental[i], result[0]) for i, result in enumerate(mir_eval.separation.bss_eval_sources(audio_instrumentals, audio_predicted_instrumentals))]
-
-                Logger.info("mir_eval vocals: sdr=%s, sir=%s, sar=%s, perm=%s" % (str(self.accuracy_vocals[0][len(self.accuracy_vocals[0])-1]), str(self.accuracy_vocals[1][len(
-                    self.accuracy_vocals[1])-1]), str(self.accuracy_vocals[2][len(self.accuracy_vocals[2])-1]), str(self.accuracy_vocals[3][len(self.accuracy_vocals[3])-1])))
-                Logger.info("mir_eval instrumentals: sdr=%s, sir=%s, sar=%s, perm=%s" % (
-                    str(self.accuracy_instrumental[0][len(
-                        self.accuracy_instrumental[0]) - 1]),
-                    str(self.accuracy_instrumental[1][len(
-                        self.accuracy_instrumental[1]) - 1]),
-                    str(self.accuracy_instrumental[2][len(
-                        self.accuracy_instrumental[2]) - 1]),
-                    str(self.accuracy_instrumental[3][len(self.accuracy_instrumental[3]) - 1])))
+                result_instrumental = mir_eval.separation.bss_eval_sources(audio_instrumentals, audio_predicted_instrumentals)
+                entry_instrumental = {
+                    'sdr': result_instrumental[0][0],
+                    'sir': result_instrumental[1][0],
+                    'sar': result_instrumental[2][0],
+                    'perm': result_instrumental[3][0]
+                }
+                self.accuracy_instrumental.append(entry_instrumental)
+                Logger.info("mir_eval vocals: %s" % (str(entry_instrumental)))
 
             except Exception as e:
                 Logger.error(
                     "Error while predicting song '%s': %s." % (song_file, str(e)))
 
-        # np.median(np.array(list(x['sdr'] for x in self.accuracy_vocals)))
+        medians_vocals = {
+            'sdr': np.median(np.array(list(x['sdr'] for x in self.accuracy_vocals))),
+            'sir': np.median(np.array(list(x['sir'] for x in self.accuracy_vocals))),
+            'sar': np.median(np.array(list(x['sar'] for x in self.accuracy_vocals))),
+            'perm': np.median(np.array(list(x['perm'] for x in self.accuracy_vocals))),
+        }
+        median_instrumental = {
+            'sdr': np.median(np.array(list(x['sdr'] for x in self.accuracy_instrumental))),
+            'sir': np.median(np.array(list(x['sir'] for x in self.accuracy_instrumental))),
+            'sar': np.median(np.array(list(x['sar'] for x in self.accuracy_instrumental))),
+            'perm': np.median(np.array(list(x['perm'] for x in self.accuracy_instrumental))),
+        }
 
-        Logger.info("Median vocals: SDR = %s, SIR=%s, SAR=%s, PERM=%s" % (
-            str(np.median(self.accuracy_vocals[0])),
-            str(np.median(self.accuracy_vocals[1])),
-            str(np.median(self.accuracy_vocals[2])),
-            str(np.median(self.accuracy_vocals[3]))))
-        Logger.info("Median instrumental: SDR = %s, SIR=%s, SAR=%s, PERM=%s" % (
-            str(np.median(self.accuracy_instrumental[0])),
-            str(np.median(self.accuracy_instrumental[1])),
-            str(np.median(self.accuracy_instrumental[2])),
-            str(np.median(self.accuracy_instrumental[3]))))
+        Logger.info("Median vocals: %s" % (str(medians_vocals)))
+        Logger.info("Median vocals: %s" % (str(median_instrumental)))
