@@ -92,8 +92,8 @@ if __name__ == "__main__":
 
     for song_file in song_files:
         try:
-            prediction = FilePrediction(engine)
-            prediction.run(song_file, args.sample_rate)
+            prediction = FilePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
+            prediction.run(song_file)
             prediction.save_vocals(song_file, prediction_folder)
             prediction.save_instrumental(song_file, prediction_folder)
         except Exception as e:
@@ -101,7 +101,7 @@ if __name__ == "__main__":
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
 
     if args.youtube:
-        prediction = StreamPrediction(engine)
+        prediction = StreamPrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
         prediction.run(args.youtube)
 
     end = time.time()
