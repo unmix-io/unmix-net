@@ -42,7 +42,7 @@
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "binary_crossentropy",
+        "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,
