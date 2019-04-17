@@ -48,8 +48,8 @@ class Prediction(object):
         'Saves the predicted instrumental track to an audio file'
         self.__save(self.instrumental, 'instrumental', file, folder, extension)
 
-    def __save(self, prediciton, type, file, folder='', extension='wav'):
-        track = np.array(librosa.istft(prediciton))
+    def __save(self, prediction, type, file, folder='', extension='wav'):
+        track = np.array(librosa.istft(prediction))
         name = os.path.splitext(os.path.basename(file))[0]
         file_name = converter.get_timestamp() + "_" + name + \
             '_predicted_%s.%s' % (type, extension)
