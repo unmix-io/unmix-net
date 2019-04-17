@@ -105,4 +105,5 @@ class TensorBoardWrapper(TensorBoard):
             input[s * ib.shape[0]:(s + 1) * ib.shape[0]] = ib
             output[s * tb.shape[0]:(s + 1) * tb.shape[0]] = tb
         self.validation_data = [input, output, np.ones(input.shape[0]), 0.0]
+        self.batch_gen.on_epoch_end()
         return super().on_epoch_end(epoch, logs)
