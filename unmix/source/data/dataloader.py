@@ -55,7 +55,7 @@ class DataLoader(object):
         validation_files = files[:int(len(files) * validation_ratio)]
         training_files = files[len(validation_files):]
 
-        Logger.debug("Found %d songs for traing and %d songs for validation."
+        Logger.debug("Found %d songs for training and %d songs for validation."
                      % (len(training_files), len(validation_files)))
         if test_files:
             Logger.debug("Use %d songs for tests after every %d epoch."
