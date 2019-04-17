@@ -44,9 +44,9 @@ class IBMMaskTransformer:
         vocal_magnitude = np.abs(vocal_slice)
 
         target_mask = np.empty_like(instrumental_magnitude)
-        target_mask[instrumental_magnitude <= vocal_magnitude] = 0.98
-        target_mask[instrumental_magnitude > vocal_magnitude] = 0.02
-        target_mask = np.reshape(target_mask, target_mask.shape + (1,))
+        target_mask[instrumental_magnitude <= vocal_magnitude] = 1
+        target_mask[instrumental_magnitude > vocal_magnitude] = 0
+        target_mask = np.reshape(target_mask, (769,))
 
         if self.save_image:
             spectrogramhandler.to_image('%s-%d_Target.png' % (name, index), target_mask)
@@ -64,7 +64,7 @@ class IBMMaskTransformer:
 
     def untransform_target(self, mix, predicted_mask, index, transform_info):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
-        predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
+        #predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
         mix_slice = self.chopper.chop_n_pad(mix, index, self.step)
         mix_magnitude = np.abs(mix_slice)
         predicted_mask = np.clip(predicted_mask, 0, 1)
