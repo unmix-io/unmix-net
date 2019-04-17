@@ -56,15 +56,15 @@
                 "period": 1,
                 "verbose": 1
             },
-            // "tensorboard": {
-            //     "folder": "TensorBoard",
-            //     "histogram_freq": 0,
-            //     "write_graph": true,
-            //     "write_grads": false,
-            //     "write_images": false,
-            //     "embeddings_freq": 0,
-            //     "update_freq": "batch"
-            // },
+            "tensorboard": {
+                "folder": "./TensorBoard",
+                "histogram_freq": 0,
+                "write_graph": true,
+                "write_grads": false,
+                "write_images": false,
+                "embeddings_freq": 0,
+                "update_freq": "batch"
+            },
             "csv_logger": {
                 "file_name": "results.csv",
                 "separator": ";",

@@ -16,6 +16,7 @@ from keras.callbacks import ModelCheckpoint, TensorBoard, CSVLogger, EarlyStoppi
 from unmix.source.callbacks.errorvisualization import ErrorVisualization
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import converter
+from unmix.source.logging.logger import Logger
 
 
 class CallbacksFactory(object):
@@ -82,9 +83,6 @@ class CallbacksFactory(object):
     def error_visualization(bot):
         return ErrorVisualization(bot)  # TODO ???
 
-#TensorBoardWrapper(gen_val, nb_steps=5, log_dir=self.cfg['cpdir'], histogram_freq=1,
-#                               batch_size=32, write_graph=False, write_grads=True)
-
 class TensorBoardWrapper(TensorBoard):
     '''Sets the self.validation_data property for use with TensorBoard callback.'''
 
@@ -93,10 +91,11 @@ class TensorBoardWrapper(TensorBoard):
         self.batch_gen = batch_gen # The generator.
 
     def on_epoch_end(self, epoch, logs):
-        # Fill in the `validation_data` property. Obviously this is specific to how your generator works.
-        # Below is an example that yields images and classification tags.
-        # After it's filled in, the regular on_epoch_end method has access to the validation_data.
+        # Fill in the `validation_data` property makes TensorBoard plot histograms etc.
         nb_steps = len(self.batch_gen)
+        if(nb_steps == 0):
+            Logger.debug("No validation data provided; skip TensorBoard validation data")
+            return
         input, output = None, None
         for s in range(nb_steps):
             ib, tb = self.batch_gen.__getitem__(s)
