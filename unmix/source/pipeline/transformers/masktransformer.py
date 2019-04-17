@@ -38,11 +38,13 @@ class MaskTransformer:
         vocal_slice = self.chopper.chop_n_pad(vocals[0], index, self.step)
         vocal_magnitude = np.abs(vocal_slice)
         target_mask = mask(vocal_magnitude, mix_magnitude)
-        target_mask = np.reshape(target_mask, target_mask.shape + (1,))
-        
+
         if self.save_image:
             spectrogramhandler.to_image('%s-%d_Target.png' % (name, index), target_mask)
             spectrogramhandler.to_image('%s-%d_Input.png' % (name, index), normalizer.normalize(input)[0])
+            spectrogramhandler.to_audio('%s-%d_Reconstructed.wav' % (name, index), mix_magnitude * target_mask * np.exp(np.angle(mix_slice) * 1j ))
+            
+        target_mask = np.reshape(target_mask, target_mask.shape + (1,))
         return normalizer.normalize(input)[0], target_mask
 
     def calculate_items(self, width):
