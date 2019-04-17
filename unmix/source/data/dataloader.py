@@ -21,7 +21,7 @@ from unmix.source.logging.logger import Logger
 
 class DataLoader(object):
 
-    TEST_DATA_COUNT = 5
+    TEST_DATA_COUNT = 2
 
     @staticmethod
     def load():

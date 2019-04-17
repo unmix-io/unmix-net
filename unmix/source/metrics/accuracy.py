@@ -11,10 +11,13 @@ __email__ = "info@unmix.io"
 import librosa
 import mir_eval
 import numpy as np
+import os
+import csv
 
 from unmix.source.logging.logger import Logger
 from unmix.source.data.song import Song
 from unmix.source.prediction.mixprediciton import MixPrediciton
+from unmix.source.configuration import Configuration
 
 
 class Accuracy(object):
@@ -23,8 +26,12 @@ class Accuracy(object):
         self.engine = engine
         self.median_accuracies_vocals = []
         self.median_accuracies_instrumental = []
+        self.SDR = 'sdr'
+        self.SIR = 'sir'
+        self.SAR = 'sar'
+        self.PERM = 'perm'
 
-    def evaluate(self):
+    def evaluate(self, epochnr):
         accuracies_vocals = []
         accuracies_instrumental = []
 
@@ -48,15 +55,24 @@ class Accuracy(object):
                 Logger.error(
                     "Error while predicting song '%s': %s." % (song_file, str(e)))
 
-        self.median_accuracies_vocals.append(
-            self.__calculate_median(accuracies_vocals))
-        self.median_accuracies_instrumental.append(
-            self.__calculate_median(accuracies_instrumental))
+        vocals_median = self.__calculate_median(accuracies_vocals, 'vocals', epochnr)
+        self.median_accuracies_vocals.append(vocals_median)
+        instrumental_median = self.__calculate_median(accuracies_instrumental, 'instrumental', epochnr)
+        self.median_accuracies_instrumental.append(instrumental_median)
+
+        csv_exists = os.path.isfile(os.path.join(Configuration.output_directory, 'accuracy.csv'))
+        with open(os.path.join(Configuration.output_directory, 'accuracy.csv'), mode='a', newline='') as accuracy_file:
+            fieldnames = ['epoch', 'type', self.SDR, self.SIR, self.SAR, self.PERM]
+            file_writer = csv.DictWriter(accuracy_file, delimiter=';', fieldnames=fieldnames)
+            if not csv_exists:
+                file_writer.writeheader()
+            file_writer.writerow(vocals_median)
+            file_writer.writerow(instrumental_median)
 
         Logger.info("Median vocals: %s." %
-                    (str(self.median_accuracies_vocals[-1])))
+                    (str(vocals_median)))
         Logger.info("Median instrumental: %s." %
-                    (str(self.median_accuracies_instrumental[-1])))
+                    (str(instrumental_median)))
 
     def __calculate_accuracy(self, original, predicted):
         audio_original = librosa.istft(original)
@@ -65,17 +81,19 @@ class Accuracy(object):
         result = mir_eval.separation.bss_eval_sources(
             audio_original, audio_predicted)
         entry = {
-            'sdr': result[0][0],
-            'sir': result[1][0],
-            'sar': result[2][0],
-            'perm': result[3][0]
+            self.SDR: result[0][0],
+            self.SIR: result[1][0],
+            self.SAR: result[2][0],
+            self.PERM: result[3][0]
         }
         return entry
 
-    def __calculate_median(self, accuracies):
+    def __calculate_median(self, accuracies, type, epochnr):
         return {
-            'sdr': np.median(np.array([x['sdr'] for x in accuracies])),
-            'sir': np.median(np.array([x['sir'] for x in accuracies])),
-            'sar': np.median(np.array([x['sar'] for x in accuracies])),
-            'perm': np.median(np.array([x['perm'] for x in accuracies]))
+            'epoch': epochnr,
+            'type': type,
+            self.SDR: np.median(np.array([x[self.SDR] for x in accuracies])),
+            self.SIR: np.median(np.array([x[self.SIR] for x in accuracies])),
+            self.SAR: np.median(np.array([x[self.SAR] for x in accuracies])),
+            self.PERM: np.median(np.array([x[self.PERM] for x in accuracies]))
         }

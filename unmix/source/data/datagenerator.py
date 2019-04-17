@@ -68,7 +68,7 @@ class DataGenerator(keras.utils.Sequence):
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
         if self.engine.test_songs and self.run_tests:
-            self.accuracy.evaluate()
+            self.accuracy.evaluate(self.count)
         self.count += 1
 
     def __data_generation(self, subset):

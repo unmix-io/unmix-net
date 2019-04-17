@@ -66,7 +66,7 @@ class Engine:
             self, validation_songs, self.transformer, True)
         self.test_songs = test_songs
 
-        self.callbacks = CallbacksFactory.build(DataGenerator('validation',
+        self.callbacks = CallbacksFactory.build(DataGenerator('validation_tensorboard',
             self, validation_songs, self.transformer, False)) # pass a new data generator here because TensorBoard must have access to validation_data
 
         epoch_count = Configuration.get('training.epoch.count')
