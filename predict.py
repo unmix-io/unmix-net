@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
-    parser.add_argument('--run_folder', default='G:\\home-flurydav\\scripts\\runs\\20190413-145821',
+    parser.add_argument('--run_folder', default='',
                         type=str, help="General training input folder (overwrites other parameters)")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
