@@ -26,8 +26,14 @@ class DataLoader(object):
     @staticmethod
     def load():
         path = Configuration.get_path('collection.folder', False)
-        files = [os.path.dirname(file) for file in glob.iglob(
+        files_vocal = [os.path.dirname(file) for file in glob.iglob(
             os.path.join(path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
+        files_instrumental = [os.path.dirname(file) for file in glob.iglob(
+            os.path.join(path, '**', '%s*.h5' % Song.PREFIX_INSTRUMENTAL), recursive=True)]
+        
+        files = [f for f in files_vocal if f in files_instrumental] # make sure both vocal and instrumental file exists
+        skipped_count = len(set(files_vocal) - set(files_instrumental)) + len(set(files_instrumental) - set(files_vocal))
+        Logger.debug(f"Skipped {skipped_count} files (incomplete vocal/instrumental pair)")
 
         # Sort files by hash value of folder to guarantee a consistent order
         files.sort(key=lambda x: hashlib.md5(
