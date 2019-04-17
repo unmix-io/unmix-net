@@ -15,6 +15,7 @@
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
         "validation_ratio": 0.2,
+        "test_data_count": "int(env('TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
         "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))" // Run tests every n epoch
         //,"mean": 0.4265994829115264, // expected data mean over all training data
         //"variance": 2.59734488467731  //expected data variance over all training data

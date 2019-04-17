@@ -21,8 +21,6 @@ from unmix.source.logging.logger import Logger
 
 class DataLoader(object):
 
-    TEST_DATA_COUNT = 2
-
     @staticmethod
     def load():
         path = Configuration.get_path('collection.folder', False)
@@ -42,8 +40,8 @@ class DataLoader(object):
         test_files = None
         test_frequency = Configuration.get('collection.test_frequency')
         if test_frequency and test_frequency > 0:
-            test_files = files[-DataLoader.TEST_DATA_COUNT:]
-            files = files[:len(files) - DataLoader.TEST_DATA_COUNT]
+            test_files = files[-Configuration.get('collection.test_data_count'):]
+            files = files[:len(files) - Configuration.get('collection.test_data_count')]
 
         song_limit = Configuration.get('collection.song_limit')
 
