@@ -22,8 +22,8 @@
     "transformation": {
         "name": "mask",
         "options": {
-            "size": 9,
-            "step": 1,
+            "size": 64,
+            "step": 64,
             "shuffle": true,
             "save_image": false
         }
