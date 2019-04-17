@@ -45,3 +45,7 @@ class LossFunctionFactory(object):
     @staticmethod
     def binary_crossentropy(y_true, y_pred):
         return losses.binary_crossentropy(y_true, y_pred)
+
+    @staticmethod
+    def mean_squared_error_noaxis(y_true, y_pred):
+        return K.mean(K.square(y_pred - y_true))

@@ -42,7 +42,7 @@
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "mean_squared_error",
+        "loss_function": "mean_squared_error_noaxis",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,
@@ -56,15 +56,15 @@
                 "period": 1,
                 "verbose": 1
             },
-            "tensorboard": {
-                "folder": "./TensorBoard",
-                "histogram_freq": 1,
-                "write_graph": false,
-                "write_grads": false,
-                "write_images": true,
-                "embeddings_freq": 0,
-                "update_freq": "batch"
-            },
+            // "tensorboard": {
+            //     "folder": "./TensorBoard",
+            //     "histogram_freq": 1,
+            //     "write_graph": false,
+            //     "write_grads": false,
+            //     "write_images": true,
+            //     "embeddings_freq": 0,
+            //     "update_freq": "batch"
+            // },
             "csv_logger": {
                 "file_name": "results.csv",
                 "separator": ";",
