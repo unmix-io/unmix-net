@@ -27,7 +27,7 @@ class MaskModel(BaseModel):
 
         alpha1 = 0.3
         dropout = 0.1
-        filter_factor = 2
+        filter_factor = 1
         
         model = Sequential()
         model.add(Conv2D(32 * filter_factor, (3, 3), padding='same',
@@ -46,7 +46,7 @@ class MaskModel(BaseModel):
         model.add(Dropout(dropout)) 
         
         model.add(Flatten())
-        model.add(Dense(1024, kernel_initializer='he_normal'))
+        model.add(Dense(512, kernel_initializer='he_normal'))
         model.add(LeakyReLU(alpha=alpha1))
         model.add(Dropout(dropout))
         model.add(BatchNormalization())
