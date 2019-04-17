@@ -59,8 +59,8 @@
             "tensorboard": {
                 "folder": "./TensorBoard",
                 "histogram_freq": 1,
-                "write_graph": true,
-                "write_grads": true,
+                "write_graph": false,
+                "write_grads": false,
                 "write_images": true,
                 "embeddings_freq": 0,
                 "update_freq": "batch"
