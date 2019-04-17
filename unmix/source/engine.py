@@ -30,7 +30,7 @@ from unmix.source.pipeline.transformers.transformerfactory import TransformerFac
 class Engine:
 
     def __init__(self):
-        self.callbacks = CallbacksFactory.build()
+        
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build()
         metrics = MetricsFactory.build()
@@ -65,6 +65,9 @@ class Engine:
         self.validation_generator = DataGenerator('validation',
             self, validation_songs, self.transformer, True)
         self.test_songs = test_songs
+
+        self.callbacks = CallbacksFactory.build(DataGenerator(
+            self, validation_songs, self.transformer, True)) # pass a new data generator here because TensorBoard must have access to validation_data
 
         epoch_count = Configuration.get('training.epoch.count')
         history = self.model.fit_generator(
