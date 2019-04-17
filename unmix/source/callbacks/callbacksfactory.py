@@ -50,7 +50,7 @@ class CallbacksFactory(object):
 
     @staticmethod
     def tensorboard(config, validation_generator):
-        path = Configuration.get_path("training.callbacks.tensorboard.folder")
+        path = os.path.join(Configuration.get("training.callbacks.tensorboard.folder"), os.path.basename(Configuration.output_directory))
         return TensorBoardWrapper(validation_generator, log_dir=path,
                            histogram_freq=config.histogram_freq,
                            write_graph=config.write_graph,
