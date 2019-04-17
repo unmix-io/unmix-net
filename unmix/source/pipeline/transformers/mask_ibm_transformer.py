@@ -44,8 +44,8 @@ class IBMMaskTransformer:
         vocal_magnitude = np.abs(vocal_slice)
 
         target_mask = np.empty_like(instrumental_magnitude)
-        target_mask[instrumental_magnitude <= vocal_magnitude] = 1
-        target_mask[instrumental_magnitude > vocal_magnitude] = 0
+        target_mask[instrumental_magnitude <= vocal_magnitude] = 0.98
+        target_mask[instrumental_magnitude > vocal_magnitude] = 0.02
         target_mask = np.reshape(target_mask, target_mask.shape + (1,))
 
         if self.save_image:

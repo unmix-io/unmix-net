@@ -22,15 +22,18 @@
     "transformation": {
         "name": "mask_ibm",
         "options": {
-            "size": 25,
-            "step": 1,
+            "size": 64,
+            "step": 64,
             "shuffle": true,
             "save_image": false
         }
     },
     "training": {
         "model": {
-            "name": "mask"
+            "name": "mask-leakyrelu",
+            "alpha1": 0.1,
+            "alpha2": 0.01,
+            "dropout_rate": 0.5
         },
         "batch_size": 8,
         "epoch": {
