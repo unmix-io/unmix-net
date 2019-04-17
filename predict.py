@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
-    parser.add_argument('--run_folder', default='',
+    parser.add_argument('--run_folder', default='./runs/20190417-105759',
                         type=str, help="General training input folder (overwrites other parameters)")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
@@ -48,7 +48,7 @@ if __name__ == "__main__":
                         type=str, help="Input audio file to split vocals and instrumental.")
     parser.add_argument('--songs', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
-    parser.add_argument('--youtube', default='http://youtube.com/watch?v=9bZkp7q19f0', type=str,
+    parser.add_argument('--youtube', default='', type=str,
                         help="Audio stream from a youtube video.")
 
     args = parser.parse_args()
