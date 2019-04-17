@@ -64,7 +64,7 @@ class IBMMaskTransformer:
 
     def untransform_target(self, mix, predicted_mask, index, transform_info):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
-        #predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
+        predicted_mask = np.reshape(predicted_mask, (predicted_mask.shape[0],1))
         mix_slice = self.chopper.chop_n_pad(mix, index, self.step)
         mix_magnitude = np.abs(mix_slice)
         predicted_mask = np.clip(predicted_mask, 0, 1)
