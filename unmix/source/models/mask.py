@@ -26,7 +26,7 @@ class MaskModel(BaseModel):
         input_shape = (769, transformation.size, 1)
 
         alpha1 = 0.3
-        dropout = 0.1
+        dropout = 0.5
         filter_factor = 1
         
         model = Sequential()
