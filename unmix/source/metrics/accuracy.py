@@ -68,6 +68,7 @@ class Accuracy(object):
                 file_writer.writeheader()
             file_writer.writerow(vocals_median)
             file_writer.writerow(instrumental_median)
+            accuracy_file.close()
 
         Logger.info("Median vocals: %s." %
                     (str(vocals_median)))
