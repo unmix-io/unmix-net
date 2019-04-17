@@ -92,6 +92,6 @@ class LeakyReluModel(BaseModel):
 
         conv = Conv2D(filters=channels, kernel_size=3, padding='same')(conv)
         conv = Cropping2D(((3, 0), (0, 0)))(conv)
-        conv = Activation('sigmoid')(conv)
+        #conv = Activation('sigmoid')(conv)
 
         return Model(inputs=mashup, outputs=conv)
