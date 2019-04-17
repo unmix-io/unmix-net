@@ -63,7 +63,7 @@ class DataGenerator(keras.utils.Sequence):
 
     def on_epoch_end(self):
         'Updates index after each epoch'
-        Logger.debug("%s epoch %d ended." % (self.count, self.name))
+        Logger.debug("%s epoch %d ended." % (self.name, self.count))
         self.generate_index()
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
