@@ -46,7 +46,7 @@ class LeakyReluModel(BaseModel):
         conv_b = LeakyReLU(alpha=alpha1)(conv_b)
         conv_b = Dropout(rate=dropout_rate)(conv_b)
 
-        conv = Conv2D(filters=128, kernel_size=4, strides=2, padding='same', use_bias=False)(conv_b)
+        conv = Conv2D(filters=64, kernel_size=4, strides=2, padding='same', use_bias=False)(conv_b)
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
@@ -65,11 +65,11 @@ class LeakyReluModel(BaseModel):
 
         conv = Concatenate()([conv, conv_b])
 
-        conv = Conv2D(filters=64, kernel_size=3, padding='same')(conv)
+        conv = Conv2D(filters=32, kernel_size=3, padding='same')(conv)
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
-        conv = Conv2D(filters=64, kernel_size=3, padding='same', use_bias=False)(conv)
+        conv = Conv2D(filters=32, kernel_size=3, padding='same', use_bias=False)(conv)
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
