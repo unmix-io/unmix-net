@@ -52,7 +52,6 @@ def denormalize(data,  mode, config_file):
         raise ConfigurationError('Invalid zmuv normalizer configuration.')
 
     return (data * variance) + mean
-    
 
 
 def __read_config(config_file):

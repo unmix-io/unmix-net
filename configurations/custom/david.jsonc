@@ -33,7 +33,7 @@
                 "enabled": true,
                 "mode": "frequency_bin", // frequency_bin or single
                 "mix_file": "mean-derivation.json",
-                "vocals_file": "vocals_mean-derivation.json"
+                "vocals_file": "mean-derivation.json"
             }
         }
     },
