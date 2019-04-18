@@ -27,6 +27,14 @@
             "step": 64,
             "shuffle": true,
             "save_audio": false
+        },
+        "normalizers": {
+            "zmuv": {
+                "enabled": false,
+                "mode": "frequency_bin", // bin or single
+                "mix_file": "mean-derivation.json",
+                "vocals_file": "vocals_mean-derivation.json"
+            }
         }
     },
     "training": {
