@@ -31,7 +31,7 @@
         "normalizers": {
             "zmuv": {
                 "enabled": false,
-                "mode": "frequency_bin", // bin or single
+                "mode": "frequency_bin", // frequency_bin or single
                 "mix_file": "mean-derivation.json",
                 "vocals_file": "vocals_mean-derivation.json"
             }
