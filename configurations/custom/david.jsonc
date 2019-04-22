@@ -32,7 +32,12 @@
     },
     "training": {
         "model": {
-            "name": "U-Net"
+            "name": "Hourglass",
+            "options": {
+                "stacks": 4,
+                "channels": 1,
+                "classes": 2
+            }
         },
         "batch_size": 8,
         "epoch": {
