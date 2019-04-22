@@ -22,14 +22,14 @@ from unmix.source.logging.logger import Logger
 class CallbacksFactory(object):
 
     @staticmethod
-    def build(validation_generator):
+    def build(build_validation_generator=None):
         configs = Configuration.get('training.callbacks', False)
         callbacks = []
         if hasattr(configs, 'model_checkpoint'):
             callbacks.append(CallbacksFactory.model_checkpoint(
                 configs.model_checkpoint))
         if hasattr(configs, 'tensorboard'):
-            callbacks.append(CallbacksFactory.tensorboard(configs.tensorboard, validation_generator))
+            callbacks.append(CallbacksFactory.tensorboard(configs.tensorboard, build_validation_generator()))
         if hasattr(configs, 'csv_logger'):
             callbacks.append(CallbacksFactory.csv_logger(configs.csv_logger))
         if hasattr(configs, 'early_stopping'):

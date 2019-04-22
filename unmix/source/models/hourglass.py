@@ -32,7 +32,7 @@ class LeakyReluModel(BaseModel):
                 head_next_stage, config.options.classes, config.options.channels, i)
             outputs.append(head_to_loss)
 
-        return Model(inputs=input, outputs=outputs)
+        return Model(input=input, outputs=outputs)
 
     def __front_module(self, input, channels):
         # front module, input to 1/4 resolution
