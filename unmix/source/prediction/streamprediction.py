@@ -63,8 +63,7 @@ class StreamPrediction(Prediction):
             else:
                 self.mix = np.concatenate((self.mix, mix), axis=1)
 
-            position = int(self.mix.shape[1] /
-                           StreamPrediction.PREDICTION_SIZE)
+            position = self.mix.shape[1] // StreamPrediction.PREDICTION_SIZE
             if position > self.cursor:
                 input, transform_info = self.transformer.prepare_input(
                     self.mix[:, StreamPrediction.PREDICTION_SIZE*(position-1):StreamPrediction.PREDICTION_SIZE*position], 0)

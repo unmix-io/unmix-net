@@ -94,7 +94,7 @@ class Prediction(object):
         self.initialized = True
 
     def unpad(self):
-        self.vocals = self.vocals[:, int(self.transformer.size/2): -(self.transformer.size - (
-            (int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
-        self.instrumental = self.instrumental[:, int(self.transformer.size/2):- (self.transformer.size - (
-            (int(self.transformer.size/2) + self.mix.shape[1]) % self.transformer.size))]
+        self.vocals = self.vocals[:, self.transformer.size // 2 : -(self.transformer.size - (
+            (self.transformer.size// 2 + self.mix.shape[1]) % self.transformer.size))]
+        self.instrumental = self.instrumental[:,  self.transformer.size // 2 :- (self.transformer.size - (
+            (self.transformer.size // 2 + self.mix.shape[1]) % self.transformer.size))]
