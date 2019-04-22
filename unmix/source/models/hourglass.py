@@ -78,10 +78,10 @@ class LeakyReluModel(BaseModel):
                            name=block_name + 'skip')(bottom)
 
         # residual: 3 conv blocks,  [out_channels/2  -> out_channels/2 -> out_channels]
-        x = Conv2D(out_channels / 2, kernel_size=(1, 1), activation='relu', padding='same',
+        x = Conv2D(out_channels // 2, kernel_size=(1, 1), activation='relu', padding='same',
                    name=block_name + '_conv_1x1x1')(bottom)
         x = BatchNormalization()(x)
-        x = Conv2D(out_channels / 2, kernel_size=(3, 3), activation='relu', padding='same',
+        x = Conv2D(out_channels // 2, kernel_size=(3, 3), activation='relu', padding='same',
                    name=block_name + '_conv_3x3x2')(x)
         x = BatchNormalization()(x)
         x = Conv2D(out_channels, kernel_size=(1, 1), activation='relu', padding='same',
