@@ -24,7 +24,7 @@ class UNetModel(BaseModel):
         input_shape = (769, transformation.size, 1)
         input = Input(input_shape)
         
-        conv1 = Conv2D(32, (3, 3), padding="same", name="conv1_1", activation="relu", data_format="channels_last")(inputs)
+        conv1 = Conv2D(32, (3, 3), padding="same", name="conv1_1", activation="relu", data_format="channels_last")(input)
         conv1 = Conv2D(32, (3, 3), padding="same", activation="relu", data_format="channels_last")(conv1)
         pool1 = MaxPooling2D(pool_size=(2, 2), data_format="channels_last")(conv1)
         conv2 = Conv2D(64, (3, 3), padding="same", activation="relu", data_format="channels_last")(pool1)
