@@ -5,8 +5,8 @@
 Keras model for training using a U-Net architecture.
 """
 
-from keras.models import Model, Sequential
-from keras.layers import Input, Dense, Flatten, Dropout, Conv2D, BatchNormalization, UpSampling2D, concatenate, ZeroPadding2D, Cropping2D, MaxPooling2D
+from keras.models import *
+from keras.layers import *
 
 from unmix.source.configuration import Configuration
 from unmix.source.models.basemodel import BaseModel
@@ -22,7 +22,7 @@ class UNetModel(BaseModel):
         concat_axis = 3
 
         input_shape = (769, transformation.size, 1)
-        inputs = Input(input_shape)
+        input = Input(input_shape)
         
         conv1 = Conv2D(32, (3, 3), padding="same", name="conv1_1", activation="relu", data_format="channels_last")(inputs)
         conv1 = Conv2D(32, (3, 3), padding="same", activation="relu", data_format="channels_last")(conv1)
@@ -75,7 +75,7 @@ class UNetModel(BaseModel):
         bn = BatchNormalization() (dense1)
         dense2 = Dense(17, activation='sigmoid')(bn)
         
-        model = Model(input=inputs, output=dense2)
+        model = Model(input=input, output=dense2)
         
         return model
     

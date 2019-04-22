@@ -5,8 +5,8 @@
 Keras model for training using LeakyReLU activation layers.
 """
 
-from keras.models import Model, Sequential
-from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2D, Concatenate, LeakyReLU, ZeroPadding2D, Cropping2D
+from keras.models import *
+from keras.layers import *
 
 from unmix.source.configuration import Configuration
 from unmix.source.models.basemodel import BaseModel

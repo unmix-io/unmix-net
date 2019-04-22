@@ -5,18 +5,12 @@
 Keras model for training using LeakyReLU activation layers.
 """
 
-from keras.models import Model, Sequential
-from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2D, Concatenate, LeakyReLU, ZeroPadding2D, Cropping2D
+from keras.models import *
+from keras.layers import *
 
 from unmix.source.configuration import Configuration
 from unmix.source.models.basemodel import BaseModel
 
-"""
-Title: deep-vocal-isolation - modeler.py
-Author: Raphael Freudiger, Fabian Strebel
-Date: 2018-07-06
-Availability: https://github.com/laserb/deep-vocal-isolation
-"""
 
 class LeakyReluModel(BaseModel):
     name = 'LargeLeakyReLU'

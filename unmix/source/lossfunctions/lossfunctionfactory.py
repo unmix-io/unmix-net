@@ -49,3 +49,7 @@ class LossFunctionFactory(object):
     @staticmethod
     def mean_squared_error_noaxis(y_true, y_pred):
         return K.mean(K.square(y_pred - y_true))
+    
+    @staticmethod
+    def euclidean_loss(x, y):
+        return K.sqrt(K.sum(K.square(x - y)))
