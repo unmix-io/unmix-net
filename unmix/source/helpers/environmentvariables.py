@@ -72,6 +72,8 @@ def set_environment_variables(extend=False):
     """
     with open(find_dotenv(), 'r') as fp:
         for line in fp:
+            if '=' not in line:
+                continue
             k, v = line.split('=', 1)
             shouldextend = False
             if k.endswith("+"):
