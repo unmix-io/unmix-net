@@ -22,19 +22,25 @@ from unmix.source.configuration import Configuration
 
 class Accuracy(object):
 
+    SDR = 'sdr'
+    SIR = 'sir'
+    SAR = 'sar'
+    PERM = 'perm'
+
     def __init__(self, engine):
         self.engine = engine
         self.median_accuracies_vocals = []
         self.median_accuracies_instrumental = []
-        self.SDR = 'sdr'
-        self.SIR = 'sir'
-        self.SAR = 'sar'
-        self.PERM = 'perm'
+        self.fields = ['epoch', 'type', Accuracy.SDR, Accuracy.SIR, Accuracy.SAR, Accuracy.PERM]
+        self.file_vocals = self.__create_file("vocals")
+        self.file_instrumental = self.__create_file("instrumental")
+        self.save_count = Configuration.get('collection.test_save_count')
+        self.save_path = Configuration.build_path("predictions")
 
-    def evaluate(self, epochnr):
+    def evaluate(self, epoch):
         accuracies_vocals = []
         accuracies_instrumental = []
-
+        i = 0
         for song_file in self.engine.test_songs:
             try:
                 song = Song(song_file)
@@ -45,30 +51,28 @@ class Accuracy(object):
                 prediction = MixPrediciton(self.engine)
                 predicted_vocals, predicted_instrumental = prediction.run(
                     mix[0])
+                if self.save_count and self.save_count > i:
+                    prediction.save_vocals(song_file, folder=self.save_path)
+                    prediction.save_instrumental(song_file, folder=self.save_path)
 
                 accuracies_vocals.append(
                     self.__calculate_accuracy(vocals[0], predicted_vocals))
                 accuracies_instrumental.append(self.__calculate_accuracy(
                     instrumental[0], predicted_instrumental))
-
+                i += 1
             except Exception as e:
                 Logger.error(
                     "Error while predicting song '%s': %s." % (song_file, str(e)))
 
-        vocals_median = self.__calculate_median(accuracies_vocals, 'vocals', epochnr)
+        vocals_median = self.__calculate_median(
+            accuracies_vocals, 'vocals', epoch)
         self.median_accuracies_vocals.append(vocals_median)
-        instrumental_median = self.__calculate_median(accuracies_instrumental, 'instrumental', epochnr)
+        instrumental_median = self.__calculate_median(
+            accuracies_instrumental, 'instrumental', epoch)
         self.median_accuracies_instrumental.append(instrumental_median)
 
-        csv_exists = os.path.isfile(os.path.join(Configuration.output_directory, 'accuracy.csv'))
-        with open(os.path.join(Configuration.output_directory, 'accuracy.csv'), mode='a', newline='') as accuracy_file:
-            fieldnames = ['epoch', 'type', self.SDR, self.SIR, self.SAR, self.PERM]
-            file_writer = csv.DictWriter(accuracy_file, delimiter=';', fieldnames=fieldnames)
-            if not csv_exists:
-                file_writer.writeheader()
-            file_writer.writerow(vocals_median)
-            file_writer.writerow(instrumental_median)
-            accuracy_file.close()
+        self.__write_row(self.file_vocals, vocals_median)
+        self.__write_row(self.file_instrumental, instrumental_median)
 
         Logger.info("Median vocals: %s." %
                     (str(vocals_median)))
@@ -82,10 +86,10 @@ class Accuracy(object):
         result = mir_eval.separation.bss_eval_sources(
             audio_original, audio_predicted)
         entry = {
-            self.SDR: result[0][0],
-            self.SIR: result[1][0],
-            self.SAR: result[2][0],
-            self.PERM: result[3][0]
+            Accuracy.SDR: result[0][0],
+            Accuracy.SIR: result[1][0],
+            Accuracy.SAR: result[2][0],
+            Accuracy.PERM: result[3][0]
         }
         return entry
 
@@ -93,8 +97,23 @@ class Accuracy(object):
         return {
             'epoch': epochnr,
             'type': type,
-            self.SDR: np.median(np.array([x[self.SDR] for x in accuracies])),
-            self.SIR: np.median(np.array([x[self.SIR] for x in accuracies])),
-            self.SAR: np.median(np.array([x[self.SAR] for x in accuracies])),
-            self.PERM: np.median(np.array([x[self.PERM] for x in accuracies]))
+            Accuracy.SDR: np.median(np.array([x[Accuracy.SDR] for x in accuracies])),
+            Accuracy.SIR: np.median(np.array([x[Accuracy.SIR] for x in accuracies])),
+            Accuracy.SAR: np.median(np.array([x[Accuracy.SAR] for x in accuracies])),
+            Accuracy.PERM: np.median(
+                np.array([x[Accuracy.PERM] for x in accuracies]))
         }
+
+    def __create_file(self, type):
+        path = os.path.join(Configuration.output_directory,
+                            'accuracy_%s.csv' % type)
+        with open(path, mode='w', newline='') as file:
+            file_writer = csv.DictWriter(
+                file, delimiter=';', fieldnames=self.fields)
+            file_writer.writeheader()
+        return path
+
+    def __write_row(self, path, data):
+        with open(path, mode='a', newline='') as file:
+            file_writer = csv.DictWriter(file, delimiter=';', fieldnames=self.fields)
+            file_writer.writerow(data)

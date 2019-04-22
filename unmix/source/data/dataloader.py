@@ -39,16 +39,18 @@ class DataLoader(object):
 
         test_files = None
         test_frequency = Configuration.get('collection.test_frequency')
-        if test_frequency and test_frequency > 0:
-            test_files = files[-Configuration.get('collection.test_data_count'):]
-            files = files[:len(files) - Configuration.get('collection.test_data_count')]
+        test_data_count = Configuration.get('collection.test_data_count')
+        if test_frequency and test_frequency > 0 and test_data_count and test_data_count > 0:
+            test_data_count = int(test_data_count)
+            test_files = files[-test_data_count:]
+            files = files[:len(files) - test_data_count]
 
         song_limit = Configuration.get('collection.song_limit')
 
         if song_limit and song_limit > 0:
             if song_limit <= 1:  # Configuration as percentage share
                 song_limit = song_limit * len(files)
-            song_limit = min(song_limit, len(files))
+            song_limit = min(int(song_limit), len(files))
             files = files[:song_limit]
 
         validation_ratio = Configuration.get('collection.validation_ratio')

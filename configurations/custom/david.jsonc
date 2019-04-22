@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-mask",
+        "name": "default-window",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -16,30 +16,42 @@
         "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
         "validation_ratio": 0.2,
         "test_data_count": "int(env('UNMIX_TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
-        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))" // Run tests every n epoch
+        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))", // Run tests every n epoch
+        "test_save_count": 3
         //,"mean": 0.4265994829115264, // expected data mean over all training data
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "mask",
+        "name": "window",
         "options": {
             "size": 64,
             "step": 64,
             "shuffle": true,
-            "save_image": false
+            "save_audio": false
+        },
+        "normalizers": {
+            "zmuv": {
+                "enabled": false,
+                "mode": "frequency_bin", // frequency_bin or single
+                "mix_file": "mean-derivation.json",
+                "vocals_file": "vocals_mean-derivation.json"
+            }
         }
     },
     "training": {
         "model": {
-            "name": "U-Net"
+            "name": "leakyrelu",
+            "alpha1": 0.1,
+            "alpha2": 0.01,
+            "dropout_rate": 0.5
         },
         "batch_size": 8,
         "epoch": {
-            "count": 10000,
+            "count": 100000,
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "mean_squared_error_noaxis",
+        "loss_function": "mean_squared_error",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,
@@ -55,10 +67,10 @@
             },
             // "tensorboard": {
             //     "folder": "./TensorBoard",
-            //     "histogram_freq": 1,
-            //     "write_graph": false,
+            //     "histogram_freq": 0,
+            //     "write_graph": true,
             //     "write_grads": false,
-            //     "write_images": true,
+            //     "write_images": false,
             //     "embeddings_freq": 0,
             //     "update_freq": "batch"
             // },
@@ -78,7 +90,7 @@
             //     "factor": 0.2,
             //     "patience": 5,
             //     "min_learningrate": 0.001
-            // }
+            // }        
         }
     }
 }
