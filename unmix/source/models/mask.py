@@ -44,7 +44,7 @@ class MaskModel(BaseModel):
         model.add(Dropout(dropout_rate)) 
         
         model.add(Flatten())
-        model.add(Dense(512, kernel_initializer='he_normal'))
+        model.add(Dense(1024, kernel_initializer='he_normal'))
         model.add(LeakyReLU(alpha=alpha))
         model.add(Dropout(dropout_rate))
         model.add(BatchNormalization())
