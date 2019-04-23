@@ -75,14 +75,14 @@
             "early_stopping": {
                 "monitor": "val_loss",
                 "min_delta": 0.00001,
-                "patience": 10,
+                "patience": 20,
                 "verbose": 1
             },
             "reduce_learningrate": {
                 "monitor": "val_loss",
                 "factor": 0.5,
                 "patience": 10,
-                "min_learningrate": 0.001
+                "min_learningrate": 0.0001
             }
         }
     }
