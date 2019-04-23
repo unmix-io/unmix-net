@@ -35,7 +35,7 @@
             "name": "mask-ibm",
             "options": {
                 "alpha": 0.3,
-                "dropout_rate": 0.5,
+                "dropout_rate": 0,
                 "filter_factor": 1
             }
         },

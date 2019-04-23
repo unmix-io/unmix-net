@@ -36,7 +36,7 @@
             "options": {
                 "alpha1": 0.1,
                 "alpha2": 0.01,
-                "dropout_rate": 0.5
+                "dropout_rate": 0
             }
         },
         "batch_size": 2,
