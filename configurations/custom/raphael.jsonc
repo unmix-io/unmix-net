@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-window",
+        "name": "default-mask",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -21,28 +21,30 @@
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "window",
+        "name": "mask",
         "options": {
-            "size": 64,
-            "step": 32,
+            "size": 16,
+            "step": 16,
             "shuffle": true,
-            "save_audio": false
+            "save_image": false
         }
     },
     "training": {
         "model": {
-            "name": "leakyrelu",
-            "alpha1": 0.1,
-            "alpha2": 0.01,
-            "rate": 0.1
+            "name": "mask",
+            "options": {
+                "alpha": 0.3,
+                "dropout_rate": 0.5,
+                "filter_factor": 3
+            }
         },
         "batch_size": 8,
         "epoch": {
-            "count": 30,
+            "count": 10000,
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "mean_squared_error",
+        "loss_function": "mean_squared_error_noaxis",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,
@@ -57,11 +59,11 @@
                 "verbose": 1
             },
             // "tensorboard": {
-            //     "folder": "TensorBoard",
-            //     "histogram_freq": 0,
-            //     "write_graph": true,
+            //     "folder": "./TensorBoard",
+            //     "histogram_freq": 1,
+            //     "write_graph": false,
             //     "write_grads": false,
-            //     "write_images": false,
+            //     "write_images": true,
             //     "embeddings_freq": 0,
             //     "update_freq": "batch"
             // },
@@ -72,16 +74,16 @@
             },
             "early_stopping": {
                 "monitor": "val_loss",
-                "min_delta": 0.000001,
-                "patience": 15,
+                "min_delta": 0.00001,
+                "patience": 10,
                 "verbose": 1
-            }//,
-            // "reduce_learningrate": {
-            //     "monitor": "val_loss",
-            //     "factor": 0.2,
-            //     "patience": 5,
-            //     "min_learningrate": 0.001
-            // }        
+            },
+            "reduce_learningrate": {
+                "monitor": "val_loss",
+                "factor": 0.5,
+                "patience": 5,
+                "min_learningrate": 0.001
+            }
         }
     }
 }
