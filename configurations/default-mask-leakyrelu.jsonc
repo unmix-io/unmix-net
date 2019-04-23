@@ -21,17 +21,17 @@
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "mask-ibm",
+        "name": "mask",
         "options": {
-            "size": 25,
-            "step": 1,
+            "size": 64,
+            "step": 64,
             "shuffle": true,
             "save_image": false
         }
     },
     "training": {
         "model": {
-            "name": "mask-ibm",
+            "name": "mask-leakyrelu",
             "alpha1": 0.1,
             "alpha2": 0.01,
             "dropout_rate": 0.2
@@ -42,7 +42,7 @@
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "binary_crossentropy",
+        "loss_function": "mean_squared_error_noaxis",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,
@@ -57,11 +57,11 @@
                 "verbose": 1
             },
             // "tensorboard": {
-            //     "folder": "TensorBoard",
-            //     "histogram_freq": 0,
-            //     "write_graph": true,
+            //     "folder": "./TensorBoard",
+            //     "histogram_freq": 1,
+            //     "write_graph": false,
             //     "write_grads": false,
-            //     "write_images": false,
+            //     "write_images": true,
             //     "embeddings_freq": 0,
             //     "update_freq": "batch"
             // },

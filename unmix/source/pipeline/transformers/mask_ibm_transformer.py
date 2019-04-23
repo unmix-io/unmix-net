@@ -21,7 +21,7 @@ from unmix.source.helpers import spectrogramhandler
 
 class IBMMaskTransformer:
 
-    NAME = "mask_ibm"
+    NAME = "mask-ibm"
 
     def __init__(self, size, step, shuffle, save_image):
         self.size = size
