@@ -16,9 +16,9 @@ class LeakyReluModel(BaseModel):
     name = 'LargeLeakyReLU'
 
     def build(self, config):
-        alpha1 = config.alpha1
-        alpha2 = config.alpha2
-        dropout_rate = config.dropout_rate
+        alpha1 = config.options.alpha1
+        alpha2 = config.options.alpha2
+        dropout_rate = config.options.dropout_rate
         channels = 1
         batch_size = Configuration.get("training.batch_size")
 

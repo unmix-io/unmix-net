@@ -22,10 +22,12 @@ class LeakyReluModel(BaseModel):
     name = 'mask-leakyrelu'
 
     def build(self, config):
+
         alpha1 = config.alpha1
         alpha2 = config.alpha2
         dropout_rate = config.dropout_rate
         channels = 1
+        
         batch_size = Configuration.get("training.batch_size")
 
         mashup = Input(batch_shape=(batch_size, 769, 64, 1), name='input')

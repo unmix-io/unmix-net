@@ -32,9 +32,11 @@
     "training": {
         "model": {
             "name": "mask-leakyrelu",
-            "alpha1": 0.1,
-            "alpha2": 0.01,
-            "dropout_rate": 0.2
+            "options": {
+                "alpha1": 0.1,
+                "alpha2": 0.01,
+                "dropout_rate": 0.5
+            }
         },
         "batch_size": 8,
         "epoch": {

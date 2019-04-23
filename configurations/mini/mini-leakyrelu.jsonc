@@ -40,10 +40,12 @@
     },
     "training": {
         "model": {
-            "name": "leakyrelu",
-            "alpha1": 0.1,
-            "alpha2": 0.01,
-            "dropout_rate": 0.5
+            "name": "LeakyReLU",
+            "options": {
+                "alpha1": 0.1,
+                "alpha2": 0.01,
+                "dropout_rate": 0.5
+            }
         },
         "batch_size": 2,
         "epoch": {
