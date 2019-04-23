@@ -72,19 +72,19 @@
                 "file_name": "results.csv",
                 "separator": ";",
                 "append": true
-            }//,
+            },
             // "early_stopping": {
             //     "monitor": "val_loss",
             //     "min_delta": 0.00001,
             //     "patience": 100,
             //     "verbose": 1
             // }//,
-            // "reduce_learningrate": {
-            //     "monitor": "val_loss",
-            //     "factor": 0.2,
-            //     "patience": 5,
-            //     "min_learningrate": 0.001
-            // }
+            "reduce_learningrate": {
+                "monitor": "loss",
+                "factor": 0.1,
+                "patience": 5,
+                "min_learningrate": 0.00001
+            }
         }
     }
 }

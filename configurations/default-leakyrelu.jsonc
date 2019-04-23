@@ -89,9 +89,9 @@
             },
             "reduce_learningrate": {
                 "monitor": "val_loss",
-                "factor": 0.2,
+                "factor": 0.1,
                 "patience": 5,
-                "min_learningrate": 0.0001
+                "min_learningrate": 0.00001
             }       
         }
     }
