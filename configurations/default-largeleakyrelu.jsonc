@@ -86,13 +86,13 @@
                 "min_delta": 0.00001,
                 "patience": 10,
                 "verbose": 1
-            } //,
-            // "reduce_learningrate": {
-            //     "monitor": "val_loss",
-            //     "factor": 0.2,
-            //     "patience": 5,
-            //     "min_learningrate": 0.001
-            // }        
+            },
+            "reduce_learningrate": {
+                "monitor": "val_loss",
+                "factor": 0.2,
+                "patience": 5,
+                "min_learningrate": 0.0001
+            }    
         }
     }
 }
