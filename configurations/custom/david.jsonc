@@ -14,7 +14,7 @@
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
-        "validation_ratio": 0.2,
+        "validation_ratio": 0.6,
         "test_data_count": "int(env('UNMIX_TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
         "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))", // Run tests every n epoch
         "test_save_count": 3
@@ -32,7 +32,7 @@
     },
     "training": {
         "model": {
-            "name": "Hourglass",
+            "name": "U-Net",
             "options": {
                 "stacks": 4,
                 "channels": 128,

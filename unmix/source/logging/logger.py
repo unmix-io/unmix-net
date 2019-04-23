@@ -85,13 +85,16 @@ class Logger(object):
 
     @staticmethod
     def _write_log(title, message):
-        if not Logger.log_file:
-            return
-        if title:
-            content = "%s\t%s: %s" % (
-                converter.get_timestamp(), title, message)
-        else:
-            content = "%s\t%s" % (
-                converter.get_timestamp(), message)
-        with open(Logger.log_file, "a", newline='\n') as file:
-            file.write(content + '\n')
+        try:
+            if not Logger.log_file:
+                return
+            if title:
+                content = "%s\t%s: %s" % (
+                    converter.get_timestamp(), title, message)
+            else:
+                content = "%s\t%s" % (
+                    converter.get_timestamp(), message)
+            with open(Logger.log_file, "a", newline='\n', encoding='utf8') as file:
+                file.write(content + '\n')
+        except:
+            pass
