@@ -31,12 +31,12 @@ def normalize(data, mode, config_file):
         mean = np.array(config['mean'])
         variance = np.array(config['variance'])
     elif mode == MODE_BIN:
-        mean = np.resize(config['bin_mean'], data.shape)
-        variance = np.resize(config['bin_variance'], data.shape)
+        mean = np.repeat(np.reshape(config['bin_mean'], (data.shape[0], 1, data.shape[2])), data.shape[1], axis=1)
+        variance = np.repeat(np.reshape(config['bin_variance'], (data.shape[0], 1, data.shape[2])), data.shape[1], axis=1)
     else:        
         raise ConfigurationError('Invalid zmuv normalizer configuration.')
     
-    return (data - mean) / variance
+    return (data - mean) / np.sqrt(variance)
 
 
 def denormalize(data,  mode, config_file):
@@ -46,12 +46,12 @@ def denormalize(data,  mode, config_file):
         mean = np.array(config['mean'])
         variance = np.array(config['variance'])
     elif mode == MODE_BIN:
-        mean = np.resize(config['bin_mean'], data.shape)
-        variance = np.resize(config['bin_variance'], data.shape)
+        mean = np.repeat(np.reshape(config['bin_mean'], (data.shape[0], 1, data.shape[2])), data.shape[1], axis=1)
+        variance = np.repeat(np.reshape(config['bin_variance'], (data.shape[0], 1, data.shape[2])), data.shape[1], axis=1)
     else:        
         raise ConfigurationError('Invalid zmuv normalizer configuration.')
 
-    return (data * variance) + mean
+    return (data * np.sqrt(variance)) + mean
 
 
 def __read_config(config_file):
