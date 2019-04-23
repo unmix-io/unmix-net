@@ -34,10 +34,6 @@ class WindowTransformer:
         input = self.chopper.chop_n_pad(mix[0], index, self.size) # we select input[0] here because we just use the left or mono channel for now
         target = self.chopper.chop_n_pad(vocals[0], index, self.size)
         
-        if self.save_audio:
-            spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), input)
-            spectrogramhandler.to_audio('%s-%d_Target.wav' % (name, index), target)
-
         normalized_input = normalizer_real_imag.normalize(input)[0]
         normalized_target = normalizer_real_imag.normalize(target)[0]
         
@@ -45,6 +41,13 @@ class WindowTransformer:
         if zmuv_normalizer_config and zmuv_normalizer_config.enabled:
             normalized_input = normalizer_zmuv.normalize(normalized_input, zmuv_normalizer_config.mode, zmuv_normalizer_config.mix_file)
             normalized_target = normalizer_zmuv.normalize(normalized_target, zmuv_normalizer_config.mode, zmuv_normalizer_config.vocals_file)
+
+        if self.save_audio:
+            spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), input)
+            spectrogramhandler.to_audio('%s-%d_Target.wav' % (name, index), target)
+
+            spectrogramhandler.to_audio('%s-%d_Reconstructed_Input.wav' % (name, index), self.untransform_target(mix[0], normalized_input, index, (0,))[0])
+            spectrogramhandler.to_audio('%s-%d_Reconstructed_Target.wav' % (name, index), self.untransform_target(mix[0], normalized_target, index, (0,))[0])
 
         return normalized_input, normalized_target
 
