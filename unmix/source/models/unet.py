@@ -21,39 +21,40 @@ class UNetModel(BaseModel):
         transformation = Configuration.get('transformation.options', True)
         concat_axis = 3
 
+        base_filter_count = 32
         input_shape = (769, transformation.size, 1)
         input = Input(input_shape)
 
-        conv1 = Conv2D(4, (3, 3), padding="same", name="conv1_1",
+        conv1 = Conv2D(base_filter_count, (3, 3), padding="same", name="conv1_1",
                        activation="relu", data_format="channels_last")(input)
-        conv1 = Conv2D(4, (3, 3), padding="same", activation="relu",
+        conv1 = Conv2D(base_filter_count, (3, 3), padding="same", activation="relu",
                        data_format="channels_last")(conv1)
         pool1 = MaxPooling2D(pool_size=(
             2, 2), data_format="channels_last")(conv1)
-        conv2 = Conv2D(8, (3, 3), padding="same", activation="relu",
+        conv2 = Conv2D(base_filter_count * 2, (3, 3), padding="same", activation="relu",
                        data_format="channels_last")(pool1)
-        conv2 = Conv2D(8, (3, 3), padding="same", activation="relu",
+        conv2 = Conv2D(base_filter_count * 2, (3, 3), padding="same", activation="relu",
                        data_format="channels_last")(conv2)
         pool2 = MaxPooling2D(pool_size=(
             2, 2), data_format="channels_last")(conv2)
 
-        conv3 = Conv2D(16, (3, 3), padding="same",
+        conv3 = Conv2D(base_filter_count * 4, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(pool2)
-        conv3 = Conv2D(16, (3, 3), padding="same",
+        conv3 = Conv2D(base_filter_count * 4, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(conv3)
         pool3 = MaxPooling2D(pool_size=(
             2, 2), data_format="channels_last")(conv3)
 
-        conv4 = Conv2D(32, (3, 3), padding="same",
+        conv4 = Conv2D(base_filter_count * 8, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(pool3)
-        conv4 = Conv2D(32, (3, 3), padding="same",
+        conv4 = Conv2D(base_filter_count * 8, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(conv4)
         pool4 = MaxPooling2D(pool_size=(
             2, 2), data_format="channels_last")(conv4)
 
-        conv5 = Conv2D(64, (3, 3), padding="same",
+        conv5 = Conv2D(base_filter_count * 16, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(pool4)
-        conv5 = Conv2D(64, (3, 3), padding="same",
+        conv5 = Conv2D(base_filter_count * 16, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(conv5)
 
         up_conv5 = UpSampling2D(
@@ -62,9 +63,9 @@ class UNetModel(BaseModel):
         crop_conv4 = Cropping2D(
             cropping=(ch, cw), data_format="channels_last")(conv4)
         up6 = concatenate([up_conv5, crop_conv4], axis=concat_axis)
-        conv6 = Conv2D(32, (3, 3), padding="same",
+        conv6 = Conv2D(base_filter_count * 8, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(up6)
-        conv6 = Conv2D(32, (3, 3), padding="same",
+        conv6 = Conv2D(base_filter_count * 8, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(conv6)
 
         up_conv6 = UpSampling2D(
@@ -73,9 +74,9 @@ class UNetModel(BaseModel):
         crop_conv3 = Cropping2D(
             cropping=(ch, cw), data_format="channels_last")(conv3)
         up7 = concatenate([up_conv6, crop_conv3], axis=concat_axis)
-        conv7 = Conv2D(16, (3, 3), padding="same",
+        conv7 = Conv2D(base_filter_count * 4, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(up7)
-        conv7 = Conv2D(16, (3, 3), padding="same",
+        conv7 = Conv2D(base_filter_count * 4, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(conv7)
 
         up_conv7 = UpSampling2D(
@@ -84,9 +85,9 @@ class UNetModel(BaseModel):
         crop_conv2 = Cropping2D(
             cropping=(ch, cw), data_format="channels_last")(conv2)
         up8 = concatenate([up_conv7, crop_conv2], axis=concat_axis)
-        conv8 = Conv2D(8, (3, 3), padding="same",
+        conv8 = Conv2D(base_filter_count * 2, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(up8)
-        conv8 = Conv2D(8, (3, 3), padding="same", activation="relu",
+        conv8 = Conv2D(base_filter_count * 2, (3, 3), padding="same", activation="relu",
                        data_format="channels_last")(conv8)
 
         up_conv8 = UpSampling2D(
@@ -95,18 +96,22 @@ class UNetModel(BaseModel):
         crop_conv1 = Cropping2D(
             cropping=(ch, cw), data_format="channels_last")(conv1)
         up9 = concatenate([up_conv8, crop_conv1], axis=concat_axis)
-        conv9 = Conv2D(4, (3, 3), padding="same",
+        conv9 = Conv2D(base_filter_count, (3, 3), padding="same",
                        activation="relu", data_format="channels_last")(up9)
-        conv9 = Conv2D(4, (3, 3), padding="same", activation="relu",
+        conv9 = Conv2D(base_filter_count, (3, 3), padding="same", activation="relu",
                        data_format="channels_last")(conv9)
 
-        flatten = Flatten()(conv9)
-        dense1 = Dense(64, activation='relu')(flatten)
-        bn = BatchNormalization()(dense1)
-        dense2 = Dense(769 * transformation.step, activation='sigmoid')(bn)
-        output = Reshape((769, transformation.step, 1))(dense2)
 
-        return Model(input=input, output=output)
+        dense1 = Dense(1, activation='relu')(conv9)
+        padding = ZeroPadding2D(((1, 0), (0, 0)))(dense1)
+
+        #flatten = Flatten()(conv9)
+        #dense1 = Dense(64, activation='relu')(flatten)
+        #bn = BatchNormalization()(dense1)
+        #dense2 = Dense(769 * transformation.step, activation='sigmoid')(bn)
+        #output = Reshape((769, transformation.step, 1))(dense2)
+
+        return Model(input=input, output=padding)
 
     def __crop_shape(self, target, refer):
         # 3rd dimension (width)
