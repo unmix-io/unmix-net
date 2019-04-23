@@ -23,22 +23,22 @@
     "transformation": {
         "name": "mask",
         "options": {
-            "size": 16,
-            "step": 16,
-            "shuffle": true,
+            "size": 1,
+            "step": 1,
+            "shuffle": false,
             "save_image": false
         }
     },
     "training": {
         "model": {
-            "name": "mask",
+            "name": "rnn",
             "options": {
-                "alpha": 0.3,
-                "dropout_rate": 0.5,
-                "filter_factor": 5
+                // "alpha": 0.3,
+                // "dropout_rate": 0.5,
+                // "filter_factor": 3
             }
         },
-        "batch_size": 16,
+        "batch_size": 8,
         "epoch": {
             "count": 10000,
             "shuffle": false
@@ -81,7 +81,7 @@
             "reduce_learningrate": {
                 "monitor": "val_loss",
                 "factor": 0.5,
-                "patience": 10,
+                "patience": 5,
                 "min_learningrate": 0.001
             }
         }
