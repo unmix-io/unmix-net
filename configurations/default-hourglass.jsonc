@@ -35,7 +35,7 @@
             "name": "Hourglass",
             "options": {
                 "stacks": 4,
-                "channels": 1,
+                "channels": 128,
                 "classes": 2
             }
         },

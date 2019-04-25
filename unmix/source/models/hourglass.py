@@ -14,7 +14,7 @@ from unmix.source.models.basemodel import BaseModel
 # Base implementation from: https://github.com/yuanyuanli85/Stacked_Hourglass_Network_Keras
 
 
-class LeakyReluModel(BaseModel):
+class HourglassModel(BaseModel):
     name = 'Hourglass'
 
     def build(self, config):
@@ -34,7 +34,7 @@ class LeakyReluModel(BaseModel):
                 head_next_stage, config.options.classes, config.options.channels, i)
             outputs.append(head_to_loss)
 
-        return Model(input=input, outputs=outputs)
+        return Model(input=input, outputs=outputs[-1])
 
     def __front_module(self, input, channels):
         # front module, input to 1/4 resolution
