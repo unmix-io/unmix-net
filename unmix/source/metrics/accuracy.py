@@ -31,15 +31,19 @@ class Accuracy(object):
         self.engine = engine
         self.median_accuracies_vocals = []
         self.median_accuracies_instrumental = []
-        self.fields = ['epoch', 'type', Accuracy.SDR, Accuracy.SIR, Accuracy.SAR, Accuracy.PERM]
+        self.median_accuracies_mix = []
+        self.fields = ['epoch', 'type', Accuracy.SDR,
+                       Accuracy.SIR, Accuracy.SAR, Accuracy.PERM]
         self.file_vocals = self.__create_file("vocals")
         self.file_instrumental = self.__create_file("instrumental")
+        self.file_mix = self.__create_file("mix")
         self.save_count = Configuration.get('collection.test_save_count')
         self.save_path = Configuration.build_path("predictions")
 
     def evaluate(self, epoch):
         accuracies_vocals = []
         accuracies_instrumental = []
+        accuracies_mix = []
         i = 0
         for song_file in self.engine.test_songs:
             try:
@@ -53,12 +57,15 @@ class Accuracy(object):
                     mix[0])
                 if self.save_count and self.save_count > i:
                     prediction.save_vocals(song_file, folder=self.save_path)
-                    prediction.save_instrumental(song_file, folder=self.save_path)
+                    prediction.save_instrumental(
+                        song_file, folder=self.save_path)
 
                 accuracies_vocals.append(
-                    self.__calculate_accuracy(vocals[0], predicted_vocals))
-                accuracies_instrumental.append(self.__calculate_accuracy(
+                    self.__calculate_accuracy_track(vocals[0], predicted_vocals))
+                accuracies_instrumental.append(self.__calculate_accuracy_track(
                     instrumental[0], predicted_instrumental))
+                accuracies_mix.append(
+                    self.__calculate_accuracy_mix(vocals[0], instrumental[0], predicted_vocals, predicted_instrumental))
                 i += 1
             except Exception as e:
                 Logger.error(
@@ -70,21 +77,36 @@ class Accuracy(object):
         instrumental_median = self.__calculate_median(
             accuracies_instrumental, 'instrumental', epoch)
         self.median_accuracies_instrumental.append(instrumental_median)
+        mix_median = self.__calculate_median(
+            accuracies_mix, 'mix', epoch)
+        self.median_accuracies_mix.append(mix_median)
 
         self.__write_row(self.file_vocals, vocals_median)
         self.__write_row(self.file_instrumental, instrumental_median)
+        self.__write_row(self.file_mix, mix_median)
 
         Logger.info("Median vocals: %s." %
                     (str(vocals_median)))
         Logger.info("Median instrumental: %s." %
                     (str(instrumental_median)))
 
-    def __calculate_accuracy(self, original, predicted):
-        audio_original = librosa.istft(original)
-        audio_predicted = librosa.istft(predicted)
-
+    def __calculate_accuracy_track(self, original, predicted):
         result = mir_eval.separation.bss_eval_sources(
-            audio_original, audio_predicted)
+            librosa.istft(original), librosa.istft(predicted))
+
+        entry = {
+            Accuracy.SDR: result[0][0],
+            Accuracy.SIR: result[1][0],
+            Accuracy.SAR: result[2][0],
+            Accuracy.PERM: result[3][0]
+        }
+        return entry
+
+    def __calculate_accuracy_mix(self, original_vocals, orignal_instrumental, predicted_vocals, predicted_instrumental):
+        result = mir_eval.separation.bss_eval_sources(
+            np.array([librosa.istft(original_vocals),
+                      librosa.istft(orignal_instrumental)]),
+            np.array([librosa.istft(predicted_vocals), librosa.istft(predicted_instrumental)]))
         entry = {
             Accuracy.SDR: result[0][0],
             Accuracy.SIR: result[1][0],
@@ -115,5 +137,6 @@ class Accuracy(object):
 
     def __write_row(self, path, data):
         with open(path, mode='a', newline='') as file:
-            file_writer = csv.DictWriter(file, delimiter=';', fieldnames=self.fields)
+            file_writer = csv.DictWriter(
+                file, delimiter=';', fieldnames=self.fields)
             file_writer.writerow(data)
