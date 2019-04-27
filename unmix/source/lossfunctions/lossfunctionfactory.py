@@ -16,9 +16,11 @@ from unmix.source.configuration import Configuration
 
 
 class LossFunctionFactory(object):
+    model = False
 
     @staticmethod
-    def build():
+    def build(model):
+        LossFunctionFactory.model = model
         loss_function = Configuration.get('training.loss_function', False)
         return getattr(LossFunctionFactory, loss_function)
 
@@ -53,3 +55,7 @@ class LossFunctionFactory(object):
     @staticmethod
     def euclidean_loss(x, y):
         return K.sqrt(K.sum(K.square(x - y)))
+
+    @staticmethod
+    def L11_loss(y_true, mask_pred):
+        return K.sum(K.abs(y_true - LossFunctionFactory.model.input * mask_pred))

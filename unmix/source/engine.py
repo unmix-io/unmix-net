@@ -30,12 +30,13 @@ from unmix.source.pipeline.transformers.transformerfactory import TransformerFac
 class Engine:
 
     def __init__(self):
-        
-        optimizer = OptimizerFactory.build()
-        loss_function = LossFunctionFactory.build()
-        metrics = MetricsFactory.build()
 
         self.model = ModelFactory.build()
+        optimizer = OptimizerFactory.build()
+        loss_function = LossFunctionFactory.build(self.model)
+        metrics = MetricsFactory.build()
+
+
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
         self.model.summary(print_fn=Logger.info)

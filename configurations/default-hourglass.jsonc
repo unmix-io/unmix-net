@@ -22,12 +22,12 @@
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "mask",
+        "name": "train_window_predict_mask",
         "options": {
             "size": 64,
             "step": 64,
             "shuffle": true,
-            "save_image": false
+            "save_audio": false
         }
     },
     "training": {
@@ -45,7 +45,7 @@
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "mean_squared_error_noaxis",
+        "loss_function": "L11_loss",
         "optimizer": "adam",
         "metrics": ["mean_pred"],
         "load_weights": false,
