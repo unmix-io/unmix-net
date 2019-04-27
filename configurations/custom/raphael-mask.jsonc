@@ -24,7 +24,7 @@
         "name": "train_window_predict_mask",
         "options": {
             "size": 64,
-            "step": 64,
+            "step": 1,
             "shuffle": true,
             "save_audio": false
         }
@@ -35,7 +35,7 @@
             "options": {
                 "alpha": 0.3,
                 "dropout_rate": 0.5,
-                "filter_factor": 2
+                "filter_factor": 1
             }
         },
         "batch_size": 8,
