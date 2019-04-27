@@ -68,7 +68,7 @@ class DataGenerator(keras.utils.Sequence):
         self.generate_index()
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
-        if self.engine.test_songs and self.run_tests:
+        if self.engine.test_songs and self.run_tests and (self.count + 1) % Configuration.get('collection.test_frequency') == 0:
             self.accuracy.evaluate(self.count)
         self.count += 1
 

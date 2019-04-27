@@ -26,6 +26,7 @@ class TrainWindowPredictMaskTransformer:
     def __init__(self, size, step, shuffle, save_audio):
         self.size = size
         self.shuffle = shuffle
+        self.step = step
         self.save_audio = save_audio
         self.chopper = Chopper(step)
 
@@ -37,8 +38,9 @@ class TrainWindowPredictMaskTransformer:
         normalized_target = normalizer_real_imag.normalize(target)[0]
 
         max_input = np.max(normalized_input)
-        normalized_input = normalized_input / max_input
-        normalized_target = normalized_target / max_input
+        if max_input > 0:
+            normalized_input = normalized_input / max_input
+            normalized_target = normalized_target / max_input
 
         if self.save_audio:
             spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), input)
@@ -58,7 +60,10 @@ class TrainWindowPredictMaskTransformer:
 
         normalized = normalizer_real_imag.normalize(input)
         normalized_data = normalized[0]
-        normalized_data = normalized_data / np.max(normalized_data)
+
+        data_max = np.max(normalized_data)
+        if data_max > 0:
+            normalized_data = normalized_data / np.max(normalized_data)
 
         return normalized_data, normalized[1]
 
