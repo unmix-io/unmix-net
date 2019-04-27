@@ -23,7 +23,7 @@
     "transformation": {
         "name": "train_window_predict_mask",
         "options": {
-            "size": 64,
+            "size": 25,
             "step": 1,
             "shuffle": true,
             "save_audio": false
