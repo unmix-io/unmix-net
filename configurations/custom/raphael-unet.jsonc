@@ -27,7 +27,7 @@
             "size": 16,
             "step": 16,
             "shuffle": true,
-            "save_image": false
+            "save_audio": false
         }
     },
     "training": {

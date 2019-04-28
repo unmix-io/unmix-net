@@ -24,16 +24,15 @@ class RnnModel(BaseModel):
         input_shape = (769, transformation.size, 1)
 
         model = Sequential()
-        model.add(Reshape((769,1), input_shape=input_shape))
-        model.add(LSTM(32))
-        #model.add(LSTM(64))
+        model.add(Reshape((transformation.size,769), input_shape=input_shape))
+        model.add(LSTM(256, return_sequences=True))
+        model.add(LSTM(512, return_sequences=True))
+        model.add(LSTM(1024))
         
-        #model.add(Flatten())
         model.add(LeakyReLU(alpha=0.3))
 
-        model.add(Dense(769 * transformation.step, kernel_initializer='he_normal'))
+        model.add(Dense(769 * transformation.step))
+        model.add(LeakyReLU(alpha=0.3))
         model.add(Reshape((769, transformation.step, 1)))
-        #model.add(ReLU(max_value=0.999, negative_slope=0.01))
-        model.add(Activation('sigmoid'))
 
         return model
