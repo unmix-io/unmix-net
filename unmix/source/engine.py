@@ -85,19 +85,21 @@ class Engine:
         return history
     
     def save(self):
-        path = Configuration.get_path('environment.model_file', optional=False)
-        Logger.info("Saved model and weights to: %s" % path)
-        self.model.save(path, overwrite=True)
+        path = os.path.join(Configuration.output_directory, 'model.%s')
+        with open(path % "json", "w") as f:
+    	    f.write(self.model.to_json())
+        self.model.save(path % "h5", overwrite=True)
+        Logger.info("Saved model and weights to: %s" % "h5")
     
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
             'environment.weights.folder', optional=False), Configuration.get('environment.weights.file', optional=False))
-        Logger.info("Saved weights to: %s" % path)
         self.model.save_weights(path, overwrite=True)
+        Logger.info("Saved weights to: %s" % path)
 
     def load(self, path=None):
         if not path:
-            path = Configuration.get_path('environment.model_file', optional=False)
+            path = os.path.join(Configuration.output_directory, 'model.h5')
         Logger.info("Load model and weights from: %s" % path)
         self.model.load(path)
 

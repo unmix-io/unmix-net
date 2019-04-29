@@ -7,7 +7,6 @@
         "log_file": "logs.txt",
         "plot_folder": "plots",
         "temp_folder": "temp",
-        "model_file": "model.h5", // File to store model and weights
         "weights": {
             "folder": "weights",
             "file": "weights.h5"
@@ -15,11 +14,11 @@
     },
     "collection": {
         "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=11025_channels=1-mono/musdb18/",
-        "sample_rate": "11025",
-        "song_limit": "140", // Number of training and validation songs
+        "sample_rate": 11025,
+        "song_limit": 140, // Number of training and validation songs
         "validation_ratio": 0.2,
-        "test_data_count": "10", //Number of test songs
-        "test_frequency": "1", // Run tests every n epoch
+        "test_data_count": 10, //Number of test songs
+        "test_frequency": 10, // Run tests every n epoch
         "test_save_count": 1
     },
     "transformation": {

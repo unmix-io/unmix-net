@@ -6,7 +6,6 @@
         "log_file": "logs.txt",
         "plot_folder": "plots",
         "temp_folder": "temp",
-        "model_file": "model.h5", // File to store model and weights
         "weights": {
             "folder": "weights",
             "file": "weights.h5"
@@ -51,7 +50,7 @@
         },
         "batch_size": 8,
         "epoch": {
-            "count": 2,
+            "count": 1,
             "shuffle": false
         },
         "verbose": 1,

@@ -66,7 +66,6 @@ class CallbacksFactory(object):
     @staticmethod
     def csv_logger(config):
         path = os.path.join(Configuration.output_directory, config.file_name)
-        #open(path, 'a').close()
         return CSVLogger(filename=path, separator=config.separator, append=config.append)
 
     @staticmethod
