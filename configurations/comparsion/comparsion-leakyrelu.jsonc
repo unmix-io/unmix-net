@@ -1,6 +1,4 @@
-/*
-Fixed dataset for comparsion runs between different transformers and models.
-*/
+// Fixed dataset for comparsion runs between different transformers and models.
 {
     "environment": {
         "name": "comparsion-window-LeakyReLU",
