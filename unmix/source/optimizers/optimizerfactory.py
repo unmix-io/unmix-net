@@ -23,3 +23,10 @@ class OptimizerFactory(object):
 
     def rmsprop(self, options):
         return RMSprop(options.lr)
+
+    @staticmethod
+    def get_members():
+        return {
+            'adam': OptimizerFactory.adam,
+            'rmsprop': OptimizerFactory.rmsprop
+        }

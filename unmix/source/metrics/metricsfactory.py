@@ -31,3 +31,10 @@ class MetricsFactory(object):
     @staticmethod
     def max_pred(y_true, y_pred):
         return keras.max(y_pred)
+
+    @staticmethod
+    def get_members():
+        return {
+            'mean_pred': MetricsFactory.mean_pred,
+            'max_pred': MetricsFactory.max_pred
+        }
