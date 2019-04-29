@@ -2,7 +2,7 @@
 # coding: utf8
 
 """
-Tests JSON configuration.
+Tests JSON(C) configuration.
 """
 
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
@@ -17,7 +17,7 @@ from unmix.source.configuration import Configuration
 def test_configuration_initialize():
     current_path = os.path.dirname(__file__)
     config_file = os.path.join(os.path.dirname(__file__), 'test.jsonc')
-    Configuration.initialize(config_file, current_path)
+    Configuration.initialize(config_file, current_path, create_output=False)
     assert Configuration.get("test") == "test-root"
     assert Configuration.get("level1.level2.level3") == "test-level3"
     assert Configuration.get("level1").level2.level3 == "test-level3"
@@ -30,6 +30,13 @@ def test_configuration_initialize():
     test_path = Configuration.get_path("path")
     assert os.path.isabs(test_path)
     assert test_path.startswith(current_path)
+    assert Configuration.get("nonexistent", optional=True) is None
+    assert Configuration.get("nonexistent", optional=True, default=42) == 42
+    try:
+        Configuration.get("nonexistent", optional=False)
+        assert False
+    except:
+        assert True
 
 
 if __name__ == "__main__":
