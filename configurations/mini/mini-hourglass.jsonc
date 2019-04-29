@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "mini-mask-leakyrelu",
+        "name": "mini-Hourglass",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -21,21 +21,21 @@
         "test_save_count": 0
     },
     "transformation": {
-        "name": "mask",
+        "name": "train_window_predict_mask",
         "options": {
             "size": 64,
             "step": 64,
             "shuffle": true,
-            "save_image": false
+            "save_audio": false
         }
     },
     "training": {
         "model": {
-            "name": "mask-leakyrelu",
+            "name": "Hourglass-Alternative",
             "options": {
-                "alpha1": 0.1,
-                "alpha2": 0.01,
-                "dropout_rate": 0
+                "stacks": 4,
+                "channels": 128,
+                "classes": 2
             }
         },
         "batch_size": 2,
@@ -44,10 +44,10 @@
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "mean_squared_error_noaxis",
+        "loss_function": "L11_loss",
         "optimizer": {
             "name": "adam",
-            "lr": 0.001
+            "lr": 0.0001
         },
         "metrics": ["mean_pred"],
         "load_weights": false,

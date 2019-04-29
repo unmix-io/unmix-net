@@ -13,14 +13,12 @@
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
-        "sample_rate": "env('UNMIX_SAMPLE_RATE')",
-        "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
+        "sample_rate": 11025,
+        "song_limit": 1,
         "validation_ratio": 0.5,
-        "test_data_count": "int(env('UNMIX_TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
-        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))", // Run tests every n epoch
-        "test_save_count": 1
-        //,"mean": 0.4265994829115264, // expected data mean over all training data
-        //"variance": 2.59734488467731  //expected data variance over all training data
+        "test_data_count": 0,
+        "test_frequency": 0,
+        "test_save_count": 0
     },
     "transformation": {
         "name": "mask",
@@ -54,41 +52,17 @@
         "metrics": ["mean_pred"],
         "load_weights": false,
         "callbacks": {
-            // "model_checkpoint": {
-            //     "file_name": "callback_weights_{epoch:02d}.h5",
-            //     "monitor": "val_loss",
-            //     "best_only": true,
-            //     "weights_only": false,
-            //     "mode": "auto",
-            //     "period": 1,
-            //     "verbose": 1
-            // },
-            // "tensorboard": {
-            //     "folder": "./TensorBoard",
-            //     "histogram_freq": 1,
-            //     "write_graph": false,
-            //     "write_grads": false,
-            //     "write_images": true,
-            //     "embeddings_freq": 0,
-            //     "update_freq": "batch"
-            // },
             "csv_logger": {
                 "file_name": "results.csv",
                 "separator": ";",
                 "append": true
-            }//,
-            // "early_stopping": {
-            //     "monitor": "val_loss",
-            //     "min_delta": 0.00001,
-            //     "patience": 100,
-            //     "verbose": 1
-            // }//,
-            // "reduce_learningrate": {
-            //     "monitor": "val_loss",
-            //     "factor": 0.2,
-            //     "patience": 5,
-            //     "min_learningrate": 0.001
-            // }
+            },
+            "reduce_learningrate": {
+                "monitor": "loss",
+                "factor": 0.1,
+                "patience": 5,
+                "min_learningrate": 0.00001
+            }
         }
     }
 }
