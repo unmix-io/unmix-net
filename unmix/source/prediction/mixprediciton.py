@@ -42,6 +42,7 @@ class MixPrediciton(Prediction):
                 input, transform_info = self.transformer.prepare_input(
                     self.mix, i)
                 self.predict_part(i, input, transform_info)
+                self.progressbar.update(self.progress)
 
         self.unpad()
         return self.vocals, self.instrumental

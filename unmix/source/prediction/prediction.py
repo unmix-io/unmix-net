@@ -33,9 +33,9 @@ class Prediction(object):
         self.sample_rate = sample_rate
         self.sample_rate_origin = 0
         self.fft_window = fft_window
-        self.mix = []
-        self.vocals = []
-        self.instrumental = []
+        self.mix = np.empty(0)
+        self.vocals = np.empty(0)
+        self.instrumental = np.empty(0)
         self.progress = 0
         self.initialized = False
         self.length = 0
@@ -73,10 +73,7 @@ class Prediction(object):
 
         self.__expand_track(predicted_vocals, self.vocals, i)
         self.__expand_track(predicted_instrumental, self.instrumental, i)
-
         self.progress += 1
-        self.progressbar.update(self.progress)
-
     
     def __expand_track(self, prediction, track, i):
         left = prediction.shape[1] * i

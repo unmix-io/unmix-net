@@ -52,7 +52,7 @@ class Accuracy(object):
                 instrumental = song.instrumental.load().channels
                 mix = vocals + instrumental
 
-                prediction = MixPrediciton(self.engine)
+                prediction = MixPrediciton(self.engine, sample_rate=Configuration.get('collection.sample_rate'))
                 predicted_vocals, predicted_instrumental = prediction.run(
                     mix[0])
                 if self.save_count > i:

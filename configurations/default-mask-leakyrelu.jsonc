@@ -13,6 +13,7 @@
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
+        "sample_rate": "env('UNMIX_SAMPLE_RATE')",
         "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
         "validation_ratio": 0.2,
         "test_data_count": "int(env('UNMIX_TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
