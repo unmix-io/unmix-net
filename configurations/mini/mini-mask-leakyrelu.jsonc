@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-mask",
+        "name": "mini-mask-leakyrelu",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",

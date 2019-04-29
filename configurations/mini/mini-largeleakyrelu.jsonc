@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-window",
+        "name": "mini-window-LargeLeakyReLU",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
