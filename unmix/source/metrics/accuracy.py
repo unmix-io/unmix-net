@@ -89,14 +89,11 @@ class Accuracy(object):
             self.__create_file("mix", fields_mix)
 
 
-        self.__write_row(os.path.join(Configuration.output_directory, 'accuracy_instrumental.csv'), vocals_median, fields_track)
+        self.__write_row(os.path.join(Configuration.output_directory, 'accuracy_vocals.csv'), vocals_median, fields_track)
         self.__write_row(os.path.join(Configuration.output_directory, 'accuracy_instrumental.csv'), instrumental_median, fields_track)
         self.__write_row(os.path.join(Configuration.output_directory, 'accuracy_mix.csv'), mix_median, fields_mix)
 
-        Logger.info("Median vocals: %s." %
-                    (str(vocals_median)))
-        Logger.info("Median instrumental: %s." %
-                    (str(instrumental_median)))
+        Logger.info("Updated accuracy results.")
 
     def __calculate_accuracy_track(self, original, predicted):
         result = mir_eval.separation.bss_eval_sources(
