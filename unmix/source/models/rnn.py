@@ -19,7 +19,7 @@ class RnnModel(BaseModel):
     name = 'rnn'
 
     def build(self, config):
-        transformation = Configuration.get('transformation.options', False)
+        transformation = Configuration.get('transformation.options', optional=False)
 
         input_shape = (769, transformation.size, 1)
 

@@ -18,7 +18,7 @@ class UNetModel(BaseModel):
     name = 'U-Net'
 
     def build(self, config):
-        transformation = Configuration.get('transformation.options', False)
+        transformation = Configuration.get('transformation.options', optional=False)
         concat_axis = 3
 
         base_filter_count = 32

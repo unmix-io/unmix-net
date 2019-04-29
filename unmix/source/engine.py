@@ -86,13 +86,13 @@ class Engine:
     
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
-            'environment.weights.folder'), Configuration.get('environment.weights.file'))
+            'environment.weights.folder', optional=False), Configuration.get('environment.weights.file', optional=False))
         Logger.info("Saved weights to: %s" % path)
         self.model.save_weights(path, overwrite=True)
 
     def load_weights(self, path=None):
         if not path:
             path = os.path.join(Configuration.get_path(
-                'environment.weights.folder'), Configuration.get('environment.weights.file'))
+                'environment.weights.folder', optional=False), Configuration.get('environment.weights.file', optional=False))
         Logger.info("Load weights from: %s" % path)
         self.model.load_weights(path)

@@ -28,7 +28,7 @@ class Logger(object):
         Logger.timers = {}
         if write_file:
             Logger.log_file = os.path.join(
-                Configuration.output_directory, Configuration.get('environment.log_file'))
+                Configuration.output_directory, Configuration.get('environment.log_file', optional=False))
         colorama.init()
 
     @staticmethod

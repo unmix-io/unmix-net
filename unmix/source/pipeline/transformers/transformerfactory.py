@@ -23,8 +23,8 @@ class TransformerFactory(object):
 
     @staticmethod
     def build():
-        name = Configuration.get('transformation.name', False)
-        options = Configuration.get('transformation.options', False)
+        name = Configuration.get('transformation.name', optional=False)
+        options = Configuration.get('transformation.options', optional=False)
         try:
             if name == WindowTransformer.NAME:
                 return WindowTransformer(options.size, options.step, options.shuffle, options.save_audio)

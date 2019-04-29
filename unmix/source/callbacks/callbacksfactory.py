@@ -23,7 +23,7 @@ class CallbacksFactory(object):
 
     @staticmethod
     def build(build_validation_generator=None):
-        configs = Configuration.get('training.callbacks', False)
+        configs = Configuration.get('training.callbacks', optional=False)
         callbacks = []
         if hasattr(configs, 'model_checkpoint'):
             callbacks.append(CallbacksFactory.model_checkpoint(
@@ -52,7 +52,7 @@ class CallbacksFactory(object):
 
     @staticmethod
     def tensorboard(config, validation_generator):
-        path = os.path.join(Configuration.get("training.callbacks.tensorboard.folder"),
+        path = os.path.join(Configuration.get("training.callbacks.tensorboard.folder", optional=False),
                             os.path.basename(Configuration.output_directory))
         return TensorBoardWrapper(validation_generator, log_dir=path,
                                   histogram_freq=config.histogram_freq,

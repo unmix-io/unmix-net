@@ -22,7 +22,7 @@ class ModelFactory(object):
 
     @staticmethod
     def build():
-        model_config = Configuration.get('training.model', False)
+        model_config = Configuration.get('training.model', optional=False)
         all_models = BaseModel.__subclasses__()
         if model_config.name:
             return [m().build(model_config) for m in all_models if m.name.lower() == model_config.name.lower()][0]
