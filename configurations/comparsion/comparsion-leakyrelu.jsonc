@@ -3,7 +3,7 @@
     "environment": {
         "name": "comparsion-window-LeakyReLU",
         "output_path": "runs",
-        "output_folder": "get_timestamp() + '_window-LeakyReLU'",
+        "output_folder": "get_timestamp() + '_window-leakyrelu'",
         "log_file": "logs.txt",
         "plot_folder": "plots",
         "temp_folder": "temp",
