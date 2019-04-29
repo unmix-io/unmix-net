@@ -37,7 +37,7 @@ class Accuracy(object):
         self.file_vocals = self.__create_file("vocals")
         self.file_instrumental = self.__create_file("instrumental")
         self.file_mix = self.__create_file("mix")
-        self.save_count = Configuration.get('collection.test_save_count')
+        self.save_count = Configuration.get('collection.test_save_count', default=0)
         self.save_path = Configuration.build_path("predictions")
 
     def evaluate(self, epoch):
@@ -55,7 +55,7 @@ class Accuracy(object):
                 prediction = MixPrediciton(self.engine)
                 predicted_vocals, predicted_instrumental = prediction.run(
                     mix[0])
-                if self.save_count and self.save_count > i:
+                if self.save_count > i:
                     prediction.save_vocals(song_file, folder=self.save_path)
                     prediction.save_instrumental(
                         song_file, folder=self.save_path)

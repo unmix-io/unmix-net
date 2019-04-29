@@ -71,7 +71,7 @@ class Engine:
         # Pass a new data generator here because TensorBoard must have access to validation_data
         self.callbacks = CallbacksFactory.build(build_validation_generator)
 
-        epoch_count = Configuration.get('training.epoch.count')
+        epoch_count = Configuration.get('training.epoch.count', optional=False)
         history = self.model.fit_generator(
             generator=self.training_generator,
             validation_data=self.validation_generator,

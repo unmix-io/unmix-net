@@ -28,7 +28,7 @@ class DataGenerator(keras.utils.Sequence):
         self.name = name
         self.collection = collection
         self.transformer = transformer
-        self.batch_size = Configuration.get('training.batch_size')
+        self.batch_size = Configuration.get('training.batch_size', default=8)
         self.epoch_shuffle = Configuration.get('training.epoch.shuffle')
         self.engine = engine
         self.run_tests = run_tests
@@ -68,7 +68,8 @@ class DataGenerator(keras.utils.Sequence):
         self.generate_index()
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
-        if self.engine.test_songs and self.run_tests and (self.count + 1) % Configuration.get('collection.test_frequency') == 0:
+        if self.engine.test_songs and self.run_tests and \
+                (self.count + 1) % Configuration.get('collection.test_frequency', default=0) == 0:
             self.accuracy.evaluate(self.count)
         self.count += 1
 

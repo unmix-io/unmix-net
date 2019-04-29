@@ -38,22 +38,21 @@ class DataLoader(object):
             os.path.basename(x).encode('utf-8', 'surrogatepass')).hexdigest())
 
         test_files = None
-        test_frequency = Configuration.get('collection.test_frequency')
-        test_data_count = Configuration.get('collection.test_data_count')
-        if test_frequency and test_frequency > 0 and test_data_count and test_data_count > 0:
+        test_frequency = Configuration.get('collection.test_frequency', default=0)
+        test_data_count = Configuration.get('collection.test_data_count', default=0)
+        if test_frequency > 0 and test_data_count > 0:
             test_data_count = int(test_data_count)
             test_files = files[-test_data_count:]
             files = files[:len(files) - test_data_count]
 
-        song_limit = Configuration.get('collection.song_limit')
-
-        if song_limit and song_limit > 0:
+        song_limit = Configuration.get('collection.song_limit', default=0)
+        if song_limit > 0:
             if song_limit <= 1:  # Configuration as percentage share
                 song_limit = song_limit * len(files)
             song_limit = min(int(song_limit), len(files))
             files = files[:song_limit]
 
-        validation_ratio = Configuration.get('collection.validation_ratio')
+        validation_ratio = Configuration.get('collection.validation_ratio', default=0.2)
         validation_files = files[:int(len(files) * validation_ratio)]
         training_files = files[len(validation_files):]
 

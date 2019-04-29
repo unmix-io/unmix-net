@@ -18,7 +18,7 @@ class HourglassModel(BaseModel):
     name = 'Hourglass'
 
     def build(self, config):
-        transformation = Configuration.get('transformation.options', True)
+        transformation = Configuration.get('transformation.options', False)
 
         input_shape = (769, transformation.size, 1)
         input = Input(input_shape)

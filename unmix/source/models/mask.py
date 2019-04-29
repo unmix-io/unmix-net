@@ -19,7 +19,7 @@ class MaskModel(BaseModel):
     name = 'mask'
 
     def build(self, config):
-        transformation = Configuration.get('transformation.options', True)
+        transformation = Configuration.get('transformation.options', False)
 
         input_shape = (769, transformation.size, 1)
 

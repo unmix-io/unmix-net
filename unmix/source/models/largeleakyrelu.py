@@ -20,9 +20,8 @@ class LeakyReluModel(BaseModel):
         alpha2 = config.options.alpha2
         dropout_rate = config.options.dropout_rate
         channels = 1
-        batch_size = Configuration.get("training.batch_size")
 
-        mashup = Input(batch_shape=(batch_size, 769, 64, 1), name='input')
+        mashup = Input(shape=(769, 64, 1), name='input')
         padding = ZeroPadding2D(((3, 0), (0, 0)))(mashup)
         dropout = Dropout(rate=dropout_rate)(padding)
 

@@ -11,14 +11,21 @@ from keras.layers import *
 from unmix.source.configuration import Configuration
 from unmix.source.models.basemodel import BaseModel
 
-# Base implementation from: https://github.com/sungheonpark/music_source_sepearation_SH_net
+"""
+Modified implementation based on:
+Title: Music Source Separation Using Stacked Hourglass Networks
+Author: Sungheon Park, Taehoon Kim, Kyogu Lee, Nojun Kwak
+Date: 2018-06-22
+Paper: https://arxiv.org/abs/1805.08559
+Availability: https://github.com/sungheonpark/music_source_sepearation_SH_net
+"""
 
 
 class HourglassModel(BaseModel):
     name = 'Hourglass-Alternative'
 
     def build(self, config):
-        transformation = Configuration.get('transformation.options', True)
+        transformation = Configuration.get('transformation.options', False)
 
         input_shape = (769, transformation.size, 1)
         input_initial = Input(input_shape)
@@ -39,15 +46,7 @@ class HourglassModel(BaseModel):
         outputs = []
         for i in range(1):
             hourglass = self.__build_hourglass(inter, config.options.stacks)
-            # cropping = ((0, 0), (0, 0))
-            # if padding_added_hor and cropping_added_ver:
-            #     cropping = ((1, 0), (0, 1))
-            # elif padding_added_hor and not cropping_added_ver:
-            #     cropping = ((1, 0), (0, 0))
-            # elif not padding_added_hor and cropping_added_ver:
-            #     cropping = ((0, 0), (0, 1))
-
-            # conv = Cropping2D(cropping=cropping)(hourglass)
+            
             conv = Conv2D(256, kernel_size=(3, 3), padding='same',
                           activation='relu')(hourglass)
             conv = conv_x = Conv2D(256, kernel_size=(1, 1),
@@ -55,7 +54,7 @@ class HourglassModel(BaseModel):
 
             conv = Conv2D(1, kernel_size=(1, 1), padding='same')(conv)
             padded = ZeroPadding2D(padding=((1, 0), (0, 0)))(conv)
-            # Reshape((769, transformation.step, 1))(conv)
+
             outputs.append(padded)
 
             if i < 3:
@@ -63,25 +62,11 @@ class HourglassModel(BaseModel):
                 inter = Add()([inter, conv_x, Conv2D(
                     256, kernel_size=(1, 1), padding='same')(conv)])
 
-
         return Model(input=input_initial, outputs=outputs[-1])
 
     def __build_hourglass(self, input, stacks, size=256):
         upper_1 = Conv2D(size, kernel_size=(3, 3),
                          padding='same', activation='relu')(input)
-        # padding_added_horizontal = False
-        # padding_added_horizontal_upper = False
-        # padding_added_vertical = False
-        # padding_added_vertical_upper = False
-        # if not upper_1.shape[1] % 2 == 0:
-        #     upper_1 = ZeroPadding2D(padding=((1, 0), (0, 0)))(upper_1)
-        #     input = ZeroPadding2D(padding=((1, 0), (0, 0)))(input)
-        #     padding_added_horizontal = True
-        # if not upper_1.shape[2] % 2 == 0:
-        #     upper_1 = ZeroPadding2D(padding=((0, 0), (0, 1)))(upper_1)
-        #     input = ZeroPadding2D(padding=((0, 0), (0, 1)))(input)
-        #     padding_added_vertical = True
-        # Lower branch
         pool = MaxPooling2D(pool_size=(2, 2))(input)
         lower_1 = Conv2D(size, kernel_size=(3, 3),
                          padding='same', activation='relu')(pool)
@@ -93,17 +78,5 @@ class HourglassModel(BaseModel):
                              padding='same', activation='relu')(lower_1)
         lower_3 = Conv2D(size, kernel_size=(3, 3),
                          padding='same', activation='relu')(lower_2)
-
-        #upper_2 = UpSampling2D(size=tuple(map(lambda x, y:
-        #    x.value // y.value, upper_1.shape.dims[1:3], lower_3.shape.dims[1:3])))(lower_3)
-        # cropping = ((0, 0), (0, 0))
-        # if padding_added_horizontal_upper and padding_added_vertical_upper:
-        #     cropping = ((1, 0), (0, 1))
-        # elif padding_added_horizontal_upper and not padding_added_vertical_upper:
-        #     cropping = ((1, 0), (0, 0))
-        # elif not padding_added_horizontal_upper and padding_added_vertical_upper:
-        #     cropping = ((0, 0), (0, 1))
-
-        # upper_2 = Cropping2D(cropping=cropping)(lower_3)
         upper_2 = UpSampling2D(size=(2, 2))(lower_3)
         return Add()([upper_1, upper_2])
