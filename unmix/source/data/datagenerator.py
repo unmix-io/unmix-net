@@ -43,6 +43,16 @@ class DataGenerator(keras.utils.Sequence):
             try:
                 song = Song(file)
                 items = [BatchItem(song, i) for i in range(self.transformer.calculate_items(song.width))]
+
+                # limit number of items per song if configured
+                limit_items_per_song = Configuration.get('training.limit_items_per_song', default=0)
+                if(limit_items_per_song > 0):
+                    middle = int(len(items) / 2)
+                    limit_half = int(limit_items_per_song / 2)
+                    start = max(0, middle - limit_half)
+                    end = min(len(items), start + limit_items_per_song)
+                    items = items[start:end]
+
                 if self.transformer.shuffle:
                     np.random.shuffle(items)
                 self.index = np.append(self.index, items)
