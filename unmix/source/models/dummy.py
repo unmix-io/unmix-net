@@ -15,9 +15,6 @@ class DummyModel(BaseModel):
     name = 'dummy'
 
     def build(self, config):
-        batch_size = Configuration.get("training.batch_size")
-        
         model = Sequential()
         model.add(Dense((2), input_shape=(769, 64, 2)))
-
         return model

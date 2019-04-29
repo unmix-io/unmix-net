@@ -5,8 +5,8 @@
 Keras model for training using LeakyReLU activation layers.
 """
 
-from keras.models import Model, Sequential
-from keras.layers import Input, Dropout, Conv2D, BatchNormalization, UpSampling2D, Concatenate, LeakyReLU, ZeroPadding2D, Cropping2D
+from keras.models import *
+from keras.layers import *
 
 from unmix.source.configuration import Configuration
 from unmix.source.models.basemodel import BaseModel
@@ -18,17 +18,18 @@ Date: 2018-07-06
 Availability: https://github.com/laserb/deep-vocal-isolation
 """
 
+
 class LeakyReluModel(BaseModel):
     name = 'LeakyReLU'
 
     def build(self, config):
-        alpha1 = config.alpha1
-        alpha2 = config.alpha2
-        dropout_rate = config.dropout_rate
-        channels = 1
-        batch_size = Configuration.get("training.batch_size")
+        alpha1 = config.options.alpha1
+        alpha2 = config.options.alpha2
+        dropout_rate = config.options.dropout_rate
 
-        mashup = Input(batch_shape=(batch_size, 769, 64, 1), name='input')
+        channels = 1
+
+        mashup = Input(shape=(769, 64, 1), name='input')
         padding = ZeroPadding2D(((3, 0), (0, 0)))(mashup)
         dropout = Dropout(rate=dropout_rate)(padding)
 
@@ -36,7 +37,8 @@ class LeakyReluModel(BaseModel):
         conv_a = LeakyReLU(alpha=alpha1)(conv_a)
         conv_a = Dropout(rate=dropout_rate)(conv_a)
 
-        conv = Conv2D(filters=64, kernel_size=4, strides=2, padding='same', use_bias=False)(conv_a)
+        conv = Conv2D(filters=64, kernel_size=4, strides=2,
+                      padding='same', use_bias=False)(conv_a)
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
@@ -46,7 +48,8 @@ class LeakyReluModel(BaseModel):
         conv_b = LeakyReLU(alpha=alpha1)(conv_b)
         conv_b = Dropout(rate=dropout_rate)(conv_b)
 
-        conv = Conv2D(filters=64, kernel_size=4, strides=2, padding='same', use_bias=False)(conv_b)
+        conv = Conv2D(filters=64, kernel_size=4, strides=2,
+                      padding='same', use_bias=False)(conv_b)
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
@@ -56,7 +59,8 @@ class LeakyReluModel(BaseModel):
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
-        conv = Conv2D(filters=128, kernel_size=3, padding='same', use_bias=False)(conv)
+        conv = Conv2D(filters=128, kernel_size=3,
+                      padding='same', use_bias=False)(conv)
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
@@ -69,7 +73,8 @@ class LeakyReluModel(BaseModel):
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
-        conv = Conv2D(filters=64, kernel_size=3, padding='same', use_bias=False)(conv)
+        conv = Conv2D(filters=64, kernel_size=3,
+                      padding='same', use_bias=False)(conv)
         conv = LeakyReLU(alpha=alpha1)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 
@@ -77,6 +82,7 @@ class LeakyReluModel(BaseModel):
         conv = UpSampling2D(size=(2, 2))(conv)
 
         conv = Concatenate()([conv, conv_a])
+        conv = BatchNormalization()(conv)
 
         conv = Conv2D(filters=64, kernel_size=3, padding='same')(conv)
         conv = LeakyReLU(alpha=alpha2)(conv)
@@ -87,6 +93,7 @@ class LeakyReluModel(BaseModel):
         conv = Dropout(rate=dropout_rate)(conv)
 
         conv = Conv2D(filters=32, kernel_size=3, padding='same')(conv)
+        conv = BatchNormalization()(conv)
         conv = LeakyReLU(alpha=alpha2)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 

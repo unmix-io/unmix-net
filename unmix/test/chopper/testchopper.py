@@ -72,10 +72,10 @@ def test_chopping():
         chop = chopper.chop_n_pad(input, i, size)
         assert(chop.shape[1] == size)
         if i == 0:
-            assert np.all(chop[:, 0:int(size/2)] == 0)
-            assert np.all(chop[:, int(size/2):] == 1)
+            assert np.all(chop[:, 0: size // 2] == 0)
+            assert np.all(chop[:,  size // 2:] == 1)
         elif i == chop_count - 1:
-            remainder = (input.shape[1] - int(size/2)) % size
+            remainder = (input.shape[1] - size // 2) % size
             assert np.all(chop[:, 0:remainder] == 1)
             assert np.all(chop[:, remainder:] == 0)
         else:

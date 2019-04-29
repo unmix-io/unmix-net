@@ -10,7 +10,6 @@ __email__ = "info@unmix.io"
 
 
 import argparse
-import librosa
 import glob
 import numpy as np
 import os
@@ -19,6 +18,8 @@ import time
 from unmix.source.engine import Engine
 from unmix.source.helpers import filehelper
 from unmix.source.helpers import converter
+from unmix.source.prediction.fileprediction import FilePrediction
+from unmix.source.prediction.streamprediction import StreamPrediction
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 from unmix.source.configuration import Configuration
 from unmix.source.logging.logger import Logger
@@ -26,25 +27,11 @@ from unmix.source.logging.logger import Logger
 
 AUDIO_FILE_EXTENSIONS = ['.wav', '.mp3']
 
-
-def save_prediction(type, prediction, sample_rate, file, folder=''):
-    track = np.array(librosa.istft(prediction))
-    name = os.path.splitext(os.path.basename(file))[0]
-    file_name = converter.get_timestamp() + "_" + name + '_predicted_%s.wav' % type
-    if folder:
-        output_file = os.path.join(
-            folder, file_name)
-    else:
-        output_file = os.path.join(os.path.dirname(file), file_name)
-
-    librosa.output.write_wav(output_file, track, sample_rate, norm=False)
-    Logger.info("Output prediction file: %s" % output_file)
-
-
 if __name__ == "__main__":
     global config
 
-    parser = argparse.ArgumentParser(description="Executes a training session.")
+    parser = argparse.ArgumentParser(
+        description="Executes a training session.")
     parser.add_argument('--run_folder', default='',
                         type=str, help="General training input folder (overwrites other parameters)")
     parser.add_argument('--configuration', default='',
@@ -59,8 +46,10 @@ if __name__ == "__main__":
                         type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--song', default='',
                         type=str, help="Input audio file to split vocals and instrumental.")
-    parser.add_argument('--songs', default='temp/songs',
+    parser.add_argument('--songs', default='./temp/songs',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
+    parser.add_argument('--youtube', default='', type=str,
+                        help="Audio stream from a youtube video.")
 
     args = parser.parse_args()
     start = time.time()
@@ -103,22 +92,17 @@ if __name__ == "__main__":
 
     for song_file in song_files:
         try:
-            # Load song and create spectrogram with librosa
-            audio, sample_rate = librosa.load(
-                song_file, mono=True, sr=args.sample_rate)
-            mix = librosa.stft(audio, args.fft_window)
-
-            Logger.info("Start predicting song: %s." % song_file)
-            predicted_vocals, predicted_instrumental = engine.predict(mix)
-
-            # Convert back to wav audio file
-            save_prediction("vocals", predicted_vocals,
-                            args.sample_rate, song_file, prediction_folder)
-            save_prediction("instrumental", predicted_instrumental,
-                            args.sample_rate, song_file, prediction_folder)
+            prediction = FilePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
+            prediction.run(song_file)
+            prediction.save_vocals(song_file, prediction_folder)
+            prediction.save_instrumental(song_file, prediction_folder)
         except Exception as e:
             Logger.error(
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
+
+    if args.youtube:
+        prediction = StreamPrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
+        prediction.run(args.youtube)
 
     end = time.time()
     Logger.info("Finished processing in %d [s]." % (end - start))

@@ -16,14 +16,15 @@ from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.pipeline.transformers.masktransformer import MaskTransformer
 from unmix.source.pipeline.transformers.mask_ibm_transformer import IBMMaskTransformer
 from unmix.source.pipeline.transformers.windowtransformer import WindowTransformer
+from unmix.source.pipeline.transformers.train_window_predict_mask_transformer import TrainWindowPredictMaskTransformer
 
 
 class TransformerFactory(object):
 
     @staticmethod
     def build():
-        name = Configuration.get('transformation.name', False)
-        options = Configuration.get('transformation.options', False)
+        name = Configuration.get('transformation.name', optional=False)
+        options = Configuration.get('transformation.options', optional=False)
         try:
             if name == WindowTransformer.NAME:
                 return WindowTransformer(options.size, options.step, options.shuffle, options.save_audio)
@@ -31,6 +32,8 @@ class TransformerFactory(object):
                 return MaskTransformer(options.size, options.step, options.shuffle, options.save_image)
             if name == IBMMaskTransformer.NAME:
                 return IBMMaskTransformer(options.size, options.step, options.shuffle, options.save_image)
+            if name == TrainWindowPredictMaskTransformer.NAME:
+                return TrainWindowPredictMaskTransformer(options.size, options.step, options.shuffle, options.save_audio)
         except:
             raise ConfigurationError('transformation.options')
         raise ConfigurationError('transformation.name')

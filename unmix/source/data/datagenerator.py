@@ -24,13 +24,18 @@ from unmix.source.helpers import memorymonitor
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, engine, collection, transformer):
+    def __init__(self, name, engine, collection, transformer, run_tests=False):
+        self.name = name
         self.collection = collection
         self.transformer = transformer
-        self.batch_size = Configuration.get('training.batch_size')
+        self.batch_size = Configuration.get('training.batch_size', default=8)
         self.epoch_shuffle = Configuration.get('training.epoch.shuffle')
         self.engine = engine
+        self.run_tests = run_tests
+        self.accuracy = Accuracy(self.engine)
+        self.count = 0
         self.on_epoch_end()
+
 
     def generate_index(self):
         self.index = np.array([])
@@ -38,15 +43,26 @@ class DataGenerator(keras.utils.Sequence):
             try:
                 song = Song(file)
                 items = [BatchItem(song, i) for i in range(self.transformer.calculate_items(song.width))]
+
+                # limit number of items per song if configured
+                limit_items_per_song = Configuration.get('training.limit_items_per_song', default=0)
+                if(limit_items_per_song > 0):
+                    middle = int(len(items) / 2)
+                    limit_half = int(limit_items_per_song / 2)
+                    start = max(0, middle - limit_half)
+                    end = min(len(items), start + limit_items_per_song)
+                    items = items[start:end]
+
                 if self.transformer.shuffle:
                     np.random.shuffle(items)
                 self.index = np.append(self.index, items)
             except Exception as e:
-                Logger.warn("Skip file while generating index: %s" % str(e.args))
+                if self.count == 0:
+                    Logger.warn("Skip file while generating index: %s" % str(e.args))
 
     def __len__(self):
         'Denotes the number of batches per epoch'
-        return int(len(self.index) / self.batch_size)
+        return len(self.index) // self.batch_size
 
     def __getitem__(self, i):
         'Generate one batch of data'
@@ -58,11 +74,14 @@ class DataGenerator(keras.utils.Sequence):
 
     def on_epoch_end(self):
         'Updates index after each epoch'
+        Logger.debug("%s epoch %d ended." % (self.name, self.count))
         self.generate_index()
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
-        self.accuracy = Accuracy(self.engine)
-        self.accuracy.evaluate()
+        if self.engine.test_songs and self.run_tests and \
+                (self.count + 1) % Configuration.get('collection.test_frequency', default=0) == 0:
+            self.accuracy.evaluate(self.count)
+        self.count += 1
 
     def __data_generation(self, subset):
         'Generates data containing batch_size samples'

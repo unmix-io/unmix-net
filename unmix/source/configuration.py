@@ -42,8 +42,8 @@ class Configuration(object):
 
         if create_output:
             Configuration.output_directory = os.path.join(working_directory,
-                 Configuration.get('environment.output_path'),
-                 Configuration.get('environment.output_folder'))
+                 Configuration.get('environment.output_path', optional=False),
+                 Configuration.get('environment.output_folder', optional=False))
             if not os.path.exists(Configuration.output_directory):
                 os.makedirs(Configuration.output_directory)
             Configuration.log_environment(configuration_file, working_directory)
@@ -75,20 +75,22 @@ class Configuration(object):
             json.dump(environment, file, indent=4)
 
     @staticmethod
-    def get(key='', optional=True):
+    def get(key='', optional=True, default=None):
         global configuration
         if not configuration:
             raise ConfigurationError()
         if key:
             try:
                 value = reducer.rgetattr(configuration, key)
-                if not optional and not value:
+                if value is None:
+                    if optional:
+                        return default
                     raise ConfigurationError(key)
                 return value
             except:
                 if not optional:
                     raise ConfigurationError(key)
-        return None
+        return default
 
     @staticmethod
     def get_path(key='', create=True, optional=True):

@@ -1,0 +1,76 @@
+{
+    "environment": {
+        "name": "mini-window-LargeLeakyReLU",
+        "output_path": "runs",
+        "output_folder": "get_timestamp()",
+        "log_file": "logs.txt",
+        "plot_folder": "plots",
+        "temp_folder": "temp",
+        "weights": {
+            "folder": "weights",
+            "file": "weights.h5"
+        }
+    },
+    "collection": {
+        "folder": "env('UNMIX_COLLECTION_DIR')",
+        "sample_rate": 11025,
+        "song_limit": 1,
+        "validation_ratio": 0.5,
+        "test_data_count": 0,
+        "test_frequency": 0,
+        "test_save_count": 0
+    },
+    "transformation": {
+        "name": "window",
+        "options": {
+            "size": 64,
+            "step": 64,
+            "shuffle": true,
+            "save_audio": false
+        },
+        "normalizers": {
+            "zmuv": {
+                "enabled": false,
+                "mode": "frequency_bin", // frequency_bin or single
+                "mix_file": "mean-derivation.json",
+                "vocals_file": "vocals_mean-derivation.json"
+            }
+        }
+    },
+    "training": {
+        "model": {
+            "name": "LargeLeakyReLU",
+            "options": {
+                "alpha1": 0.1,
+                "alpha2": 0.01,
+                "dropout_rate": 0
+            }
+        },
+        "batch_size": 2,
+        "epoch": {
+            "count": 100000,
+            "shuffle": false
+        },
+        "verbose": 1,
+        "loss_function": "mean_squared_error",
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.001
+        },
+        "metrics": ["mean_pred"],
+        "load_weights": false,
+        "callbacks": {
+            "csv_logger": {
+                "file_name": "results.csv",
+                "separator": ";",
+                "append": true
+            },
+            "reduce_learningrate": {
+                "monitor": "loss",
+                "factor": 0.1,
+                "patience": 5,
+                "min_learningrate": 0.00001
+            }
+        }
+    }
+}

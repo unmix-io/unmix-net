@@ -27,7 +27,7 @@ def to_audio(file, spectrogram):
     try:
         audio = np.array(librosa.istft(spectrogram))
         path = os.path.join(Configuration.get_path(
-            'environment.temp_folder'), file)
+            'environment.temp_folder', optional=False), file)
         librosa.output.write_wav(path, audio, 11025, norm=False)
         Logger.info("Generated audio file from spectrogram: %s" % path)
     except:
@@ -36,7 +36,8 @@ def to_audio(file, spectrogram):
 
 def to_image(file, image):
     try:
-        path = os.path.join(Configuration.get_path('environment.plot_folder'), file)
+        path = os.path.join(Configuration.get_path(
+            'environment.plot_folder', optional=False), file)
         cm_hot = get_cmap('plasma')
         with warnings.catch_warnings():
             image = cm_hot(image)
@@ -46,4 +47,5 @@ def to_image(file, image):
             io.imsave(path, image)
         Logger.info("Generated image: %s" % path)
     except:
-        Logger.error("Error while saving spectrogram (with shape %s) to image '%s'." % (str(image.shape), file))
+        Logger.error("Error while saving spectrogram (with shape %s) to image '%s'." % (
+            str(image.shape), file))

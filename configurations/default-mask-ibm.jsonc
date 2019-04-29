@@ -1,10 +1,11 @@
 {
     "environment": {
-        "name": "default-mask",
+        "name": "mask-ibm",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
         "plot_folder": "plots",
+        "temp_folder": "temp",
         "weights": {
             "folder": "weights",
             "file": "weights.h5"
@@ -12,14 +13,17 @@
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
+        "sample_rate": "int(env('UNMIX_SAMPLE_RATE')",
         "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
         "validation_ratio": 0.2,
-        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))" // Run tests every n epoch
+        "test_data_count": "int(env('UNMIX_TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
+        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))", // Run tests every n epoch
+        "test_save_count": 1
         //,"mean": 0.4265994829115264, // expected data mean over all training data
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "mask_ibm",
+        "name": "mask-ibm",
         "options": {
             "size": 25,
             "step": 1,
@@ -29,7 +33,12 @@
     },
     "training": {
         "model": {
-            "name": "mask"
+            "name": "mask-ibm",
+            "options": {
+                "alpha": 0.3,
+                "dropout_rate": 0.5,
+                "filter_factor": 1
+            }
         },
         "batch_size": 8,
         "epoch": {
@@ -38,7 +47,10 @@
         },
         "verbose": 1,
         "loss_function": "binary_crossentropy",
-        "optimizer": "adam",
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.001
+        },
         "metrics": ["mean_pred"],
         "load_weights": false,
         "callbacks": {
@@ -68,15 +80,15 @@
             "early_stopping": {
                 "monitor": "val_loss",
                 "min_delta": 0.00001,
-                "patience": 10,
+                "patience": 100,
                 "verbose": 1
-            }//,
-            // "reduce_learningrate": {
-            //     "monitor": "val_loss",
-            //     "factor": 0.2,
-            //     "patience": 5,
-            //     "min_learningrate": 0.001
-            // }
+            },
+            "reduce_learningrate": {
+                "monitor": "val_loss",
+                "factor": 0.2,
+                "patience": 5,
+                "min_learningrate": 0.0001
+            }
         }
     }
 }

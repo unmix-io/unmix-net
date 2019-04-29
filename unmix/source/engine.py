@@ -11,6 +11,7 @@ __email__ = "info@unmix.io"
 
 import os
 import keras.utils
+import tensorflow as tf
 import numpy as np
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
@@ -29,12 +30,12 @@ from unmix.source.pipeline.transformers.transformerfactory import TransformerFac
 class Engine:
 
     def __init__(self):
-        self.callbacks = CallbacksFactory.build()
-        optimizer = OptimizerFactory.build()
-        loss_function = LossFunctionFactory.build()
-        metrics = MetricsFactory.build()
 
         self.model = ModelFactory.build()
+        optimizer = OptimizerFactory.build()
+        loss_function = LossFunctionFactory.build(self.model)
+        metrics = MetricsFactory.build()
+        
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
         self.model.summary(print_fn=Logger.info)
@@ -43,6 +44,8 @@ class Engine:
                      (Configuration.get('training.model.name'), self.model.count_params()))
 
         self.transformer = TransformerFactory.build()
+        self.test_songs = None
+        self.graph = tf.get_default_graph()
 
     def plot_model(self):
         try:
@@ -57,13 +60,17 @@ class Engine:
 
     def train(self, epoch_start=0):
         training_songs, validation_songs, test_songs = DataLoader.load()
-        self.training_generator = DataGenerator(
-            self, training_songs, self.transformer)
-        self.validation_generator = DataGenerator(
-            self, validation_songs, self.transformer)
+        self.training_generator = DataGenerator('training',
+            self, training_songs, self.transformer, False)
+        self.validation_generator = DataGenerator('validation',
+            self, validation_songs, self.transformer, True)
         self.test_songs = test_songs
 
-        epoch_count = Configuration.get('training.epoch.count')
+        build_validation_generator = lambda: DataGenerator('validation_tensorboard', self, validation_songs, self.transformer, False)
+        # Pass a new data generator here because TensorBoard must have access to validation_data
+        self.callbacks = CallbacksFactory.build(build_validation_generator)
+
+        epoch_count = Configuration.get('training.epoch.count', optional=False)
         history = self.model.fit_generator(
             generator=self.training_generator,
             validation_data=self.validation_generator,
@@ -73,25 +80,32 @@ class Engine:
             max_queue_size=10,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
+        self.save()
         self.save_weights()
         return history
-
-    def predict(self, mix):
-        from unmix.source.data.prediction import Prediction
-        
-        prediction = Prediction(mix, self.model, self.transformer)
-        prediction.run()
-        return prediction.vocals, prediction.instrumental
-
+    
+    def save(self):
+        path = os.path.join(Configuration.output_directory, 'model.%s')
+        with open(path % "json", "w") as f:
+    	    f.write(self.model.to_json())
+        self.model.save(path % "h5", overwrite=True)
+        Logger.info("Saved model and weights to: %s" % "h5")
+    
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
-            'environment.weights.folder'), Configuration.get('environment.weights.file'))
-        Logger.info("Saved weights to: %s" % path)
+            'environment.weights.folder', optional=False), Configuration.get('environment.weights.file', optional=False))
         self.model.save_weights(path, overwrite=True)
+        Logger.info("Saved weights to: %s" % path)
+
+    def load(self, path=None):
+        if not path:
+            path = os.path.join(Configuration.output_directory, 'model.h5')
+        Logger.info("Load model and weights from: %s" % path)
+        self.model.load(path)
 
     def load_weights(self, path=None):
         if not path:
             path = os.path.join(Configuration.get_path(
-                'environment.weights.folder'), Configuration.get('environment.weights.file'))
+                'environment.weights.folder', optional=False), Configuration.get('environment.weights.file', optional=False))
         Logger.info("Load weights from: %s" % path)
         self.model.load_weights(path)

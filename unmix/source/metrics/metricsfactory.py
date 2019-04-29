@@ -18,7 +18,7 @@ class MetricsFactory(object):
 
     @staticmethod
     def build():
-        configs = Configuration.get('training.metrics', False)
+        configs = Configuration.get('training.metrics', optional=False)
         metrics = []
         for config in configs:
             metrics.append(getattr(MetricsFactory, config))
