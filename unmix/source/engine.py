@@ -35,8 +35,7 @@ class Engine:
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build(self.model)
         metrics = MetricsFactory.build()
-
-
+        
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
         self.model.summary(print_fn=Logger.info)
@@ -81,14 +80,26 @@ class Engine:
             max_queue_size=10,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
+        self.save()
         self.save_weights()
         return history
+    
+    def save(self):
+        path = Configuration.get_path('environment.model_file', optional=False)
+        Logger.info("Saved model and weights to: %s" % path)
+        self.model.save(path, overwrite=True)
     
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
             'environment.weights.folder', optional=False), Configuration.get('environment.weights.file', optional=False))
         Logger.info("Saved weights to: %s" % path)
         self.model.save_weights(path, overwrite=True)
+
+    def load(self, path=None):
+        if not path:
+            path = Configuration.get_path('environment.model_file', optional=False)
+        Logger.info("Load model and weights from: %s" % path)
+        self.model.load(path)
 
     def load_weights(self, path=None):
         if not path:
