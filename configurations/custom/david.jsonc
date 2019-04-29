@@ -1,6 +1,6 @@
 {
     "environment": {
-        "name": "default-mask",
+        "name": "window-LeakyReLU",
         "output_path": "runs",
         "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
@@ -13,7 +13,7 @@
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
-        "sample_rate": "env('UNMIX_SAMPLE_RATE')",
+        "sample_rate": "int(env('UNMIX_SAMPLE_RATE'))",
         "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
         "validation_ratio": 0.2,
         "test_data_count": "int(env('UNMIX_TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
@@ -23,30 +23,38 @@
         //"variance": 2.59734488467731  //expected data variance over all training data
     },
     "transformation": {
-        "name": "mask-ibm",
+        "name": "window",
         "options": {
-            "size": 1,
-            "step": 1,
+            "size": 64,
+            "step": 64,
             "shuffle": true,
-            "save_image": false
+            "save_audio": false
+        },
+        "normalizers": {
+            "zmuv": {
+                "enabled": false,
+                "mode": "frequency_bin", // frequency_bin or single
+                "mix_file": "mean-derivation.json",
+                "vocals_file": "vocals_mean-derivation.json"
+            }
         }
     },
     "training": {
         "model": {
-            "name": "mask-ibm",
+            "name": "LeakyReLU",
             "options": {
-                "alpha": 0.3,
-                "dropout_rate": 0.5,
-                "filter_factor": 1
+                "alpha1": 0.1,
+                "alpha2": 0.01,
+                "dropout_rate": 0.5
             }
         },
         "batch_size": 8,
         "epoch": {
-            "count": 10000,
+            "count": 100000,
             "shuffle": false
         },
         "verbose": 1,
-        "loss_function": "binary_crossentropy",
+        "loss_function": "mean_squared_error",
         "optimizer": {
             "name": "adam",
             "lr": 0.001
@@ -64,7 +72,7 @@
                 "verbose": 1
             },
             // "tensorboard": {
-            //     "folder": "TensorBoard",
+            //     "folder": "./TensorBoard",
             //     "histogram_freq": 0,
             //     "write_graph": true,
             //     "write_grads": false,
@@ -85,10 +93,10 @@
             },
             "reduce_learningrate": {
                 "monitor": "val_loss",
-                "factor": 0.2,
+                "factor": 0.1,
                 "patience": 5,
-                "min_learningrate": 0.0001
-            }
+                "min_learningrate": 0.00001
+            }       
         }
     }
 }

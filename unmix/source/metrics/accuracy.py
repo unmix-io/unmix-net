@@ -93,7 +93,6 @@ class Accuracy(object):
     def __calculate_accuracy_track(self, original, predicted):
         result = mir_eval.separation.bss_eval_sources(
             librosa.istft(original), librosa.istft(predicted))
-
         entry = {
             Accuracy.SDR: result[0][0],
             Accuracy.SIR: result[1][0],
