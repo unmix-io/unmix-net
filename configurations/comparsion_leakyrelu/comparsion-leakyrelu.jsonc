@@ -1,8 +1,7 @@
 // Fixed dataset for comparsion runs between different transformers and models.
 {
     "environment": {
-        "name": "comparsion-window-LeakyReLU",
-        "output_folder": "get_timestamp() + '_window-leakyrelu'",
+        "name": "comparsion-window-LeakyReLU"
     },
     "collection": {
         "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=11025_channels=1-mono/musdb18/",

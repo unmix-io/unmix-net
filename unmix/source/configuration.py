@@ -15,6 +15,7 @@ import getpass
 import json
 import os
 import shutil
+import datetime
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import converter
@@ -42,7 +43,7 @@ class Configuration(object):
         if create_output:
             Configuration.output_directory = os.path.join(working_directory,
                  Configuration.get('environment.output_path', optional=False),
-                 Configuration.get('environment.output_folder', optional=False))
+                 datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + "-" + os.path.basename(configuration_file.replace(".jsonc", "")))
             if not os.path.exists(Configuration.output_directory):
                 os.makedirs(Configuration.output_directory)
             Configuration.log_environment(configuration_file, working_directory, configuration_dict)

@@ -1,7 +1,6 @@
 {
     "environment": {
         "output_path": "runs",
-        "output_folder": "get_timestamp()",
         "log_file": "logs.txt",
         "plot_folder": "plots",
         "temp_folder": "temp",
