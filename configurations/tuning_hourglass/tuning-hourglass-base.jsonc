@@ -8,7 +8,7 @@
     },
     "collection": {
         "sample_rate": 11025,
-        "song_limit": "40,
+        "song_limit": 40,
         "test_data_count": 10,
         "test_frequency": 0
 }
