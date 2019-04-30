@@ -33,14 +33,17 @@ class YoutTubePrediction(FilePrediction):
         self.length = 1
         self.cursor = 0
 
-    def run(self, link):
+    def run(self, link, path=''):
         'Predicts an download from youtube.'
+        if not path:
+            path = Configuration.get_path('environment.temp_folder')
+                    
         Logger.info("Start downloading youtube song: %s." % link)
-        path, name = self.__download(link)
+        name = self.__download(link, path)
         super().run(os.path.join(path, name))
         return path, name
 
-    def __download(self, link):        
+    def __download(self, link, path):        
         from pytube import YouTube
         yt = YouTube(link)
         yt.register_on_progress_callback(self.__youtube_stream_callback)
@@ -48,12 +51,11 @@ class YoutTubePrediction(FilePrediction):
                 .order_by('resolution').desc().first() # only_audio=True is much slower
         self.length = audio.filesize
         # self.sample_rate_origin = int(audio.audio_sample_rate)
-        path = Configuration.get_path('environment.temp_folder')
 
         with progressbar.ProgressBar(max_value=self.length) as progbar:
             self.progressbar = progbar
             audio.download(path)
-        return path, audio.default_filename
+        return audio.default_filename
 
     def __youtube_stream_callback(self, stream, chunk, file_handle, bytes_remaining):
         self.progressbar.update(self.length - bytes_remaining)

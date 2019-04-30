@@ -34,7 +34,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
     parser.add_argument('--run_folder', default='',
-                        type=str, help="General training input folder (overwrites other parameters)")
+                        type=str, help="General training input folder (overwrites other parameters).")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
     parser.add_argument('--weights', default='',
@@ -49,8 +49,8 @@ if __name__ == "__main__":
                         type=str, help="Input audio file to split vocals and instrumental.")
     parser.add_argument('--songs', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
-    parser.add_argument('--youtube', default='https://www.youtube.com/watch?v=G1PsSKE4ihE', type=str,
-                        help="Audio from a youtube video as file (or stream).")
+    parser.add_argument('--youtube', default='', type=str,
+                        help="Audio from a youtube video as file (or later stream).")
 
     args = parser.parse_args()
     start = time.time()
@@ -95,8 +95,7 @@ if __name__ == "__main__":
         try:
             prediction = FilePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
             prediction.run(song_file)
-            prediction.save_vocals(song_file, prediction_folder)
-            prediction.save_instrumental(song_file, prediction_folder)
+            prediction.save(song_file, prediction_folder)
         except Exception as e:
             Logger.error(
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
@@ -104,8 +103,7 @@ if __name__ == "__main__":
     if args.youtube:
         prediction = YoutTubePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
         path, name = prediction.run(args.youtube)
-        prediction.save_vocals(name, path)
-        prediction.save_instrumental(name, path)
+        prediction.save(name, path)
 
     end = time.time()
     Logger.info("Finished processing in %d [s]." % (end - start))
