@@ -13,11 +13,24 @@
     },
     "training": {
         "model": {
-            "name": "Hourglass-Alternative",
+            "name": "Hourglass",
             "options": {
                 "stacks": 4,
                 "channels": 128,
-                "classes": 2
+                "classes": 2,
+                "initial_convolutions": {
+                    "batchnormalization": false,
+                    "dropoutfactor": 0
+                },
+                "hg_module": {
+                    "filters": 256,
+                    "batchnormalization": false,
+                    "dropoutfactor": 0
+                },
+                "hg_module_end": {
+                    "batchnormalization": false,
+                    "dropoutfactor": 0
+                }
             }
         },
         "batch_size": 4,
