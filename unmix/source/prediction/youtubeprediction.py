@@ -41,13 +41,13 @@ class YoutTubePrediction(FilePrediction):
         Logger.info("Start downloading youtube song: %s." % link)
         name = self.__download(link, path)
         super().run(os.path.join(path, name))
-        return path, name
+        return path, name, self.length
 
     def __download(self, link, path):        
         from pytube import YouTube
         yt = YouTube(link)
         yt.register_on_progress_callback(self.__youtube_stream_callback)
-        audio = yt.streams.filter(subtype='mp4') \
+        audio = yt.streams.filter(progressive=True, subtype='mp4') \
                 .order_by('resolution').desc().first() # only_audio=True is much slower
         self.length = audio.filesize
         # self.sample_rate_origin = int(audio.audio_sample_rate)
