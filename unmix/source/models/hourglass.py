@@ -91,7 +91,7 @@ class HourglassModel(BaseModel):
             lower_2 = self.__build_hourglass(lower_1, stacks - 1, filters, batchnormalization, dropoutfactor)
         else:
             lower_2 = Conv2D(filters, kernel_size=(3, 3), padding='same', activation='relu')(lower_1) #conv2d_14
-            if batchnormalization: lower_2 = BatchNormalization(lower_2)
+            if batchnormalization: lower_2 = BatchNormalization()(lower_2)
             lower_2 = Dropout(dropoutfactor)(lower_2)
 
         lower_3 = Conv2D(filters, kernel_size=(3, 3), padding='same', activation='relu')(lower_2) #conv2d15, conv2d16, conv2d_17, conv2d18
