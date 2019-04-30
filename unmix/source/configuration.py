@@ -45,7 +45,7 @@ class Configuration(object):
                  Configuration.get('environment.output_folder', optional=False))
             if not os.path.exists(Configuration.output_directory):
                 os.makedirs(Configuration.output_directory)
-            Configuration.log_environment(configuration_file, working_directory)
+            Configuration.log_environment(configuration_file, working_directory, configuration_dict)
         else:
             Configuration.output_directory = working_directory
 
@@ -67,9 +67,12 @@ class Configuration(object):
 
 
     @staticmethod
-    def log_environment(configuration_file, working_directory):
-        shutil.copy(configuration_file, os.path.join(
-            Configuration.output_directory, 'configuration.jsonc'))
+    def log_environment(configuration_file, working_directory, configuration):
+        # shutil.copy(configuration_file, os.path.join(
+        #     Configuration.output_directory, 'configuration.jsonc'))
+        # Log merged configuration
+        with open(os.path.join(Configuration.output_directory, 'configuration.jsonc'), 'w') as file:
+            json.dump(configuration, file, indent=4)
         repo = False
         try:
             import git
