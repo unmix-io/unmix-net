@@ -34,6 +34,7 @@
             "name": "U-Net"
         },
         "batch_size": 2,
+        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
         "epoch": {
             "count": 10000,
             "shuffle": false

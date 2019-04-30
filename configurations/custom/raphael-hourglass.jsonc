@@ -41,6 +41,7 @@
             }
         },
         "batch_size": 4,
+        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
         "limit_items_per_song": 24,
         "epoch": {
             "count": 10000,

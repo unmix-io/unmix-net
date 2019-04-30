@@ -41,6 +41,7 @@
             }
         },
         "batch_size": 8,
+        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
         "epoch": {
             "count": 10000,
             "shuffle": false
@@ -49,7 +50,7 @@
         "loss_function": "mean_squared_error_noaxis",
         "optimizer": {
             "name": "adam",
-            "lr": 0.001
+            "lr": 0.0001
         },
         "metrics": ["mean_pred"],
         "load_weights": false,

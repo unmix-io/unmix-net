@@ -39,6 +39,7 @@
             "dropout_rate": 0.2
         },
         "batch_size": 8,
+        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
         "epoch": {
             "count": 100000,
             "shuffle": false
