@@ -1,0 +1,42 @@
+{
+    {
+    "base": "default-hourglass.jsonc"
+    },
+    "transformation": {
+        "name": "train_window_predict_mask",
+        "options": {
+            "size": 64,
+            "step": 64,
+        }
+    },
+    "training": {
+        "epoch": {
+            "count": 50
+        },
+        "model": {
+            "name": "Hourglass",
+            "options": {
+                "stacks": 4,
+                "initial_convolutions": {
+                    "batchnormalization": false,
+                    "dropoutfactor": 0.5
+                },
+                "hg_module": {
+                    "filters": 256,
+                    "batchnormalization": false,
+                    "dropoutfactor": 0.5
+                },
+                "hg_module_end": {
+                    "batchnormalization": false,
+                    "dropoutfactor": 0.5
+                }
+            }
+        },
+        "batch_size": 4,
+        "loss_function": "L11_loss",
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.0001
+        }
+    }
+}
