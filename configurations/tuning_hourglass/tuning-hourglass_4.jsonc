@@ -1,5 +1,5 @@
 {
-    "base": "tuning-hourglass/tuning-hourglass-base.jsonc",
+    "base": "tuning_hourglass/tuning-hourglass-base.jsonc",
     "training": {
         "model": {
             "options": {
