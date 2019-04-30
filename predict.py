@@ -20,6 +20,7 @@ from unmix.source.helpers import filehelper
 from unmix.source.helpers import converter
 from unmix.source.prediction.fileprediction import FilePrediction
 from unmix.source.prediction.streamprediction import StreamPrediction
+from unmix.source.prediction.youtubeprediction import YoutTubePrediction
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
 from unmix.source.configuration import Configuration
 from unmix.source.logging.logger import Logger
@@ -32,7 +33,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
-    parser.add_argument('--run_folder', default='',
+    parser.add_argument('--run_folder', default='G:\\home-kaufman3\\unmix-net\\runs\\20190428-162013',
                         type=str, help="General training input folder (overwrites other parameters)")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
@@ -46,10 +47,10 @@ if __name__ == "__main__":
                         type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--song', default='',
                         type=str, help="Input audio file to split vocals and instrumental.")
-    parser.add_argument('--songs', default='./temp/songs',
+    parser.add_argument('--songs', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
-    parser.add_argument('--youtube', default='', type=str,
-                        help="Audio stream from a youtube video.")
+    parser.add_argument('--youtube', default='https://www.youtube.com/watch?v=G1PsSKE4ihE', type=str,
+                        help="Audio from a youtube video as file (or stream).")
 
     args = parser.parse_args()
     start = time.time()
@@ -101,8 +102,10 @@ if __name__ == "__main__":
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
 
     if args.youtube:
-        prediction = StreamPrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
-        prediction.run(args.youtube)
+        prediction = YoutTubePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
+        path, name = prediction.run(args.youtube)
+        prediction.save_vocals(name, path)
+        prediction.save_instrumental(name, path)
 
     end = time.time()
     Logger.info("Finished processing in %d [s]." % (end - start))
