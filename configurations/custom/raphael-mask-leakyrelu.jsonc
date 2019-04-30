@@ -49,6 +49,7 @@
             }
         },
         "batch_size": 8,
+        "limit_items_per_song": 24,
         "epoch": {
             "count": 100000,
             "shuffle": false
