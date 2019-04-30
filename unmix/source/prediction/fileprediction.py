@@ -17,7 +17,7 @@ import numpy as np
 import progressbar
 import librosa
 
-from unmix.source.prediction.mixprediction import mixprediction
+from unmix.source.prediction.mixprediction import MixPrediction
 from unmix.source.configuration import Configuration
 from unmix.source.data.track import Track
 from unmix.source.exceptions.dataerror import DataError
