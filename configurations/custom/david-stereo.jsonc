@@ -1,0 +1,6 @@
+{
+    "base": "./custom/david-master.jsonc",
+    "environment": {
+        "name": "david-stereo"
+    }
+}
