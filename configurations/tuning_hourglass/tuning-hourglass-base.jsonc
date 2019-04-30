@@ -3,8 +3,8 @@
     "training": {
         "epoch": {
             "count": 50
-        }
-        "limit_items_per_song": 24,
+        },
+        "limit_items_per_song": 24
     },
     "collection": {
         "sample_rate": 11025,
