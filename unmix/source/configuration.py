@@ -19,9 +19,9 @@ import shutil
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import converter
 from unmix.source.helpers import environmentvariables
-from unmix.source.helpers import reducer
 from unmix.source.helpers import filehelper
-
+from unmix.source.helpers import dictionary
+from unmix.source.helpers import reducer
 
 class Configuration(object):
 
@@ -36,9 +36,8 @@ class Configuration(object):
 
         if not configuration_file:
             configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')
-        with open(Configuration.build_path(configuration_file), 'r') as f:
-            configuration = commentjson.load(f, object_hook=lambda d: namedtuple('X', d.keys())
-                                             (*map(lambda x: converter.try_eval(x), d.values())))
+        configuration_dict = Configuration.load_merged_configuration(configuration_file)
+        configuration = dictionary.to_named_tuple(configuration_dict)
 
         if create_output:
             Configuration.output_directory = os.path.join(working_directory,
@@ -49,6 +48,23 @@ class Configuration(object):
             Configuration.log_environment(configuration_file, working_directory)
         else:
             Configuration.output_directory = working_directory
+
+    @staticmethod
+    def load_merged_configuration(configuration_path):
+        with open(Configuration.build_path(configuration_path), 'r') as f:
+            config = commentjson.load(f, object_hook=lambda d: { k: converter.try_eval(d[k]) for k in d })
+
+            base_config_path = config['base'] if 'base' in config else False
+
+            # All configuration files inherit from master (default)
+            if not base_config_path and not configuration_path.endswith('master.jsonc'):
+                base_config_path = 'master.jsonc'
+
+            if base_config_path:
+                config = dictionary.merge(config, Configuration.load_merged_configuration('./configurations/' + base_config_path))
+            
+            return config
+
 
     @staticmethod
     def log_environment(configuration_file, working_directory):

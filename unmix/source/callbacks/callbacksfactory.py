@@ -25,18 +25,18 @@ class CallbacksFactory(object):
     def build(build_validation_generator=None):
         configs = Configuration.get('training.callbacks', optional=False)
         callbacks = []
-        if hasattr(configs, 'model_checkpoint'):
+        if hasattr(configs, 'model_checkpoint') and Configuration.get('training.callbacks.model_checkpoint.enabled'):
             callbacks.append(CallbacksFactory.model_checkpoint(
                 configs.model_checkpoint))
-        if hasattr(configs, 'tensorboard'):
+        if hasattr(configs, 'tensorboard') and Configuration.get('training.callbacks.tensorboard.enabled'):
             callbacks.append(CallbacksFactory.tensorboard(
                 configs.tensorboard, build_validation_generator()))
-        if hasattr(configs, 'csv_logger'):
+        if hasattr(configs, 'csv_logger') and Configuration.get('training.callbacks.csv_logger.enabled'):
             callbacks.append(CallbacksFactory.csv_logger(configs.csv_logger))
-        if hasattr(configs, 'early_stopping'):
+        if hasattr(configs, 'early_stopping') and Configuration.get('training.callbacks.early_stopping.enabled'):
             callbacks.append(CallbacksFactory.early_stopping(
                 configs.early_stopping))
-        if hasattr(configs, 'reduce_learningrate'):
+        if hasattr(configs, 'reduce_learningrate') and Configuration.get('training.callbacks.reduce_learningrate.enabled'):
             callbacks.append(CallbacksFactory.reduce_learningrate(
                 configs.reduce_learningrate))
         return callbacks

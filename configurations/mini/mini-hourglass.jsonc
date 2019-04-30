@@ -1,15 +1,6 @@
 {
     "environment": {
-        "name": "mini-Hourglass",
-        "output_path": "runs",
-        "output_folder": "get_timestamp()",
-        "log_file": "logs.txt",
-        "plot_folder": "plots",
-        "temp_folder": "temp",
-        "weights": {
-            "folder": "weights",
-            "file": "weights.h5"
-        }
+        "name": "mini-Hourglass"
     },
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
@@ -39,31 +30,10 @@
             }
         },
         "batch_size": 2,
-        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
-        "epoch": {
-            "count": 10000,
-            "shuffle": false
-        },
-        "verbose": 1,
         "loss_function": "L11_loss",
         "optimizer": {
             "name": "adam",
             "lr": 0.0001
-        },
-        "metrics": ["mean_pred"],
-        "load_weights": false,
-        "callbacks": {
-            "csv_logger": {
-                "file_name": "results.csv",
-                "separator": ";",
-                "append": true
-            },
-            "reduce_learningrate": {
-                "monitor": "loss",
-                "factor": 0.1,
-                "patience": 5,
-                "min_learningrate": 0.00001
-            }
         }
     }
 }
