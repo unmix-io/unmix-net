@@ -50,7 +50,7 @@
         "loss_function": "L11_loss",
         "optimizer": {
             "name": "adam",
-            "lr": 0.001
+            "lr": 0.0001
         },
         "metrics": ["mean_pred"],
         "load_weights": false,
