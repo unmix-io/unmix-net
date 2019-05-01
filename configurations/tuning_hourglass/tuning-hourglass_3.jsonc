@@ -1,0 +1,19 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base.jsonc",
+    "training": {
+        "model": {
+            "options": {
+                "stacks": 4,
+                "initial_convolutions": {
+                    "batchnormalization": true
+                },
+                "hg_module": {
+                    "batchnormalization": true
+                },
+                "hg_module_end": {
+                    "batchnormalization": true
+                }
+            }
+        }
+    }
+}

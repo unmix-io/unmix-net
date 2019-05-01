@@ -21,7 +21,8 @@ class LossFunctionFactory(object):
     @staticmethod
     def build(model):
         LossFunctionFactory.model = model
-        loss_function = Configuration.get('training.loss_function', optional=False)
+        loss_function = Configuration.get(
+            'training.loss_function', optional=False)
         return getattr(LossFunctionFactory, loss_function)
 
     @staticmethod
@@ -51,7 +52,7 @@ class LossFunctionFactory(object):
     @staticmethod
     def mean_squared_error_noaxis(y_true, y_pred):
         return K.mean(K.square(y_pred - y_true))
-    
+
     @staticmethod
     def euclidean_loss(x, y):
         return K.sqrt(K.sum(K.square(x - y)))
@@ -59,3 +60,16 @@ class LossFunctionFactory(object):
     @staticmethod
     def L11_loss(y_true, mask_pred):
         return K.sum(K.abs(y_true - LossFunctionFactory.model.input * mask_pred))
+
+    @staticmethod
+    def get_members():
+        return {
+            'mean_squared_error': LossFunctionFactory.mean_squared_error,
+            'mean_absolute_error': LossFunctionFactory.mean_absolute_error,
+            'mean_squared_log_error': LossFunctionFactory.mean_squared_log_error,
+            'squared_hinge': LossFunctionFactory.squared_hinge,
+            'root_mean_squared_error': LossFunctionFactory.root_mean_squared_error,
+            'binary_crossentropy': LossFunctionFactory.binary_crossentropy,
+            'euclidean_loss': LossFunctionFactory.euclidean_loss,
+            'L11_loss': LossFunctionFactory.L11_loss
+        }

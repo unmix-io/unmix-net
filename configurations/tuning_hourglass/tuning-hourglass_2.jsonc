@@ -1,0 +1,18 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base.jsonc",
+    "training": {
+        "model": {
+            "options": {
+                "initial_convolutions": {
+                    "dropoutfactor": 0.5
+                },
+                "hg_module": {
+                    "dropoutfactor": 0.5
+                },
+                "hg_module_end": {
+                    "dropoutfactor": 0.5
+                }
+            }
+        }
+    }
+}

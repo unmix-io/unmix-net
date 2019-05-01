@@ -10,9 +10,9 @@ __email__ = "info@unmix.io"
 
 
 import os
-import keras.utils
 import tensorflow as tf
 import numpy as np
+import keras
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
 from unmix.source.configuration import Configuration
@@ -35,11 +35,17 @@ class Engine:
         optimizer = OptimizerFactory.build()
         loss_function = LossFunctionFactory.build(self.model)
         metrics = MetricsFactory.build()
-        
+
+        self.bindings = {
+            **OptimizerFactory.get_members(),
+            **LossFunctionFactory.get_members(),
+            **MetricsFactory.get_members()
+        }
+
         self.model.compile(loss=loss_function,
                            optimizer=optimizer, metrics=metrics)
         self.model.summary(print_fn=Logger.info)
-        
+
         Logger.debug("Model '%s' initialized with %d parameters." %
                      (Configuration.get('training.model.name'), self.model.count_params()))
 
@@ -61,12 +67,13 @@ class Engine:
     def train(self, epoch_start=0):
         training_songs, validation_songs, test_songs = DataLoader.load()
         self.training_generator = DataGenerator('training',
-            self, training_songs, self.transformer, False)
+                                                self, training_songs, self.transformer, False)
         self.validation_generator = DataGenerator('validation',
-            self, validation_songs, self.transformer, True)
+                                                  self, validation_songs, self.transformer, True)
         self.test_songs = test_songs
 
-        build_validation_generator = lambda: DataGenerator('validation_tensorboard', self, validation_songs, self.transformer, False)
+        def build_validation_generator(): return DataGenerator(
+            'validation_tensorboard', self, validation_songs, self.transformer, False)
         # Pass a new data generator here because TensorBoard must have access to validation_data
         self.callbacks = CallbacksFactory.build(build_validation_generator)
 
@@ -83,14 +90,15 @@ class Engine:
         self.save()
         self.save_weights()
         return history
-    
+
     def save(self):
+        'Saves the model as json and h5 (including weights) files.'
         path = os.path.join(Configuration.output_directory, 'model.%s')
         with open(path % "json", "w") as f:
-    	    f.write(self.model.to_json())
+            f.write(self.model.to_json())
         self.model.save(path % "h5", overwrite=True)
         Logger.info("Saved model and weights to: %s" % "h5")
-    
+
     def save_weights(self):
         path = os.path.join(Configuration.get_path(
             'environment.weights.folder', optional=False), Configuration.get('environment.weights.file', optional=False))
@@ -98,10 +106,12 @@ class Engine:
         Logger.info("Saved weights to: %s" % path)
 
     def load(self, path=None):
+        'Loads the model and weights from the file and overwrites the current model instance.'
         if not path:
             path = os.path.join(Configuration.output_directory, 'model.h5')
         Logger.info("Load model and weights from: %s" % path)
-        self.model.load(path)
+        self.model = keras.models.load_model(
+            path, custom_objects=self.bindings)
 
     def load_weights(self, path=None):
         if not path:

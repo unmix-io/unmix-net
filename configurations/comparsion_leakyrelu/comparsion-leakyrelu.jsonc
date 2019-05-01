@@ -1,0 +1,52 @@
+// Fixed dataset for comparsion runs between different transformers and models.
+{
+    "environment": {
+        "name": "comparsion-window-LeakyReLU"
+    },
+    "collection": {
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=11025_channels=1-mono/musdb18/",
+        "sample_rate": 11025,
+        "song_limit": 140, // Number of training and validation songs
+        "validation_ratio": 0.2,
+        "test_data_count": 10, //Number of test songs
+        "test_frequency": 10, // Run tests every n epoch
+        "test_save_count": 1
+    },
+    "transformation": {
+        "name": "window",
+        "options": {
+            "size": 64,
+            "step": 64,
+            "shuffle": true,
+            "save_audio": false
+        },
+        "normalizers": {
+            "zmuv": {
+                "enabled": false,
+                "mode": "frequency_bin", // frequency_bin or single
+                "mix_file": "mean-derivation.json",
+                "vocals_file": "vocals_mean-derivation.json"
+            }
+        }
+    },
+    "training": {
+        "model": {
+            "name": "LeakyReLU",
+            "options": {
+                "alpha1": 0.1,
+                "alpha2": 0.01,
+                "dropout_rate": 0.5
+            }
+        },
+        "batch_size": 8,
+        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
+        "epoch": {
+            "count": 150
+        },
+        "loss_function": "mean_squared_error",
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.001
+        }
+    }
+}

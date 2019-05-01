@@ -16,7 +16,7 @@ import csv
 
 from unmix.source.logging.logger import Logger
 from unmix.source.data.song import Song
-from unmix.source.prediction.mixprediciton import MixPrediciton
+from unmix.source.prediction.mixprediction import MixPrediction
 from unmix.source.configuration import Configuration
 
 
@@ -49,7 +49,7 @@ class Accuracy(object):
                 instrumental = song.instrumental.load().channels
                 mix = vocals + instrumental
 
-                prediction = MixPrediciton(self.engine, sample_rate=Configuration.get('collection.sample_rate'))
+                prediction = MixPrediction(self.engine, sample_rate=Configuration.get('collection.sample_rate'))
                 predicted_vocals, predicted_instrumental = prediction.run(
                     mix[0])
                 if self.save_count > i:

@@ -40,13 +40,17 @@ class Prediction(object):
         self.initialized = False
         self.length = 0
 
+    def save(self, file, folder='', extension='wav'):
+        'Saves the predicted vocals and instrumental track to separate audio files.'
+        return self.save_vocals(file, folder, extension), self.save_instrumental(file, folder, extension)
+
     def save_vocals(self, file, folder='', extension='wav'):
-        'Saves the predicted instrumental track to an audio file'
-        self.__save(self.vocals, 'vocals', file, folder, extension)
+        'Saves the predicted vocals track to an audio file.'
+        return self.__save(self.vocals, 'vocals', file, folder, extension)
 
     def save_instrumental(self, file, folder='', extension='wav'):
-        'Saves the predicted instrumental track to an audio file'
-        self.__save(self.instrumental, 'instrumental', file, folder, extension)
+        'Saves the predicted instrumental track to an audio file.'
+        return self.__save(self.instrumental, 'instrumental', file, folder, extension)
 
     def __save(self, prediction, type, file, folder='', extension='wav'):
         track = np.array(librosa.istft(prediction))
@@ -61,6 +65,7 @@ class Prediction(object):
         librosa.output.write_wav(
             output_file, track, self.sample_rate, norm=False)
         Logger.info("Output prediction file: %s" % output_file)
+        return output_file
 
     def predict_part(self, i, part, transform_info):
         with self.graph.as_default():

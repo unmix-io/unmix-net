@@ -25,5 +25,7 @@ class ModelFactory(object):
         model_config = Configuration.get('training.model', optional=False)
         all_models = BaseModel.__subclasses__()
         if model_config.name:
-            return [m().build(model_config) for m in all_models if m.name.lower() == model_config.name.lower()][0]
+            model = [m().build(model_config) for m in all_models if m.name.lower() == model_config.name.lower()]
+            if model and len(model) > 0:
+                return model[0]
         raise ConfigurationError('training.model.name')

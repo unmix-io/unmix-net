@@ -25,7 +25,7 @@ from unmix.source.helpers import converter
 from unmix.source.logging.logger import Logger
 
 
-class MixPrediciton(Prediction):
+class MixPrediction(Prediction):
 
     def __init__(self, engine, sample_rate=22050, fft_window=1536):
         super().__init__(engine, sample_rate, fft_window)

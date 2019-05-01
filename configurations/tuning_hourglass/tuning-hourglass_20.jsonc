@@ -1,0 +1,6 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base.jsonc",
+    "training": {
+        "loss_function": "mean_squared_error"
+    }
+}

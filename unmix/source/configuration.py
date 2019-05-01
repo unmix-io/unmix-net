@@ -15,12 +15,14 @@ import getpass
 import json
 import os
 import shutil
+import datetime
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import converter
 from unmix.source.helpers import environmentvariables
-from unmix.source.helpers import reducer
 from unmix.source.helpers import filehelper
+from unmix.source.helpers import dictionary
+from unmix.source.helpers import reducer
 
 
 class Configuration(object):
@@ -28,7 +30,7 @@ class Configuration(object):
     output_directory = ''
 
     @staticmethod
-    def initialize(configuration_file, working_directory=None, create_output=True):
+    def initialize(configuration_file, working_directory=None, create_output=True, disable_merge=False):
         global configuration
         if not working_directory:
             working_directory = os.getcwd()
@@ -36,24 +38,50 @@ class Configuration(object):
 
         if not configuration_file:
             configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')
-        with open(Configuration.build_path(configuration_file), 'r') as f:
-            configuration = commentjson.load(f, object_hook=lambda d: namedtuple('X', d.keys())
-                                             (*map(lambda x: converter.try_eval(x), d.values())))
+        configuration_dict = Configuration.load_merged_configuration(
+            configuration_file, disable_merge)
+        configuration = dictionary.to_named_tuple(configuration_dict)
 
         if create_output:
             Configuration.output_directory = os.path.join(working_directory,
-                 Configuration.get('environment.output_path', optional=False),
-                 Configuration.get('environment.output_folder', optional=False))
+                                                          Configuration.get(
+                                                              'environment.output_path', optional=False),
+                datetime.datetime.now().strftime('%Y%m%d-%H%M%S') + "-" + os.path.basename(configuration_file.replace(".jsonc", "")))
             if not os.path.exists(Configuration.output_directory):
                 os.makedirs(Configuration.output_directory)
-            Configuration.log_environment(configuration_file, working_directory)
+            Configuration.log_environment(
+                configuration_file, working_directory, configuration_dict)
         else:
             Configuration.output_directory = working_directory
 
     @staticmethod
-    def log_environment(configuration_file, working_directory):
-        shutil.copy(configuration_file, os.path.join(
-            Configuration.output_directory, 'configuration.jsonc'))
+    def load_merged_configuration(configuration_path, disable_merge=False):
+        if not os.path.exists(configuration_path):
+            raise EnvironmentError(
+                "Configuration file " + configuration_path + " not found - aborting.")
+        with open(Configuration.build_path(configuration_path, create=False), 'r') as f:
+            config = commentjson.load(f, object_hook=lambda d: {
+                                      k: converter.try_eval(d[k]) for k in d})
+
+            if not disable_merge:
+                base_config_path = config['base'] if 'base' in config else False
+
+                # All configuration files inherit from master (default)
+                if not base_config_path and not configuration_path.endswith('master.jsonc'):
+                    base_config_path = 'master.jsonc'
+
+                if base_config_path:
+                    config = dictionary.merge(config, Configuration.load_merged_configuration(
+                    './configurations/' + base_config_path))
+            return config
+
+    @staticmethod
+    def log_environment(configuration_file, working_directory, configuration):
+        # shutil.copy(configuration_file, os.path.join(
+        #     Configuration.output_directory, 'configuration.jsonc'))
+        # Log merged configuration
+        with open(os.path.join(Configuration.output_directory, 'configuration.jsonc'), 'w') as file:
+            json.dump(configuration, file, indent=4)
         repo = False
         try:
             import git

@@ -1,0 +1,23 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base.jsonc",
+    "training": {
+        "model": {
+            "options": {
+                "stacks": 4,
+                "initial_convolutions": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.4
+                },
+                "hg_module": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.4,
+                    "filters": 512
+                },
+                "hg_module_end": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.4
+                }
+            }
+        }
+    }
+}
