@@ -5,7 +5,7 @@ import os
 import glob
 
 results_name = "results.csv"
-sources = ["/Volumes/gpu-server/home-muellrap/unmix-net/runs/", "/Volumes/gpu-server/home-kaufman3/unmix-net/runs/"]
+sources = ["S:\\home-kaufman3\\unmix-net\\runs", "S:\\home-muellrap\\unmix-net\\runs", "S:\\home-flurydav\\repos\\unmix-net\\runs"]
 
 result_files = []
 for source in sources:
