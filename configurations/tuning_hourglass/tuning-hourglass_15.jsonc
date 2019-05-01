@@ -1,0 +1,12 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base.jsonc",
+    "training": {
+        "model": {
+            "options": {
+                "hg_module": {
+                    "dropoutfactor": 0.4
+                }
+            }
+        }
+    }
+}
