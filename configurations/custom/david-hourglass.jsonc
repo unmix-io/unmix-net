@@ -1,0 +1,22 @@
+{
+    "base": "default-hourglass.jsonc",
+    "training": {
+        "model": {
+            "options": {
+                "stacks": 4,
+                "initial_convolutions": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.5
+                },
+                "hg_module": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.5
+                },
+                "hg_module_end": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.5
+                }
+            }
+        }
+    }
+}
