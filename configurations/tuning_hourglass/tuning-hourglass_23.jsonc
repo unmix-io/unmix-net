@@ -1,0 +1,10 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base.jsonc",
+    "training": {
+        "model": {
+            "options": {
+                "stacks": 8
+            }
+        }
+    }
+}
