@@ -13,7 +13,6 @@ import os
 import numpy as np
 from keras.callbacks import ModelCheckpoint, TensorBoard, CSVLogger, EarlyStopping, ReduceLROnPlateau
 
-from unmix.source.callbacks.errorvisualization import ErrorVisualization
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import converter
 from unmix.source.logging.logger import Logger
@@ -79,10 +78,6 @@ class CallbacksFactory(object):
     def reduce_learningrate(config):
         return ReduceLROnPlateau(monitor=config.monitor, factor=config.factor,
                                  patience=config.patience, min_lr=config.min_learningrate)
-
-    @staticmethod
-    def error_visualization(bot):
-        return ErrorVisualization(bot)  # TODO ???
 
 
 class TensorBoardWrapper(TensorBoard):
