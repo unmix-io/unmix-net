@@ -2,7 +2,7 @@
     "base": "default-hourglass.jsonc",
     "training": {
         "epoch": {
-            "count": 50
+            "count": 80
         },
         "limit_items_per_song": 24
     },

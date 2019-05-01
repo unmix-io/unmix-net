@@ -58,7 +58,7 @@
                 "enabled": true,
                 "monitor": "val_loss",
                 "min_delta": 0.00001,
-                "patience": 100,
+                "patience": 15,
                 "verbose": 1
             },
             "reduce_learningrate": {
