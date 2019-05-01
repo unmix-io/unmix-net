@@ -1,0 +1,15 @@
+{
+    "base": "default-hourglass.jsonc",
+    "training": {
+        "epoch": {
+            "count": 100000
+        },
+        "limit_items_per_song": 0
+    },
+    "collection": {
+        "sample_rate": 11025,
+        "song_limit": 260,
+        "test_data_count": 10,
+        "test_frequency": 10
+    }
+}
