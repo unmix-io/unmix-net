@@ -4,7 +4,7 @@
         "model": {
             "options": {
                 "hg_module": {
-                    "filters": 128
+                    "filters": 512
                 }
             }
         }
