@@ -37,7 +37,6 @@ class Engine:
         metrics = MetricsFactory.build()
 
         self.bindings = {
-            **OptimizerFactory.get_members(),
             **LossFunctionFactory.get_members(),
             **MetricsFactory.get_members()
         }
