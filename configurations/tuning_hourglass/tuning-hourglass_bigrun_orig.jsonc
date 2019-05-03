@@ -1,0 +1,6 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base_bigrun.jsonc",
+    "collection": {
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=11025_channels=1-mono/"
+    }
+}
