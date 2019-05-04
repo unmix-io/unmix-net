@@ -3,18 +3,15 @@
     "training": {
         "model": {
             "options": {
-                "stacks": 4,
+                "stacks": 6,
                 "initial_convolutions": {
-                    "batchnormalization": true,
-                    "dropoutfactor": 0.5
+                    "batchnormalization": true
                 },
                 "hg_module": {
-                    "batchnormalization": true,
-                    "dropoutfactor": 0.5
+                    "batchnormalization": true
                 },
                 "hg_module_end": {
-                    "batchnormalization": true,
-                    "dropoutfactor": 0.5
+                    "batchnormalization": true
                 }
             }
         }
