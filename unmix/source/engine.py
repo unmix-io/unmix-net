@@ -25,7 +25,7 @@ from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
-
+from unmix.source.metrics.accuracy import Accuracy
 
 class Engine:
 
@@ -51,6 +51,7 @@ class Engine:
         self.transformer = TransformerFactory.build()
         self.test_songs = None
         self.graph = tf.get_default_graph()
+        self.accuracy = None
 
     def plot_model(self):
         try:
@@ -71,8 +72,10 @@ class Engine:
                                                   self, validation_songs, self.transformer, True)
         self.test_songs = test_songs
 
+        self.accuracy = Accuracy(self)
+
         def build_validation_generator(): return DataGenerator(
-            'validation_tensorboard', self, validation_songs, self.transformer, False)
+            'validation_tensorboard', self, validation_songs, self.transformer, self.accuracy, False)
         # Pass a new data generator here because TensorBoard must have access to validation_data
         self.callbacks = CallbacksFactory.build(build_validation_generator)
 
@@ -86,6 +89,7 @@ class Engine:
             max_queue_size=10,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
+        self.accuracy.evaluate(epoch_count)
         self.save()
         self.save_weights()
         return history
