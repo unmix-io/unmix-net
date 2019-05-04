@@ -66,16 +66,16 @@ class Engine:
 
     def train(self, epoch_start=0):
         training_songs, validation_songs, test_songs = DataLoader.load()
+        
+        self.accuracy = Accuracy(self)
         self.training_generator = DataGenerator('training',
-                                                self, training_songs, self.transformer, False)
+                                                self, training_songs, self.transformer)
         self.validation_generator = DataGenerator('validation',
-                                                  self, validation_songs, self.transformer, True)
+                                                  self, validation_songs, self.transformer, self.accuracy)
         self.test_songs = test_songs
 
-        self.accuracy = Accuracy(self)
-
         def build_validation_generator(): return DataGenerator(
-            'validation_tensorboard', self, validation_songs, self.transformer, self.accuracy, False)
+            'validation_tensorboard', self, validation_songs, self.transformer)
         # Pass a new data generator here because TensorBoard must have access to validation_data
         self.callbacks = CallbacksFactory.build(build_validation_generator)
 
@@ -89,7 +89,7 @@ class Engine:
             max_queue_size=10,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
-        self.accuracy.evaluate(epoch_count)
+        self.accuracy.evaluate(len(history.epoch))
         self.save()
         self.save_weights()
         return history
