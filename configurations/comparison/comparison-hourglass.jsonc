@@ -1,6 +1,6 @@
 // Fixed dataset for comparsion runs between different transformers and models.
 {
-    "base": "./comparsions/comparsion-master.jsonc",
+    "base": "comparison/comparison-master.jsonc",
     "environment": {
         "name": "comparison-hourglass"
     },
