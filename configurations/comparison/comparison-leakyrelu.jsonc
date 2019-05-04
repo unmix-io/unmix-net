@@ -1,16 +1,8 @@
 // Fixed dataset for comparsion runs between different transformers and models.
 {
+    "base": "./comparsions/comparsion-master.jsonc",
     "environment": {
-        "name": "comparsion-window-LeakyReLU"
-    },
-    "collection": {
-        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=11025_channels=1-mono/musdb18/",
-        "sample_rate": 11025,
-        "song_limit": 140, // Number of training and validation songs
-        "validation_ratio": 0.2,
-        "test_data_count": 10, //Number of test songs
-        "test_frequency": 10, // Run tests every n epoch
-        "test_save_count": 1
+        "name": "comparison-window-LeakyReLU"
     },
     "transformation": {
         "name": "window",
@@ -39,10 +31,6 @@
             }
         },
         "batch_size": 8,
-        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
-        "epoch": {
-            "count": 150
-        },
         "loss_function": "mean_squared_error",
         "optimizer": {
             "name": "adam",

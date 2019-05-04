@@ -1,0 +1,70 @@
+{
+    "environment": {
+        "output_path": "runs",
+        "log_file": "logs.txt",
+        "plot_folder": "plots",
+        "temp_folder": "temp",
+        "weights": {
+            "folder": "weights",
+            "file": "weights.h5"
+        }
+    },
+    "collection": {
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=22050_channels=1-mono/dsd100/",
+        "sample_rate": 22050,
+        "song_limit": 50, // Number of tracks
+        "validation_ratio": 0.2,
+        "test_data_count": 50, // Number of Testdata (Whenever possible use 50)
+        "test_frequency": 10, // Run tests every n epoch
+        "test_save_count": 5
+    },
+    "training": {
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.0001
+        },
+        "epoch": {
+            "count": 10000,
+            "shuffle": false
+        },
+        "limit_items_per_song": 0,
+        "verbose": 1,
+        "metrics": ["mean_pred"],
+        "load_weights": false,
+        "callbacks": {
+            "model_checkpoint": {
+                "enabled": true,
+                "file_name": "callback_weights_{epoch:02d}.h5",
+                "monitor": "val_loss",
+                "best_only": true,
+                "weights_only": false,
+                "mode": "auto",
+                "period": 1,
+                "verbose": 1
+            },
+             "tensorboard": {
+                "enabled": true,
+                "folder": "./TensorBoard",
+                "histogram_freq": 0,
+                "write_graph": true,
+                "write_grads": false,
+                "write_images": false,
+                "embeddings_freq": 0,
+                "update_freq": "batch"
+             },
+            "csv_logger": {
+                "enabled": true,
+                "file_name": "results.csv",
+                "separator": ";",
+                "append": true
+            },
+            "early_stopping": {
+                "enabled": true,
+                "monitor": "val_loss",
+                "min_delta": 0.00001,
+                "patience": 15,
+                "verbose": 1
+            }
+        }
+    }
+}
