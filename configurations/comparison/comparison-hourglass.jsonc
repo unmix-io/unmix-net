@@ -23,6 +23,7 @@
                     "dropoutfactor": 0.2
                 },
                 "hg_module": {
+                    "filters": 256,
                     "batchnormalization": true,
                     "dropoutfactor": 0.2
                 },
