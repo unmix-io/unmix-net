@@ -33,6 +33,11 @@
                 }
             }
         },
+        "callbacks": {
+            "early_stopping": {
+                "patience": 50
+            }
+        },
         "batch_size": 4,
         "loss_function": "L11_loss",
         "optimizer": {

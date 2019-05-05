@@ -38,7 +38,7 @@
         },
         "callbacks": {
             "early_stopping": {
-                "patience": 30
+                "patience": 50
             }
         }
     }
