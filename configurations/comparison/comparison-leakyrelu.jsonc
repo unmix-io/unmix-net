@@ -35,6 +35,11 @@
         "optimizer": {
             "name": "adam",
             "lr": 0.001
+        },
+        "callbacks": {
+            "early_stopping": {
+                "patience": 30
+            }
         }
     }
 }
