@@ -11,7 +11,6 @@ __email__ = "info@unmix.io"
 
 import os
 import tensorflow as tf
-import numpy as np
 import keras
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
@@ -89,9 +88,9 @@ class Engine:
             max_queue_size=10,
             verbose=Configuration.get('training.verbose'),
             callbacks=self.callbacks)
-        self.accuracy.evaluate(len(history.epoch))
         self.save()
         self.save_weights()
+        self.accuracy.evaluate(len(history.epoch))
         return history
 
     def save(self):

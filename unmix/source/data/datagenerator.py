@@ -9,7 +9,6 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import gc
 import keras
 import numpy as np
 
@@ -17,8 +16,6 @@ from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
 from unmix.source.logging.logger import Logger
-from unmix.source.metrics.accuracy import Accuracy
-from unmix.source.helpers import memorymonitor
 
 
 class DataGenerator(keras.utils.Sequence):
