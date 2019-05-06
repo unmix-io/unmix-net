@@ -33,7 +33,7 @@ class TransformerFactory(object):
             if name == IBMMaskTransformer.NAME:
                 return IBMMaskTransformer(options.size, options.step, options.shuffle, options.save_image)
             if name == TrainWindowPredictMaskTransformer.NAME:
-                return TrainWindowPredictMaskTransformer(options.size, options.step, options.shuffle, options.save_audio)
+                return TrainWindowPredictMaskTransformer(options.size, options.step, options.shuffle, options.save_audio, options.normalizer)
         except:
             raise ConfigurationError('transformation.options')
         raise ConfigurationError('transformation.name')

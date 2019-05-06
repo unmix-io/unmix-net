@@ -17,7 +17,8 @@
             "size": 64,
             "step": 64,
             "shuffle": true,
-            "save_audio": false
+            "save_audio": false,
+            "normalizer": "max"
         }
     },
     "training": {
