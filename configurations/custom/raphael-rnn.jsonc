@@ -26,7 +26,7 @@
         "epoch": {
             "count": 10000,
             "shuffle": false
-        }
+        },
         "loss_function": "L11_loss",
         "optimizer": {
             "name": "adam",
