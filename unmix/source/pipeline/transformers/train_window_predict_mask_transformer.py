@@ -32,8 +32,10 @@ class TrainWindowPredictMaskTransformer:
         self.save_audio = save_audio
         if normalizer_name == normalizer_max.name:
             self.normalizer = normalizer_max
-        if normalizer_name == normalizer_min_max.name:
+        elif normalizer_name == normalizer_min_max.name:
             self.normalizer = normalizer_min_max
+        else:
+            self.normalizer = None
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
