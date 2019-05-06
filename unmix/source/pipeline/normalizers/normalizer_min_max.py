@@ -18,7 +18,7 @@ from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import filehelper
 
 
-name = 'min_max'
+name = 'norm_min_max'
 
 
 def normalize(input, target):

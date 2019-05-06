@@ -5,7 +5,7 @@
     },
     "transformation": {
         "options": {
-            "normalizer": "min_max"
+            "normalizer": "norm_min_max"
         }
     },
     "training": {

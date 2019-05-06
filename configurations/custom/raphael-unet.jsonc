@@ -9,7 +9,7 @@
             "step": 16,
             "shuffle": true,
             "save_audio": false,
-            "normalizer": "max"
+            "normalizer": "norm_max"
         }
     },
     "training": {
