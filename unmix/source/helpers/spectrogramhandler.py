@@ -55,6 +55,8 @@ def remove_panning(mix):
     """
     Takes a stereo file and removes the panning.
     """
+    if len(mix) < 2:
+        return mix
     left = mix[0]    
     right = mix[1]
 
