@@ -43,15 +43,14 @@ class Accuracy(object):
                        Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SIR,
                        Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR]
 
-    def evaluate(self, epoch):
+    def evaluate(self, epoch, remove_panning=False):
         accuracies = []
         i = 0
         for song_file in self.engine.test_songs:
             try:
                 song = Song(song_file)
-                vocals = song.vocals.load().channels
-                instrumental = song.instrumental.load().channels
-                mix = vocals + instrumental
+                mix, vocals = song.load(remove_panning=remove_panning, clean_up=False)
+                instrumental = song.instrumental.channels
 
                 prediction = MixPrediction(
                     self.engine, sample_rate=Configuration.get('collection.sample_rate'))

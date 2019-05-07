@@ -9,14 +9,14 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import datetime
 import os
 import time
 import librosa
-from matplotlib.cm import get_cmap
+import warnings
+import datetime
 import numpy as np
 import skimage.io as io
-import warnings
+from matplotlib.cm import get_cmap
 
 from unmix.source.configuration import Configuration
 from unmix.source.helpers import reducer
@@ -50,8 +50,23 @@ def to_image(file, image):
         Logger.error("Error while saving spectrogram (with shape %s) to image '%s'." % (
             str(image.shape), file))
 
-def remove_panning():
+
+def remove_panning(mix):
     """
     Takes a stereo file and removes the panning.
     """
-    return
+    left = mix[0]    
+    right = mix[1]
+
+    difference_left = __channel_difference_panning(left, right)
+    left -= difference_left
+
+    difference_right = __channel_difference_panning(right, left)
+    right -= difference_right
+
+    return [left, right]
+
+def __channel_difference_panning(base, other, invert=True):
+    amplitude = np.clip(np.abs(base) - np.abs(other), 0, None)
+    phase = np.exp((np.angle(base) * -1 if invert else 1) * 1j)
+    return amplitude * phase
