@@ -49,3 +49,9 @@ def to_image(file, image):
     except:
         Logger.error("Error while saving spectrogram (with shape %s) to image '%s'." % (
             str(image.shape), file))
+
+def remove_panning():
+    """
+    Takes a stereo file and removes the panning.
+    """
+    return
