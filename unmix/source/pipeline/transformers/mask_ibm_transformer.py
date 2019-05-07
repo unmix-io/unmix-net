@@ -46,7 +46,7 @@ class IBMMaskTransformer:
         target_mask = np.empty_like(instrumental_magnitude)
         target_mask[instrumental_magnitude <= vocal_magnitude] = 1
         target_mask[instrumental_magnitude > vocal_magnitude] = 0
-        target_mask = np.resize(target_mask, (769, self.size, 1))
+        target_mask = np.resize(target_mask, (769, self.step, 1))
 
         if self.save_image:
             spectrogramhandler.to_image('%s-%d_Target.png' % (name, index), target_mask)
