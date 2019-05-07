@@ -108,7 +108,7 @@ class Accuracy(object):
         print(entry)
         return entry
 
-    def __calculate_median(self, accuracies, type, epochnr):
+    def __calculate_median(self, accuracies, type, epoch):
         return {
             'epoch': epoch,
             'type': type,
