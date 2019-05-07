@@ -110,7 +110,7 @@ class Accuracy(object):
 
     def __calculate_median(self, accuracies, type, epochnr):
         return {
-            'epoch': epochnr,
+            'epoch': epoch,
             'type': type,
             Accuracy.PREFIX_VOCALS + Accuracy.SDR: \
                 np.median(np.array([x[Accuracy.PREFIX_VOCALS + Accuracy.SDR] for x in accuracies])),
