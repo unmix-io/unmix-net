@@ -12,7 +12,7 @@ __email__ = "info@unmix.io"
 import numpy as np
 import math
 
-name = 'normalizer_real_imag'
+name = 'norm_real_imag'
 
 def normalize(cplx):
     'Normalizes training data to use only amplitudes'

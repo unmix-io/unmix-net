@@ -9,7 +9,6 @@ __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
 __email__ = "info@unmix.io"
 
 
-import gc
 import keras
 import numpy as np
 
@@ -17,22 +16,19 @@ from unmix.source.configuration import Configuration
 from unmix.source.data.batchitem import BatchItem
 from unmix.source.data.song import Song
 from unmix.source.logging.logger import Logger
-from unmix.source.metrics.accuracy import Accuracy
-from unmix.source.helpers import memorymonitor
 
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, name, engine, collection, transformer, run_tests=False):
+    def __init__(self, name, engine, collection, transformer, accuracy=None):
         self.name = name
         self.collection = collection
         self.transformer = transformer
         self.batch_size = Configuration.get('training.batch_size', default=8)
         self.epoch_shuffle = Configuration.get('training.epoch.shuffle')
         self.engine = engine
-        self.run_tests = run_tests
-        self.accuracy = Accuracy(self.engine)
+        self.accuracy = accuracy
         self.count = 0
         self.on_epoch_end()
 
@@ -79,7 +75,7 @@ class DataGenerator(keras.utils.Sequence):
         if self.epoch_shuffle:
             np.random.shuffle(self.index)
         test_frequency = Configuration.get('collection.test_frequency', default=0)
-        if self.engine.test_songs and self.run_tests and \
+        if self.engine.test_songs and self.accuracy and \
             test_frequency > 0 and self.count % test_frequency == 0:
             self.accuracy.evaluate(self.count)
         self.count += 1

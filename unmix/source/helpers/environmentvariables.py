@@ -19,7 +19,7 @@ Code version: 0.10.1
 Availability: https://github.com/theskumar/python-dotenv
 """
 
-def find_dotenv(filename='.env', raise_error_if_not_found=False, usecwd=False):
+def _find_dotenv(filename='.env', raise_error_if_not_found=False, usecwd=False):
     """
     Search in increasingly higher folders for the given file
 
@@ -66,25 +66,28 @@ def _walk_to_root(path):
         last_dir, current_dir = current_dir, parent_dir
 
 
-def set_environment_variables(extend=False):
+def initialize(extend=False):
     """
     Load the current dotenv as system environemt variable.
     """
-    with open(find_dotenv(), 'r') as fp:
-        for line in fp:
-            if '=' not in line:
-                continue
-            k, v = line.split('=', 1)
-            shouldextend = False
-            if k.endswith("+"):
-                shouldextend = True
-                k = k.rstrip("+")
-            
-            v = v.rstrip('\n')
-            if k in os.environ and not extend:
-                continue
-            elif k in os.environ and extend and shouldextend:
-                os.environ[k] += os.pathsep + v
-            else:
-                os.environ[k] = v
-    return True
+    try:
+        with open(_find_dotenv(), 'r') as fp:
+            for line in fp:
+                if '=' not in line:
+                    continue
+                k, v = line.split('=', 1)
+                shouldextend = False
+                if k.endswith("+"):
+                    shouldextend = True
+                    k = k.rstrip("+")
+                
+                v = v.rstrip('\n')
+                if k in os.environ and not extend:
+                    continue
+                elif k in os.environ and extend and shouldextend:
+                    os.environ[k] += os.pathsep + v
+                else:
+                    os.environ[k] = v
+        return True
+    except:
+        return False

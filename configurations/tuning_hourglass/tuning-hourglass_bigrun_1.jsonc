@@ -1,0 +1,22 @@
+{
+    "base": "tuning_hourglass/tuning-hourglass-base_bigrun.jsonc",
+    "collection": {
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=11025_channels=1-mono/"
+    },
+    "training": {
+        "model": {
+            "options": {
+                "stacks": 6,
+                "initial_convolutions": {
+                    "batchnormalization": true
+                },
+                "hg_module": {
+                    "batchnormalization": true
+                },
+                "hg_module_end": {
+                    "batchnormalization": true
+                }
+            }
+        }
+    }
+}

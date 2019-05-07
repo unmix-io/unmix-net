@@ -10,20 +10,24 @@
         }
     },
     "collection": {
-        "folder": "env('UNMIX_COLLECTION_DIR')",
-        "sample_rate": "int(env('UNMIX_SAMPLE_RATE'))",
-        "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=22050_channels=1-mono/dsd100/",
+        "sample_rate": 22050,
+        "song_limit": 0, // Number of tracks
         "validation_ratio": 0.2,
-        "test_data_count": "int(env('UNMIX_TEST_DATA_COUNT'))", //Number of Testdata (Whenever possible use 50)
-        "test_frequency": "int(env('UNMIX_TEST_FREQUENCY'))", // Run tests every n epoch
-        "test_save_count": 1
+        "test_data_count": 50, // Number of Testdata (Whenever possible use 50)
+        "test_frequency": 0, // Run tests every n epoch
+        "test_save_count": 5
     },
     "training": {
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.0001
+        },
         "epoch": {
             "count": 10000,
             "shuffle": false
         },
-        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
+        "limit_items_per_song": 0,
         "verbose": 1,
         "metrics": ["mean_pred"],
         "load_weights": false,
@@ -58,15 +62,8 @@
                 "enabled": true,
                 "monitor": "val_loss",
                 "min_delta": 0.00001,
-                "patience": 20,
+                "patience": 15,
                 "verbose": 1
-            },
-            "reduce_learningrate": {
-                "enabled": false,
-                "monitor": "val_loss",
-                "factor": 0.2,
-                "patience": 5,
-                "min_learningrate": 0.001
             }
         }
     }

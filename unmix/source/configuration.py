@@ -34,7 +34,7 @@ class Configuration(object):
         global configuration
         if not working_directory:
             working_directory = os.getcwd()
-        environmentvariables.set_environment_variables(extend=True)
+        environmentvariables.initialize(extend=True)
 
         if not configuration_file:
             configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')

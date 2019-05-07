@@ -47,7 +47,7 @@ if __name__ == "__main__":
                         type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--song', default='',
                         type=str, help="Input audio file to split vocals and instrumental.")
-    parser.add_argument('--songs', default='',
+    parser.add_argument('--songs', default='./temp/songs',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
     parser.add_argument('--youtube', default='', type=str,
                         help="Audio from a youtube video as file (or later stream).")
@@ -68,12 +68,14 @@ if __name__ == "__main__":
 
     if args.run_folder:
         prediction_folder = Configuration.build_path('predictions')
+        args.sample_rate = Configuration.get("collection.sample_rate")
     else:
         prediction_folder = ''
 
     if os.path.isdir(args.song):
         args.songs = args.song
         args.song = ''
+    
 
     Logger.info("Arguments: ", str(args))
 
@@ -102,7 +104,7 @@ if __name__ == "__main__":
 
     if args.youtube:
         prediction = YoutTubePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
-        path, name = prediction.run(args.youtube)
+        path, name, _ = prediction.run(args.youtube)
         prediction.save(name, path)
 
     end = time.time()

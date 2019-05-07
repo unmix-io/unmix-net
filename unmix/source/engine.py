@@ -11,7 +11,6 @@ __email__ = "info@unmix.io"
 
 import os
 import tensorflow as tf
-import numpy as np
 import keras
 
 from unmix.source.callbacks.callbacksfactory import CallbacksFactory
@@ -25,7 +24,7 @@ from unmix.source.metrics.metricsfactory import MetricsFactory
 from unmix.source.models.modelfactory import ModelFactory
 from unmix.source.optimizers.optimizerfactory import OptimizerFactory
 from unmix.source.pipeline.transformers.transformerfactory import TransformerFactory
-
+from unmix.source.metrics.accuracy import Accuracy
 
 class Engine:
 
@@ -37,7 +36,6 @@ class Engine:
         metrics = MetricsFactory.build()
 
         self.bindings = {
-            **OptimizerFactory.get_members(),
             **LossFunctionFactory.get_members(),
             **MetricsFactory.get_members()
         }
@@ -52,6 +50,7 @@ class Engine:
         self.transformer = TransformerFactory.build()
         self.test_songs = None
         self.graph = tf.get_default_graph()
+        self.accuracy = None
 
     def plot_model(self):
         try:
@@ -66,14 +65,16 @@ class Engine:
 
     def train(self, epoch_start=0):
         training_songs, validation_songs, test_songs = DataLoader.load()
+        
+        self.accuracy = Accuracy(self)
         self.training_generator = DataGenerator('training',
-                                                self, training_songs, self.transformer, False)
+                                                self, training_songs, self.transformer)
         self.validation_generator = DataGenerator('validation',
-                                                  self, validation_songs, self.transformer, True)
+                                                  self, validation_songs, self.transformer, self.accuracy)
         self.test_songs = test_songs
 
         def build_validation_generator(): return DataGenerator(
-            'validation_tensorboard', self, validation_songs, self.transformer, False)
+            'validation_tensorboard', self, validation_songs, self.transformer)
         # Pass a new data generator here because TensorBoard must have access to validation_data
         self.callbacks = CallbacksFactory.build(build_validation_generator)
 
@@ -89,6 +90,7 @@ class Engine:
             callbacks=self.callbacks)
         self.save()
         self.save_weights()
+        self.accuracy.evaluate(len(history.epoch))
         return history
 
     def save(self):

@@ -40,7 +40,7 @@ class DataLoader(object):
         test_files = None
         test_frequency = Configuration.get('collection.test_frequency', default=0)
         test_data_count = Configuration.get('collection.test_data_count', default=0)
-        if test_frequency > 0 and test_data_count > 0:
+        if test_data_count > 0:
             test_data_count = int(test_data_count)
             test_files = files[-test_data_count:]
             files = files[:len(files) - test_data_count]

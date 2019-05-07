@@ -14,7 +14,6 @@ import numpy as np
 from keras.callbacks import ModelCheckpoint, TensorBoard, CSVLogger, EarlyStopping, ReduceLROnPlateau
 
 from unmix.source.configuration import Configuration
-from unmix.source.helpers import converter
 from unmix.source.logging.logger import Logger
 
 

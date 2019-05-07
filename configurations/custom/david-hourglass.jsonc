@@ -1,0 +1,33 @@
+{
+    "base": "default-hourglass.jsonc",
+    "collection": {
+        "folder": "env('UNMIX_COLLECTION_DIR')",
+        "sample_rate": "int(env('UNMIX_SAMPLE_RATE'))",
+        "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
+        "test_data_count": 50,
+        "test_frequency": 0        
+    },
+    "training": {
+        "epoch": {
+            "count": 100000
+        },
+        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
+        "model": {
+            "options": {
+                "stacks": 6,
+                "initial_convolutions": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module_end": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                }
+            }
+        }
+    }
+}

@@ -16,6 +16,8 @@ from unmix.source.helpers import spectrogramhandler
 from unmix.source.helpers import reducer
 from unmix.source.pipeline.choppers.chopper import Chopper
 import unmix.source.pipeline.normalizers.normalizer_real_imag as normalizer_real_imag
+import unmix.source.pipeline.normalizers.normalizer_max as normalizer_max
+import unmix.source.pipeline.normalizers.normalizer_min_max as normalizer_min_max
 from unmix.source.configuration import Configuration
 
 
@@ -23,31 +25,41 @@ class TrainWindowPredictMaskTransformer:
 
     NAME = "train_window_predict_mask"
 
-    def __init__(self, size, step, shuffle, save_audio):
+    def __init__(self, size, step, shuffle, save_audio, normalizer_name):
         self.size = size
         self.shuffle = shuffle
         self.step = step
         self.save_audio = save_audio
+        if normalizer_name == normalizer_max.name:
+            self.normalizer = normalizer_max
+        elif normalizer_name == normalizer_min_max.name:
+            self.normalizer = normalizer_min_max
+        else:
+            self.normalizer = None
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
-        input = self.chopper.chop_n_pad(mix[0], index, self.size) # we select input[0] here because we just use the left or mono channel for now
+        # we select input[0] here because we just use the left or mono channel for now
+        input = self.chopper.chop_n_pad(mix[0], index, self.size)
         target = self.chopper.chop_n_pad(vocals[0], index, self.size)
-        
+
         normalized_input = normalizer_real_imag.normalize(input)[0]
         normalized_target = normalizer_real_imag.normalize(target)[0]
 
-        max_input = np.max(normalized_input)
-        if max_input > 0:
-            normalized_input = normalized_input / max_input
-            normalized_target = normalized_target / max_input
+        if self.normalizer:
+            normalized_input, normalized_target = self.normalizer.normalize(
+                normalized_input, normalized_target)
 
         if self.save_audio:
-            spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), input)
-            spectrogramhandler.to_audio('%s-%d_Target.wav' % (name, index), target)
+            spectrogramhandler.to_audio(
+                '%s-%d_Input.wav' % (name, index), input)
+            spectrogramhandler.to_audio(
+                '%s-%d_Target.wav' % (name, index), target)
 
-            spectrogramhandler.to_audio('%s-%d_Reconstructed_Input.wav' % (name, index), self.untransform_target(mix[0], normalized_input, index, (0,))[0])
-            spectrogramhandler.to_audio('%s-%d_Reconstructed_Target.wav' % (name, index), self.untransform_target(mix[0], normalized_target, index, (0,))[0])
+            spectrogramhandler.to_audio('%s-%d_Reconstructed_Input.wav' % (
+                name, index), self.untransform_target(mix[0], normalized_input, index, (0,))[0])
+            spectrogramhandler.to_audio('%s-%d_Reconstructed_Target.wav' % (
+                name, index), self.untransform_target(mix[0], normalized_target, index, (0,))[0])
 
         return normalized_input, normalized_target
 
@@ -66,7 +78,6 @@ class TrainWindowPredictMaskTransformer:
             normalized_data = normalized_data / np.max(normalized_data)
 
         return normalized_data, normalized[1]
-
 
     def untransform_target(self, mix, predicted_mask, index, transform_info):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'

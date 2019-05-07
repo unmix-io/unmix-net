@@ -82,7 +82,6 @@ class LeakyReluModel(BaseModel):
         conv = UpSampling2D(size=(2, 2))(conv)
 
         conv = Concatenate()([conv, conv_a])
-        conv = BatchNormalization()(conv)
 
         conv = Conv2D(filters=64, kernel_size=3, padding='same')(conv)
         conv = LeakyReLU(alpha=alpha2)(conv)
@@ -93,7 +92,6 @@ class LeakyReluModel(BaseModel):
         conv = Dropout(rate=dropout_rate)(conv)
 
         conv = Conv2D(filters=32, kernel_size=3, padding='same')(conv)
-        conv = BatchNormalization()(conv)
         conv = LeakyReLU(alpha=alpha2)(conv)
         conv = Dropout(rate=dropout_rate)(conv)
 

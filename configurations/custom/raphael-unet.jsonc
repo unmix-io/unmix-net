@@ -8,7 +8,8 @@
             "size": 16,
             "step": 16,
             "shuffle": true,
-            "save_audio": false
+            "save_audio": false,
+            "normalizer": "norm_max"
         }
     },
     "training": {
