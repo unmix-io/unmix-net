@@ -73,11 +73,11 @@ class Accuracy(object):
             accuracies, 'mix', epoch)
         self.medians.append(median)
 
-        if not os.path.exists(os.path.join(Configuration.output_directory, 'accuracy.csv')):
+        if not os.path.exists(os.path.join(Configuration.output_directory, 'accuracy_mix.csv')):
             self.__create_file("mix")
 
         self.__write_row(os.path.join(
-            Configuration.output_directory, 'accuracy.csv'), median)
+            Configuration.output_directory, 'accuracy_mix.csv'), median)
 
         Logger.info("Updated accuracy results.")
 
