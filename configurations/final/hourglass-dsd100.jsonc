@@ -1,0 +1,33 @@
+{
+    "base": "default-hourglass.jsonc",
+    "collection": {
+        "sample_rate": 44100,
+        "song_limit": 0,
+        "test_data_count": 50,
+        "test_frequency": 0,
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=44100_channels=1-mono/dsd100"
+    },
+    "training": {
+        "epoch": {
+            "count": 100000
+        },
+        "limit_items_per_song": "0",
+        "model": {
+            "options": {
+                "stacks": 6,
+                "initial_convolutions": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module_end": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                }
+            }
+        }
+    }
+}
