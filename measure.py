@@ -60,7 +60,7 @@ if __name__ == "__main__":
             os.path.join(args.data_path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
     Logger.info("Found %d songs to measure accuracy." % len(engine.test_songs))
 
-    engine.accuracy.evaluate("measure")
+    engine.accuracy.evaluate("measure", remove_panning=True)
 
     end = time.time()
     Logger.info("Finished processing in %d [s]." % (end - start))
