@@ -15,7 +15,7 @@ import os
 import time
 
 from unmix.source.engine import Engine
-from unmix.source.helpers import filehelper
+from unmix.source.helpers import filehelper, converter
 from unmix.source.metrics.accuracy import Accuracy
 from unmix.source.configuration import Configuration
 from unmix.source.logging.logger import Logger
@@ -36,6 +36,8 @@ if __name__ == "__main__":
                         type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--data_path', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
+    parser.add_argument('--remove_panning', default='False',
+                        type=converter.str2bool, help="If panning of stereo input files should be removed by preprocessing.")
 
     args = parser.parse_args()
     Logger.info("Arguments: ", str(args))
@@ -51,16 +53,18 @@ if __name__ == "__main__":
 
     engine = Engine()
     engine.load_weights(weights)
-    training_songs, validation_songs, test_songs = DataLoader.load()
-    engine.accuracy = Accuracy(engine)
-    engine.test_songs = test_songs
 
     if args.data_path:
         engine.test_songs = [os.path.dirname(file) for file in glob.iglob(
             os.path.join(args.data_path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
+    else:
+        training_songs, validation_songs, test_songs = DataLoader.load()
+        engine.accuracy = Accuracy(engine)
+        engine.test_songs = test_songs
+
     Logger.info("Found %d songs to measure accuracy." % len(engine.test_songs))
 
-    engine.accuracy.evaluate("measure", remove_panning=True)
+    engine.accuracy.evaluate("measure", remove_panning=args.remove_panning)
 
     end = time.time()
     Logger.info("Finished processing in %d [s]." % (end - start))
