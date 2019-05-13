@@ -70,5 +70,5 @@ def remove_panning(mix):
 
 def __channel_difference_panning(base, other, invert=True):
     amplitude = np.clip(np.abs(base) - np.abs(other), 0, None)
-    phase = np.exp((np.angle(base) * -1 if invert else 1) * 1j)
+    phase = np.exp((np.angle(base) * (-1 if invert else 1)) * 1j)
     return amplitude * phase

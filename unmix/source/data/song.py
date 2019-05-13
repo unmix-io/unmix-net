@@ -56,7 +56,7 @@ class Song(object):
                 # After this step all tracks are initialized
                 self.mix.mix(self.vocals, self.instrumental)
                 if remove_panning:
-                    spectrogramhandler.remove_panning(self.mix.channels)
+                    self.mix.channels = spectrogramhandler.remove_panning(self.mix.channels)
             except Exception as e:
                 raise DataError(self.folder, str(e))
             finally:
