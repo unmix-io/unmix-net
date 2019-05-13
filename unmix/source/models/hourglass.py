@@ -26,8 +26,9 @@ class HourglassModel(BaseModel):
 
     def build(self, config):
         transformation = Configuration.get('transformation.options', optional=False)
+        channels = 2 if Configuration.get('collection.stereo', default=False) else 1
 
-        input_shape = (769, transformation.size, 1)
+        input_shape = (769, transformation.size, channels)
         input_initial = Input(input_shape)
         input = Cropping2D(cropping=((1, 0), (0, 0)))(input_initial)
 

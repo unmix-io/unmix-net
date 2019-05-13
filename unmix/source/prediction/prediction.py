@@ -67,12 +67,12 @@ class Prediction(object):
         Logger.info("Output prediction file: %s" % output_file)
         return output_file
 
-    def predict_part(self, i, part, transform_info):
+    def predict_part(self, i, part):
         with self.graph.as_default():
             predicted = self.model.predict(np.array([part]))[0]
         predicted_vocals, predicted_instrumental = \
             self.transformer.untransform_target(
-                self.mix, predicted, i, transform_info)
+                self.mix, predicted, i)
         if not self.initialized:
             self.__init_shapes(predicted_vocals.shape)
 

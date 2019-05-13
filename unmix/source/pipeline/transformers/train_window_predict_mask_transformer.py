@@ -36,15 +36,24 @@ class TrainWindowPredictMaskTransformer:
             self.normalizer = normalizer_min_max
         else:
             self.normalizer = None
+        self.stereo = Configuration.get('collection.stereo', default=False)
         self.chopper = Chopper(step)
 
     def run(self, name, mix, vocals, index):
-        # we select input[0] here because we just use the left or mono channel for now
-        input = self.chopper.chop_n_pad(mix[0], index, self.size)
-        target = self.chopper.chop_n_pad(vocals[0], index, self.size)
+        input = [self.chopper.chop_n_pad(mix[0], index, self.size)]
+        target = [self.chopper.chop_n_pad(vocals[0], index, self.size)]
+        if self.stereo:
+            input.append(self.chopper.chop_n_pad(mix[0], index, self.size))
+            target.append(self.chopper.chop_n_pad(vocals[1], index, self.size))
 
-        normalized_input = normalizer_real_imag.normalize(input)[0]
-        normalized_target = normalizer_real_imag.normalize(target)[0]
+
+        normalized_input = normalizer_real_imag.normalize(input)
+        normalized_target = normalizer_real_imag.normalize(target)
+
+        if self.stereo:
+            # Reshape to put channels information in last dimension
+            normalized_input = np.reshape(normalized_input, normalized_input.shape[1:-1] + (2,))
+            normalized_target = np.reshape(normalized_target, normalized_target.shape[1:-1] + (2,))
 
         if self.normalizer:
             normalized_input, normalized_target = self.normalizer.normalize(
@@ -57,9 +66,9 @@ class TrainWindowPredictMaskTransformer:
                 '%s-%d_Target.wav' % (name, index), target)
 
             spectrogramhandler.to_audio('%s-%d_Reconstructed_Input.wav' % (
-                name, index), self.untransform_target(mix[0], normalized_input, index, (0,))[0])
+                name, index), self.untransform_target(mix[0], normalized_input, index)[0])
             spectrogramhandler.to_audio('%s-%d_Reconstructed_Target.wav' % (
-                name, index), self.untransform_target(mix[0], normalized_target, index, (0,))[0])
+                name, index), self.untransform_target(mix[0], normalized_target, index)[0])
 
         return normalized_input, normalized_target
 
@@ -71,15 +80,14 @@ class TrainWindowPredictMaskTransformer:
         input = self.chopper.chop_n_pad(mix, index, self.size)
 
         normalized = normalizer_real_imag.normalize(input)
-        normalized_data = normalized[0]
 
-        data_max = np.max(normalized_data)
+        data_max = np.max(normalized)
         if data_max > 0:
-            normalized_data = normalized_data / np.max(normalized_data)
+            normalized = normalized / np.max(normalized)
 
-        return normalized_data, normalized[1]
+        return normalized
 
-    def untransform_target(self, mix, predicted_mask, index, transform_info):
+    def untransform_target(self, mix, predicted_mask, index):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
         predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
         mix_slice = self.chopper.chop_n_pad(mix, index, self.step)

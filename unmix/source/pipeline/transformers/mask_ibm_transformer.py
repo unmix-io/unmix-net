@@ -50,13 +50,13 @@ class IBMMaskTransformer:
 
         if self.save_image:
             spectrogramhandler.to_image('%s-%d_Target.png' % (name, index), target_mask)
-            spectrogramhandler.to_image('%s-%d_Input.png' % (name, index), normalizer.normalize(input)[0])
+            spectrogramhandler.to_image('%s-%d_Input.png' % (name, index), normalizer.normalize(input))
 
-            spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), np.reshape(normalizer.normalize(input)[0], (769, self.size)) * np.exp(np.angle(input) * 1j))
+            spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), np.reshape(normalizer.normalize(input), (769, self.size)) * np.exp(np.angle(input) * 1j))
             reconstructed = np.abs(mix_slice) * target_mask * np.exp(np.angle(mix_slice) * 1j)
             spectrogramhandler.to_audio('%s-%d_Reconstructed.wav' % (name, index), reconstructed)
 
-        return normalizer.normalize(input)[0], target_mask
+        return normalizer.normalize(input), target_mask
 
     def calculate_items(self, width):
         return self.chopper.calculate_chops(width, self.size)
@@ -66,7 +66,7 @@ class IBMMaskTransformer:
         input = self.chopper.chop_n_pad(mix, index, self.size)
         return normalizer.normalize(input)
 
-    def untransform_target(self, mix, predicted_mask, index, transform_info):
+    def untransform_target(self, mix, predicted_mask, index):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
         predicted_mask = np.reshape(predicted_mask, (predicted_mask.shape[0],1))
         mix_slice = self.chopper.chop_n_pad(mix, index, self.step)

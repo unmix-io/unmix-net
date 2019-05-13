@@ -14,30 +14,21 @@ import math
 
 name = 'norm_real_imag'
 
-def normalize(cplx):
-    'Normalizes training data to use only amplitudes'
-
-    magnitude = np.abs(cplx)
-    percentile99 = np.percentile(magnitude, 99)
-    #magnitude = np.clip(magnitude, 0, percentile99)
-
-    #if(percentile99 > 0):
-    #    magnitude = magnitude / (percentile99 / 2)
-    
-    #magnitude = magnitude - 1
+def normalize(track_complex):
+    """
+    Normalizes training data to use only amplitudes
+    """
+    magnitude = np.abs(track_complex)
     magnitude = np.reshape(magnitude, magnitude.shape + (1,))
-    return magnitude, (percentile99,)
+    return magnitude
 
-def denormalize(magnitude_predicted, mix_complex, normalizer_info):
-    'Returns denormalized values as array of complex values (sft)'
-    percentile99 = normalizer_info[0]
-    denorm = np.reshape(magnitude_predicted, magnitude_predicted.shape[0:2])
-    
-    # Shift values to original space and clip values below zero
-    #denorm = denorm + 1
-    
+def denormalize(magnitude_predicted, mix_complex):
+    """
+    Returns denormalized values as array of complex values (sft)
+    """
+
+    denorm = np.reshape(magnitude_predicted, magnitude_predicted.shape[0:2])       
     denorm = denorm.clip(0)
-    #denorm = denorm * (percentile99 / 2)
 
     denorm = denorm * np.exp(np.angle(mix_complex) * 1j)
     return denorm

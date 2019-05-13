@@ -46,8 +46,8 @@ class WindowTransformer:
             spectrogramhandler.to_audio('%s-%d_Input.wav' % (name, index), input)
             spectrogramhandler.to_audio('%s-%d_Target.wav' % (name, index), target)
 
-            spectrogramhandler.to_audio('%s-%d_Reconstructed_Input.wav' % (name, index), self.untransform_target(mix[0], normalized_input, index, (0,))[0])
-            spectrogramhandler.to_audio('%s-%d_Reconstructed_Target.wav' % (name, index), self.untransform_target(mix[0], normalized_target, index, (0,))[0])
+            spectrogramhandler.to_audio('%s-%d_Reconstructed_Input.wav' % (name, index), self.untransform_target(mix[0], normalized_input, index)[0])
+            spectrogramhandler.to_audio('%s-%d_Reconstructed_Target.wav' % (name, index), self.untransform_target(mix[0], normalized_target, index)[0])
 
         return normalized_input, normalized_target
 
@@ -67,7 +67,7 @@ class WindowTransformer:
 
         return normalized_data, normalized[1]
 
-    def untransform_target(self, mix, predicted, index, transform_info):
+    def untransform_target(self, mix, predicted, index):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
         mix_slice = self.chopper.chop_n_pad(mix, index, self.size)
 
@@ -75,5 +75,5 @@ class WindowTransformer:
         if zmuv_normalizer_config and zmuv_normalizer_config.enabled:
             predicted = normalizer_zmuv.denormalize(predicted, zmuv_normalizer_config.mode, zmuv_normalizer_config.vocals_file)
         
-        denormalized = normalizer_real_imag.denormalize(predicted, mix_slice, transform_info)
+        denormalized = normalizer_real_imag.denormalize(predicted, mix_slice)
         return denormalized, mix_slice - denormalized

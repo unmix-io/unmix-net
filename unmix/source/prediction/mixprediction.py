@@ -43,7 +43,7 @@ class MixPrediction(Prediction):
         with progressbar.ProgressBar(max_value=self.length) as progbar:
             self.progressbar = progbar
             for i in range(self.length):
-                input, transform_info = self.transformer.prepare_input(
+                input = self.transformer.prepare_input(
                     self.mix, i)
                 self.predict_part(i, input, transform_info)
                 self.progressbar.update(self.progress)

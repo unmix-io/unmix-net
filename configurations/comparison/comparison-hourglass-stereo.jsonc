@@ -1,0 +1,53 @@
+// Fixed dataset for comparsion runs between different transformers and models.
+{
+    "base": "comparison/comparison-master.jsonc",
+    "environment": {
+        "name": "comparison-hourglass"
+    },
+    "collection": {
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=22050_channels=2-stereo/dsd100/",
+        "stereo": true
+    },
+    "transformation": {
+        "name": "train_window_predict_mask",
+        "options": {
+            "size": 64,
+            "step": 64,
+            "shuffle": true,
+            "save_audio": false,
+            "normalizer": "norm_max"
+        }
+    },
+    "training": {
+        "model": {
+            "name": "Hourglass",
+            "options": {
+                "stacks": 6,
+                "initial_convolutions": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module": {
+                    "filters": 256,
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module_end": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                }
+            }
+        },
+        "callbacks": {
+            "early_stopping": {
+                "patience": 50
+            }
+        },
+        "batch_size": 4,
+        "loss_function": "L11_loss",
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.0001
+        }
+    }
+}
