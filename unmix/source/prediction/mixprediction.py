@@ -45,7 +45,7 @@ class MixPrediction(Prediction):
             for i in range(self.length):
                 input = self.transformer.prepare_input(
                     self.mix, i)
-                self.predict_part(i, input, transform_info)
+                self.predict_part(i, input)
                 self.progressbar.update(self.progress)
 
         self.unpad()

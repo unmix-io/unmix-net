@@ -22,8 +22,9 @@ from unmix.source.logging.logger import Logger
 class DataLoader(object):
 
     @staticmethod
-    def load():
-        path = Configuration.get_path('collection.folder', False)
+    def load(path=None):
+        if not path:
+            path = Configuration.get_path('collection.folder', False)
         files_vocal = [os.path.dirname(file) for file in glob.iglob(
             os.path.join(path, '**', '%s*.h5' % Song.PREFIX_VOCALS), recursive=True)]
         files_instrumental = [os.path.dirname(file) for file in glob.iglob(
