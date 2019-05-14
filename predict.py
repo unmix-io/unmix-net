@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
-    parser.add_argument('--run_folder', default='',
+    parser.add_argument('--run_folder', default='G:\\home-flurydav\\repos\\unmix-net\\runs\\20190514-140502-comparison-hourglass-stereo',
                         type=str, help="General training input folder (overwrites other parameters).")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
@@ -77,7 +77,6 @@ if __name__ == "__main__":
     if os.path.isdir(args.song):
         args.songs = args.song
         args.song = ''
-    
 
     Logger.info("Arguments: ", str(args))
 
@@ -95,9 +94,12 @@ if __name__ == "__main__":
     engine = Engine()
     engine.load_weights(args.weights)
 
+    stereo = Configuration.get("collection.stereo", default=False)
+
     for song_file in song_files:
         try:
-            prediction = FilePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
+            prediction = FilePrediction(
+                engine, sample_rate=args.sample_rate, fft_window=args.fft_window, stereo=stereo)
             prediction.run(song_file, remove_panning=args.remove_panning)
             prediction.save(song_file, prediction_folder)
         except Exception as e:
@@ -105,7 +107,8 @@ if __name__ == "__main__":
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
 
     if args.youtube:
-        prediction = YoutTubePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
+        prediction = YoutTubePrediction(
+            engine, sample_rate=args.sample_rate, fft_window=args.fft_window, stereo=stereo)
         path, name, _ = prediction.run(args.youtube)
         prediction.save(name, path)
 

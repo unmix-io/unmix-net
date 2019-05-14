@@ -28,10 +28,10 @@ from unmix.source.helpers import spectrogramhandler
 
 class MixPrediction(Prediction):
 
-    def __init__(self, engine, sample_rate=22050, fft_window=1536):
-        super().__init__(engine, sample_rate, fft_window)
+    def __init__(self, engine, sample_rate=22050, fft_window=1536, stereo=False):
+        super().__init__(engine, sample_rate, fft_window, stereo)
     
-    def run(self, mix, stereo=False, remove_panning=False):
+    def run(self, mix, remove_panning=False):
         'Predicts an audio file mix.'
         self.mix = mix
         if remove_panning:

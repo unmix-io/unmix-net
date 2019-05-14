@@ -81,7 +81,8 @@ class TrainWindowPredictMaskTransformer:
         if self.stereo:
             input.append(self.chopper.chop_n_pad(mix[1], index, self.size))
         normalized = normalizer_real_imag.normalize(input)
-        normalized = np.reshape(normalized, normalized.shape[1:-1] + (2 if self.stereo else 1,))
+        normalized = np.reshape(
+            normalized, normalized.shape[1:-1] + (2 if self.stereo else 1,))
 
         if self.normalizer:
             normalized, _ = self.normalizer.normalize(normalized)
@@ -89,11 +90,15 @@ class TrainWindowPredictMaskTransformer:
 
     def untransform_target(self, mix, predicted_mask, index):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
-        predicted_mask = np.reshape(predicted_mask, predicted_mask.shape[0:2])
-        mix_slice = self.chopper.chop_n_pad(mix, index, self.step)
+        mix_slice = [self.chopper.chop_n_pad(channel, index, self.step) for channel in mix]
         mix_magnitude = np.abs(mix_slice)
+
         predicted_mask = np.clip(predicted_mask, 0, 1)
-        vocal_magnitude = mix_magnitude * predicted_mask
+        predicted_mask_reshape = [predicted_mask[:,:,0]]
+        if self.stereo:
+            predicted_mask_reshape.append(predicted_mask[:,:,1])
+
+        vocal_magnitude = mix_magnitude * predicted_mask_reshape
         vocals = vocal_magnitude * np.exp(np.angle(mix_slice) * 1j)
 
         return vocals, mix_slice - vocals

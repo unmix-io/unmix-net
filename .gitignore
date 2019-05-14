@@ -1,3 +1,20 @@
+# MedleyDB temp files
+MedleyDB_fileprocessing/mixes
+MedleyDB_fileprocessing/sources
+MedleyDB_fileprocessing/temp
+
+# Logfiles
+logfiles/
+temp/
+
+# Neural Network outputs
+/TensorBoard
+/models/*.png
+/envs/
+/weights/
+/runs/
+/blub
+
 
 # VisualStudioCode
 
@@ -192,19 +209,3 @@ fabric.properties
 
 .DS_Store
 ._.DS_Store
-
-# MedleyDB temp files
-MedleyDB_fileprocessing/mixes
-MedleyDB_fileprocessing/sources
-MedleyDB_fileprocessing/temp
-
-#Logfiles
-logfiles/
-temp/
-
-# Neural Net
-/TensorBoard
-/models/*.png
-/envs/
-/weights/
-/runs/

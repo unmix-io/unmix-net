@@ -27,8 +27,8 @@ from unmix.source.logging.logger import Logger
 
 class FilePrediction(MixPrediction):
 
-    def __init__(self, engine, sample_rate=22050, fft_window=1536):
-        super().__init__(engine, sample_rate, fft_window)
+    def __init__(self, engine, sample_rate=22050, fft_window=1536, stereo=False):
+        super().__init__(engine, sample_rate, fft_window, stereo=stereo)
 
     def run(self, file, mono=True, remove_panning=False):
         """
@@ -41,4 +41,4 @@ class FilePrediction(MixPrediction):
             mix = [librosa.stft(audio[0], self.fft_window), librosa.stft(audio[1], self.fft_window)]
         else:
             mix = [librosa.stft(audio, self.fft_window)]
-        return super().run(mix, stereo=stereo, remove_panning=remove_panning)
+        return super().run(mix, remove_panning=remove_panning)
