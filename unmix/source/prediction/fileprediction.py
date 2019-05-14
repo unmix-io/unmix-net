@@ -31,11 +31,14 @@ class FilePrediction(MixPrediction):
         super().__init__(engine, sample_rate, fft_window)
 
     def run(self, file, mono=True, remove_panning=False):
-        'Predicts an audio file by loading the spectrogram and mixing the tracks.'
+        """
+        Predicts an audio file by loading the spectrogram and mixing the tracks.
+        """
+        stereo = Configuration.get('collection.stereo', default=False)
         audio, self.sample_rate_origin = librosa.load(
-            file, mono=not remove_panning, sr=self.sample_rate)
+            file, mono=(not (stereo or remove_panning)), sr=self.sample_rate)
         if isinstance(audio[0], (np.ndarray)):
             mix = [librosa.stft(audio[0], self.fft_window), librosa.stft(audio[1], self.fft_window)]
         else:
-            mix = librosa.stft(audio, self.fft_window)
-        return super().run(mix, remove_panning=remove_panning)
+            mix = [librosa.stft(audio, self.fft_window)]
+        return super().run(mix, stereo=stereo, remove_panning=remove_panning)

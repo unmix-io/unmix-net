@@ -55,7 +55,7 @@ class Accuracy(object):
                 prediction = MixPrediction(
                     self.engine, sample_rate=Configuration.get('collection.sample_rate'))
                 predicted_vocals, predicted_instrumental = prediction.run(
-                    mix[0])
+                    mix)
                 if self.save_count > i:
                     prediction.save_vocals(song_file, folder=self.save_path)
                     prediction.save_instrumental(

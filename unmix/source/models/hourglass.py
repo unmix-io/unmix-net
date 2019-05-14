@@ -59,13 +59,14 @@ class HourglassModel(BaseModel):
             hourglass = self.__build_hourglass(inter, config.options.stacks, config.options.hg_module.filters, config.options.hg_module.batchnormalization, config.options.hg_module.dropoutfactor)
             
             conv = Conv2D(256, kernel_size=(3, 3), padding='same', activation='relu')(hourglass) #conv2d_19
-            if config.options.hg_module_end.batchnormalization: conv = BatchNormalization()(conv)
+            if config.options.hg_module_end.batchnormalization: 
+                conv = BatchNormalization()(conv)
             conv = Dropout(config.options.hg_module_end.dropoutfactor)(conv)
 
             conv = conv_x = Conv2D(256, kernel_size=(1, 1), padding='same', activation='relu')(conv) #conv2d_20
             conv = Dropout(config.options.hg_module_end.dropoutfactor)(conv)
 
-            conv = Conv2D(1, kernel_size=(1, 1), padding='same')(conv) #conv2d_21
+            conv = Conv2D(channels, kernel_size=(1, 1), padding='same')(conv) #conv2d_21
 
             padded = ZeroPadding2D(padding=((1, 0), (0, 0)))(conv) #zero_padding2d_1
 

@@ -21,13 +21,14 @@ from unmix.source.helpers import filehelper
 name = 'norm_max'
 
 
-def normalize(input, target):
+def normalize(input, target=None):
     max = np.max(input)
     if max > 0:
         input = input / max
-        target = target / max
+        if target is not None:
+            target = target / max
     return input, target
 
 
-def denormalize(input, target):
+def denormalize(input, target=None):
     return input, target

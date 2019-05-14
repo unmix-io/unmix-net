@@ -5,7 +5,8 @@
         "sample_rate": "int(env('UNMIX_SAMPLE_RATE'))",
         "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
         "test_data_count": 50,
-        "test_frequency": 0        
+        "test_frequency": 0,
+        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))"
     },
     "training": {
         "epoch": {

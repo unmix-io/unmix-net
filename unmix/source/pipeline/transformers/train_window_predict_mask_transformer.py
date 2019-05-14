@@ -46,14 +46,14 @@ class TrainWindowPredictMaskTransformer:
             input.append(self.chopper.chop_n_pad(mix[0], index, self.size))
             target.append(self.chopper.chop_n_pad(vocals[1], index, self.size))
 
-
         normalized_input = normalizer_real_imag.normalize(input)
         normalized_target = normalizer_real_imag.normalize(target)
 
-        if self.stereo:
-            # Reshape to put channels information in last dimension
-            normalized_input = np.reshape(normalized_input, normalized_input.shape[1:-1] + (2,))
-            normalized_target = np.reshape(normalized_target, normalized_target.shape[1:-1] + (2,))
+        # Reshape to put channels information in last dimension
+        normalized_input = np.reshape(
+            normalized_input, normalized_input.shape[1:-1] + (2 if self.stereo else 1,))
+        normalized_target = np.reshape(
+            normalized_target, normalized_target.shape[1:-1] + (2 if self.stereo else 1,))
 
         if self.normalizer:
             normalized_input, normalized_target = self.normalizer.normalize(
@@ -77,14 +77,14 @@ class TrainWindowPredictMaskTransformer:
 
     def prepare_input(self, mix, index):
         'Selects one training slice and performs preparation steps for the input (mix).'
-        input = self.chopper.chop_n_pad(mix, index, self.size)
-
+        input = [self.chopper.chop_n_pad(mix[0], index, self.size)]
+        if self.stereo:
+            input.append(self.chopper.chop_n_pad(mix[1], index, self.size))
         normalized = normalizer_real_imag.normalize(input)
+        normalized = np.reshape(normalized, normalized.shape[1:-1] + (2 if self.stereo else 1,))
 
-        data_max = np.max(normalized)
-        if data_max > 0:
-            normalized = normalized / np.max(normalized)
-
+        if self.normalizer:
+            normalized, _ = self.normalizer.normalize(normalized)
         return normalized
 
     def untransform_target(self, mix, predicted_mask, index):

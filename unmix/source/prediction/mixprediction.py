@@ -31,15 +31,13 @@ class MixPrediction(Prediction):
     def __init__(self, engine, sample_rate=22050, fft_window=1536):
         super().__init__(engine, sample_rate, fft_window)
     
-    def run(self, mix, remove_panning=False):
+    def run(self, mix, stereo=False, remove_panning=False):
         'Predicts an audio file mix.'
         self.mix = mix
         if remove_panning:
-            self.mix = spectrogramhandler.remove_panning(self.mix)
-        if not isinstance(self.mix, (np.ndarray)): # Only mono data is handled by the neuronal net
-            self.mix = np.mean(self.mix, axis=0)
+            self.mix = np.mean(spectrogramhandler.remove_panning(self.mix), axis=0)
         Logger.info("Start predicting mix.")
-        self.length = self.transformer.calculate_items(self.mix.shape[1])
+        self.length = self.transformer.calculate_items(self.mix[0].shape[1])
         with progressbar.ProgressBar(max_value=self.length) as progbar:
             self.progressbar = progbar
             for i in range(self.length):
