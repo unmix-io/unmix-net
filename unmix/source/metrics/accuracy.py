@@ -2,7 +2,7 @@
 # coding: utf8
 
 """
-Builds metrics from configuration.
+Calculates the accuracy over a test set using the mir_eval bss evaluation.
 """
 
 __author__ = 'David Flury, Andreas Kaufmann, Raphael Müller'
@@ -49,7 +49,8 @@ class Accuracy(object):
         for song_file in self.engine.test_songs:
             try:
                 song = Song(song_file)
-                mix, vocals = song.load(remove_panning=remove_panning, clean_up=False)
+                mix, vocals = song.load(
+                    remove_panning=remove_panning, clean_up=False)
                 instrumental = song.instrumental.channels
 
                 prediction = MixPrediction(
@@ -62,7 +63,7 @@ class Accuracy(object):
                         song_file, folder=self.save_path)
 
                 accuracies.append(
-                    self.__calculate_accuracy(vocals[0], instrumental[0],
+                    self.__generate_accuracy(vocals, instrumental,
                                               predicted_vocals, predicted_instrumental))
                 i += 1
             except Exception as e:
@@ -81,22 +82,13 @@ class Accuracy(object):
 
         Logger.info("Updated accuracy results.")
 
-    def __calculate_accuracy_track(self, original, predicted):
-        result = mir_eval.separation.bss_eval_sources(
-            librosa.istft(original), librosa.istft(predicted))
-        entry = {
-            Accuracy.SDR: result[0][0],
-            Accuracy.SIR: result[1][0],
-            Accuracy.SAR: result[2][0],
-            Accuracy.PERM: result[3][0]
-        }
-        return entry
-
-    def __calculate_accuracy(self, original_vocals, orignal_instrumental, predicted_vocals, predicted_instrumental):
-        result = mir_eval.separation.bss_eval_sources(
-            np.array([librosa.istft(original_vocals),
-                      librosa.istft(orignal_instrumental)]),
-            np.array([librosa.istft(predicted_vocals), librosa.istft(predicted_instrumental)]))
+    def __generate_accuracy(self, original_vocals, orignal_instrumental, predicted_vocals, predicted_instrumental):
+        accuracies = [self.__calculate_accuracy(
+            original_vocals[0], orignal_instrumental[0], predicted_vocals[0], predicted_instrumental[0])]
+        if Configuration.get("collection.stereo", default=False):
+            accuracies.append(self.__calculate_accuracy(
+                original_vocals[1], orignal_instrumental[1], predicted_vocals[1], predicted_instrumental[1]))
+        result = np.mean(accuracies, axis=0)
         entry = {
             Accuracy.PREFIX_VOCALS + Accuracy.SDR: result[0][0],
             Accuracy.PREFIX_VOCALS + Accuracy.SIR: result[1][0],
@@ -105,25 +97,36 @@ class Accuracy(object):
             Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SIR: result[1][1],
             Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR: result[2][1],
         }
-        print(entry)
         return entry
+
+    def __calculate_accuracy(self, original_vocals, orignal_instrumental, predicted_vocals, predicted_instrumental):
+        return mir_eval.separation.bss_eval_sources(
+            np.array([librosa.istft(original_vocals),
+                      librosa.istft(orignal_instrumental)]),
+            np.array([librosa.istft(predicted_vocals), librosa.istft(predicted_instrumental)]), compute_permutation=False)
 
     def __calculate_median(self, accuracies, type, epoch):
         return {
             'epoch': epoch,
             'type': type,
-            Accuracy.PREFIX_VOCALS + Accuracy.SDR: \
-                np.median(np.array([x[Accuracy.PREFIX_VOCALS + Accuracy.SDR] for x in accuracies])),
-            Accuracy.PREFIX_VOCALS + Accuracy.SIR: \
-                np.median(np.array([x[Accuracy.PREFIX_VOCALS + Accuracy.SIR] for x in accuracies])),
-            Accuracy.PREFIX_VOCALS + Accuracy.SAR: \
-                np.median(np.array([x[Accuracy.PREFIX_VOCALS + Accuracy.SAR] for x in accuracies])),
-            Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SDR: \
-                np.median(np.array([x[Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SDR] for x in accuracies])),
-            Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SIR: \
-                np.median(np.array([x[Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SIR] for x in accuracies])),
-            Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR: \
-                np.median(np.array([x[Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR] for x in accuracies])),
+            Accuracy.PREFIX_VOCALS + Accuracy.SDR:
+                np.median(
+                    np.array([x[Accuracy.PREFIX_VOCALS + Accuracy.SDR] for x in accuracies])),
+            Accuracy.PREFIX_VOCALS + Accuracy.SIR:
+                np.median(
+                    np.array([x[Accuracy.PREFIX_VOCALS + Accuracy.SIR] for x in accuracies])),
+            Accuracy.PREFIX_VOCALS + Accuracy.SAR:
+                np.median(
+                    np.array([x[Accuracy.PREFIX_VOCALS + Accuracy.SAR] for x in accuracies])),
+            Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SDR:
+                np.median(np.array(
+                    [x[Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SDR] for x in accuracies])),
+            Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SIR:
+                np.median(np.array(
+                    [x[Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SIR] for x in accuracies])),
+            Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR:
+                np.median(np.array(
+                    [x[Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR] for x in accuracies])),
         }
 
     def __create_file(self, type):
