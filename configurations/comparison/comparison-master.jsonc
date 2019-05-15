@@ -14,7 +14,7 @@
         "sample_rate": 22050,
         "song_limit": 0, // Number of tracks
         "validation_ratio": 0.2,
-        "test_data_count": 50, // Number of Testdata (Whenever possible use 50)
+        "test_data_count": 0, // Number of Testdata (Whenever possible use 50)
         "test_frequency": 0, // Run tests every n epoch
         "test_save_count": 5
     },
