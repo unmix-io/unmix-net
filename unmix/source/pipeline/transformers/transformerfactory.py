@@ -35,5 +35,5 @@ class TransformerFactory(object):
             if name == TrainWindowPredictMaskTransformer.NAME:
                 return TrainWindowPredictMaskTransformer(options.size, options.step, options.shuffle, options.save_audio, Configuration.get('transformation.options.normalizer', default=''))
         except:
-            raise ConfigurationError('transformation.options')
+            raise ConfigurationError("Invalid transformation.")
         raise ConfigurationError('transformation.name')

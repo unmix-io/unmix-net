@@ -11,7 +11,7 @@
         "epoch": {
             "count": 100000
         },
-        "limit_items_per_song": "0",
+        "limit_items_per_song": 0,
         "model": {
             "options": {
                 "stacks": 6,

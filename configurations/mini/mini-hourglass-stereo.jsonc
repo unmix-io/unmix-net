@@ -1,8 +1,9 @@
 {
     "environment": {
-        "name": "mini-Hourglass"
+        "name": "mini-Hourglass-stereo"
     },
     "collection": {
+        "stereo": true,
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "sample_rate": 11025,
         "song_limit": 2,
