@@ -3,7 +3,7 @@
     "collection": {
         "sample_rate": 44100,
         "song_limit": 0,
-        "test_data_count": 50,
+        "test_data_count": 0,
         "test_frequency": 0,
         "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=44100_channels=1-mono/"
     },
