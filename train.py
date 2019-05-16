@@ -41,7 +41,7 @@ if __name__ == "__main__":
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
     parser.add_argument('--workingdir', default=os.getcwd(), type=str, help="Working directory (default: current directory).")
-    parser.add_argument('--model', default='D:\\Repos\\unmix.io\\unmix-net\\runs\\20190516-193935-mini-hourglass\\weights\\callback_weights_08.h5', type=str, help="Optional pretrained model to continue training.")
+    parser.add_argument('--model', default='', type=str, help="Optional pretrained model to continue training.")
 
 
     args = parser.parse_args()
