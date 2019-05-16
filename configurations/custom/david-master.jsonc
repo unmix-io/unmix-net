@@ -63,7 +63,6 @@
         "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
         "verbose": 1,
         "metrics": ["mean_pred"],
-        "load_weights": false,
         "callbacks": {
             "model_checkpoint": {
                 "enabled": true,

@@ -41,6 +41,8 @@ if __name__ == "__main__":
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
     parser.add_argument('--workingdir', default=os.getcwd(), type=str, help="Working directory (default: current directory).")
+    parser.add_argument('--model', default='D:\\Repos\\unmix.io\\unmix-net\\runs\\20190516-193935-mini-hourglass\\weights\\callback_weights_08.h5', type=str, help="Optional pretrained model to continue training.")
+
 
     args = parser.parse_args()
     start = time.time()
@@ -57,8 +59,8 @@ if __name__ == "__main__":
 
     engine = Engine()
 
-    if Configuration.get('training.load_weights'):
-        engine.load_weights()
+    if args.model:
+        engine.load(args.model)
 
     engine.plot_model()
     engine.train()

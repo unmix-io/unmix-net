@@ -30,7 +30,6 @@
         "limit_items_per_song": 0,
         "verbose": 1,
         "metrics": ["mean_pred"],
-        "load_weights": false,
         "callbacks": {
             "model_checkpoint": {
                 "enabled": true,
