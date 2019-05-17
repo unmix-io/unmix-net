@@ -5,7 +5,8 @@
         "name": "comparison-hourglass"
     },
     "collection": {
-        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=22050_channels=1-mono/"
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=22050_channels=1-mono/",
+        "test_data_count": 50
     },
     "transformation": {
         "name": "train_window_predict_mask",
