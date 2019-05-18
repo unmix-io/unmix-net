@@ -13,6 +13,7 @@ import mir_eval
 import numpy as np
 import os
 import csv
+import progressbar
 
 from unmix.source.logging.logger import Logger
 from unmix.source.data.song import Song
@@ -29,7 +30,7 @@ class Accuracy(object):
     PREFIX_VOCALS = 'voc_'
     PREFIX_INSTRUMENTAL = 'inst_'
 
-    def __init__(self, engine):
+    def __init__(self, engine, name=''):
         self.engine = engine
         self.medians = []
         self.save_count = Configuration.get(
@@ -42,43 +43,51 @@ class Accuracy(object):
                        Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SDR,
                        Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SIR,
                        Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR]
+        if name:
+            self.file_name = 'accuracy_%s.csv' % name
+        else:
+            self.file_name = 'accuracy.csv'
 
     def evaluate(self, epoch, remove_panning=False):
         accuracies = []
         i = 0
-        for song_file in self.engine.test_songs:
-            try:
-                song = Song(song_file)
-                mix, vocals = song.load(
-                    remove_panning=remove_panning, clean_up=False)
-                instrumental = song.instrumental.channels
+        if not self.engine.test_songs:
+            return
+        with progressbar.ProgressBar(max_value=len(self.engine.test_songs)) as progbar:
+            for song_file in self.engine.test_songs:
+                try:
+                    song = Song(song_file)
+                    mix, vocals = song.load(
+                        remove_panning=remove_panning, clean_up=False)
+                    instrumental = song.instrumental.channels
 
-                prediction = MixPrediction(
-                    self.engine, sample_rate=Configuration.get('collection.sample_rate'))
-                predicted_vocals, predicted_instrumental = prediction.run(
-                    mix)
-                if self.save_count > i:
-                    prediction.save_vocals(song_file, folder=self.save_path)
-                    prediction.save_instrumental(
-                        song_file, folder=self.save_path)
+                    prediction = MixPrediction(
+                        self.engine, sample_rate=Configuration.get('collection.sample_rate'))
+                    predicted_vocals, predicted_instrumental = prediction.run(
+                        mix)
+                    if self.save_count > i:
+                        prediction.save_vocals(song_file, folder=self.save_path)
+                        prediction.save_instrumental(
+                            song_file, folder=self.save_path)
 
-                accuracies.append(
-                    self.__generate_accuracy(vocals, instrumental,
-                                              predicted_vocals, predicted_instrumental))
+                    accuracies.append(
+                        self.__generate_accuracy(vocals, instrumental,
+                                                predicted_vocals, predicted_instrumental))
+                except Exception as e:
+                    Logger.error(
+                        "Error while predicting song '%s': %s." % (song_file, str(e)))
                 i += 1
-            except Exception as e:
-                Logger.error(
-                    "Error while predicting song '%s': %s." % (song_file, str(e)))
+                progbar.update(i)
 
         median = self.__calculate_median(
             accuracies, 'mix', epoch)
         self.medians.append(median)
 
-        if not os.path.exists(os.path.join(Configuration.output_directory, 'accuracy_mix.csv')):
-            self.__create_file("mix")
+        if not os.path.exists(os.path.join(Configuration.output_directory, self.file_name)):
+            self.__create_file()
 
         self.__write_row(os.path.join(
-            Configuration.output_directory, 'accuracy_mix.csv'), median)
+            Configuration.output_directory, self.file_name), median)
 
         Logger.info("Updated accuracy results.")
 
@@ -129,9 +138,8 @@ class Accuracy(object):
                     [x[Accuracy.PREFIX_INSTRUMENTAL + Accuracy.SAR] for x in accuracies])),
         }
 
-    def __create_file(self, type):
-        path = os.path.join(Configuration.output_directory,
-                            'accuracy_%s.csv' % type)
+    def __create_file(self):
+        path = os.path.join(Configuration.output_directory, self.file_name)
         with open(path, mode='w', newline='') as file:
             file_writer = csv.DictWriter(
                 file, delimiter=';', fieldnames=self.fields)

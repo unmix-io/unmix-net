@@ -22,7 +22,7 @@ from unmix.source.logging.logger import Logger
 class DataLoader(object):
 
     @staticmethod
-    def load(path=None):
+    def load(path='', test_data_count=None):
         if not path:
             path = Configuration.get_path('collection.folder', False)
         files_vocal = [os.path.dirname(file) for file in glob.iglob(
@@ -40,7 +40,8 @@ class DataLoader(object):
 
         test_files = None
         test_frequency = Configuration.get('collection.test_frequency', default=0)
-        test_data_count = Configuration.get('collection.test_data_count', default=0)
+        if not test_data_count:
+            test_data_count = Configuration.get('collection.test_data_count', default=0)
         if test_data_count > 0:
             test_data_count = int(test_data_count)
             test_files = files[-test_data_count:]
@@ -64,7 +65,7 @@ class DataLoader(object):
                          % (len(test_files), test_frequency))
 
         if len(training_files) == 0:
-            Logger.error("No training files assigned.")
+            Logger.warn("No training files assigned.")
         if len(validation_files) == 0:
             Logger.warn("No validation files assigned.")
         return training_files, validation_files, test_files

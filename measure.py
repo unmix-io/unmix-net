@@ -36,6 +36,8 @@ if __name__ == "__main__":
                         type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--collection', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
+    parser.add_argument('--test_data_count', default=50,
+                        type=int, help="Number of songs to calculate accuracy from.")
     parser.add_argument('--remove_panning', default='False',
                         type=converter.str2bool, help="If panning of stereo input files should be removed by preprocessing.")
 
@@ -54,10 +56,12 @@ if __name__ == "__main__":
     engine = Engine()
     engine.load_weights(weights)
 
-    training_songs, validation_songs, test_songs = DataLoader.load(args.collection)
-    engine.accuracy = Accuracy(engine)
-    engine.test_songs = test_songs
+    name = os.path.basename(args.collection)
 
+    training_songs, validation_songs, test_songs = DataLoader.load(
+        args.collection, args.test_data_count)
+    engine.accuracy = Accuracy(engine, name)
+    engine.test_songs = test_songs
     Logger.info("Found %d songs to measure accuracy." % len(engine.test_songs))
 
     engine.accuracy.evaluate("measure", remove_panning=args.remove_panning)
