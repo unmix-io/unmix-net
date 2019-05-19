@@ -61,7 +61,7 @@
                 "enabled": true,
                 "monitor": "val_loss",
                 "min_delta": 0.00001,
-                "patience": 15,
+                "patience": 50,
                 "verbose": 1
             }
         }
