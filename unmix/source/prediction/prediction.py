@@ -62,9 +62,10 @@ class Prediction(object):
                 folder, file_name)
         else:
             output_file = os.path.join(os.path.dirname(file), file_name)
-        
+
         if self.stereo:
-            track = np.array([librosa.istft(channel) for channel in prediction])
+            track = np.array([librosa.istft(channel)
+                              for channel in prediction])
         else:
             track = librosa.istft(prediction[0])
         librosa.output.write_wav(
@@ -84,7 +85,7 @@ class Prediction(object):
         self.__expand_track(predicted_vocals, self.vocals, i)
         self.__expand_track(predicted_instrumental, self.instrumental, i)
         self.progress += 1
-    
+
     def __expand_track(self, prediction, track, i):
         # Transformers can have their own expander - use that if available
         if(getattr(self.transformer, "expand_track", None)):
@@ -94,18 +95,18 @@ class Prediction(object):
             right = prediction.shape[2] * (i+1)
             size = track.shape[2]
             if size < right:
-                track = np.append(track, np.zeros((track.shape[0], track.shape[1], right - size)), axis=2)
-            track[:,:,left:right] = prediction
+                track = np.append(track, np.zeros(
+                    (track.shape[0], track.shape[1], right - size)), axis=2)
+            track[:, :, left:right] = prediction
 
     def __init_shapes(self, shape):
         self.vocals = np.zeros(
             (shape[0], shape[1], self.transformer.step * self.length), np.complex)
         self.instrumental = np.zeros_like(self.vocals)
-        self.step = self.transformer.step
         self.initialized = True
 
     def unpad(self):
-        self.vocals = self.vocals[:,:, self.transformer.size // 2 : -(self.transformer.size - (
-            (self.transformer.size// 2 + self.mix[0].shape[1]) % self.transformer.size))]
-        self.instrumental = self.instrumental[:,:,  self.transformer.size // 2 :- (self.transformer.size - (
-            (self.transformer.size // 2 + self.mix[0].shape[1]) % self.transformer.size))]
+        mix_length = self.mix[0].shape[1]
+        offset = self.transformer.size // 2
+        self.vocals = self.vocals[:, :, offset:offset + mix_length]
+        self.instrumental = self.instrumental[:, :, offset:offset + mix_length]

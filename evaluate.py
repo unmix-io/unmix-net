@@ -32,10 +32,10 @@ if __name__ == "__main__":
         description="Executes a training session.")
     parser.add_argument('--run_folder', default='',
                         type=str, help="General training input folder.")
-    parser.add_argument('--fft_window', default=1536,
-                        type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--collection', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
+    parser.add_argument('--fft_window', default=1536,
+                        type=str, help="FFT window size the model was trained on.")
     parser.add_argument('--test_data_count', default=50,
                         type=int, help="Number of songs to calculate accuracy from.")
     parser.add_argument('--remove_panning', default='False',
