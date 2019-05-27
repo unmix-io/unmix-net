@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
-    parser.add_argument('--run_folder', default='',
+    parser.add_argument('--run_folder', default='./runs/20190515-154058-comparison-hourglass',
                         type=str, help="General training input folder (overwrites other parameters).")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")

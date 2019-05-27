@@ -56,7 +56,7 @@ class TrainWindowPredictMaskTransformer(BaseTransformer):
     def untransform_target(self, mix, predicted_mask, index):
         'Transforms predicted slices back to a format which corresponds to the training data (ready to process back to audio).'
         mix_slice = [self.chopper.chop_n_pad(
-            channel, index, self.step) for channel in mix]
+            channel, index, self.size) for channel in mix]
         mix_magnitude = np.abs(mix_slice)
 
         predicted_mask = np.clip(predicted_mask, 0, 1)

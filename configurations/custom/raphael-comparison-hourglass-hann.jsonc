@@ -1,0 +1,49 @@
+// Fixed dataset for comparsion runs between different transformers and models.
+{
+    "base": "comparison/comparison-master.jsonc",
+    "environment": {
+        "name": "comparison-hourglass"
+    },
+    "transformation": {
+        "name": "train_window_predict_mask_hann",
+        "options": {
+            "size": 64,
+            "step": 32,
+            "shuffle": true,
+            "save_audio": false,
+            "normalizer": "norm_max"
+        }
+    },
+    "training": {
+        "model": {
+            "name": "Hourglass",
+            "options": {
+                "stacks": 6,
+                "initial_convolutions": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module": {
+                    "filters": 256,
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                },
+                "hg_module_end": {
+                    "batchnormalization": true,
+                    "dropoutfactor": 0.2
+                }
+            }
+        },
+        "callbacks": {
+            "early_stopping": {
+                "patience": 50
+            }
+        },
+        "batch_size": 4,
+        "loss_function": "L11_loss",
+        "optimizer": {
+            "name": "adam",
+            "lr": 0.0001
+        }
+    }
+}

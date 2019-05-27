@@ -86,17 +86,21 @@ class Prediction(object):
         self.progress += 1
     
     def __expand_track(self, prediction, track, i):
-        left = prediction.shape[2] * i
-        right = prediction.shape[2] * (i+1)
-        size = track.shape[2]
-        if size < right:
-            track = np.append(track, np.zeros((track.shape[0], right - size)), axis=1)
-        track[:,:,left:right] = prediction
+        # Transformers can have their own expander - use that if available
+        if(getattr(self.transformer, "expand_track", None)):
+            self.transformer.expand_track(prediction, track, i)
+        else:
+            left = prediction.shape[2] * i
+            right = prediction.shape[2] * (i+1)
+            size = track.shape[2]
+            if size < right:
+                track = np.append(track, np.zeros((track.shape[0], right - size)), axis=1)
+            track[:,:,left:right] = prediction
 
     def __init_shapes(self, shape):
-        self.vocals = np.empty(
+        self.vocals = np.zeros(
             (shape[0], shape[1], shape[2] * self.length), np.complex)
-        self.instrumental = np.empty_like(self.vocals)
+        self.instrumental = np.zeros_like(self.vocals)
         self.step = self.vocals.shape[2]
         self.initialized = True
 
