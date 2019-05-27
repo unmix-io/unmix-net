@@ -39,7 +39,7 @@ class TrainWindowPredictMaskHannTransformer(TrainWindowPredictMaskTransformer):
         normalized_input, normalized_target = super().run(name, mix, vocals, index)
 
         #normalized_input = self.__hann(normalized_input)
-        normalized_target = self.__hann(normalized_target)
+        #normalized_target = self.__hann(normalized_target)
 
         return normalized_input, normalized_target
 
@@ -67,5 +67,5 @@ class TrainWindowPredictMaskHannTransformer(TrainWindowPredictMaskTransformer):
         if size < right:
             track = np.append(track, np.zeros((track.shape[0], right - size)), axis=1)
         # Sum up over the "hanned" predictions
-        track[:,:,left:right] += (prediction / 2)
+        track[:,:,left:right] += prediction * np.hanning(self.size)
 
