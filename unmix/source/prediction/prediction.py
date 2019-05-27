@@ -94,7 +94,7 @@ class Prediction(object):
             right = prediction.shape[2] * (i+1)
             size = track.shape[2]
             if size < right:
-                track = np.append(track, np.zeros((track.shape[0], right - size)), axis=1)
+                track = np.append(track, np.zeros((track.shape[0], track.shape[1], right - size)), axis=2)
             track[:,:,left:right] = prediction
 
     def __init_shapes(self, shape):

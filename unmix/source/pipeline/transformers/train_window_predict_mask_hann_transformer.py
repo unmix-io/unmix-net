@@ -65,7 +65,7 @@ class TrainWindowPredictMaskHannTransformer(TrainWindowPredictMaskTransformer):
         right = left + self.size
         size = track.shape[2]
         if size < right:
-            track = np.append(track, np.zeros((track.shape[0], right - size)), axis=1)
+            track = np.append(track, np.zeros((track.shape[0], track.shape[1], right - size)), axis=2)
         # Sum up over the "hanned" predictions
         track[:,:,left:right] += prediction * np.hanning(self.size)
 
