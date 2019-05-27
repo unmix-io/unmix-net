@@ -42,6 +42,7 @@ if __name__ == "__main__":
                         type=str, help="Environment and training configuration.")
     parser.add_argument('--workingdir', default=os.getcwd(), type=str, help="Working directory (default: current directory).")
     parser.add_argument('--model', default='', type=str, help="Optional pretrained model to continue training.")
+    parser.add_argument('--weights', default='', type=str, help="Optional pretrained weights of a model to continue training.")
 
 
     args = parser.parse_args()
@@ -61,6 +62,8 @@ if __name__ == "__main__":
 
     if args.model:
         engine.load(args.model)
+    if args.weights:
+        engine.load_weights(args.weights)
 
     engine.plot_model()
     engine.train()
