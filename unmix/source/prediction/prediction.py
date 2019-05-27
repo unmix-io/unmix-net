@@ -99,9 +99,9 @@ class Prediction(object):
 
     def __init_shapes(self, shape):
         self.vocals = np.zeros(
-            (shape[0], shape[1], shape[2] * self.length), np.complex)
+            (shape[0], shape[1], self.transformer.step * self.length), np.complex)
         self.instrumental = np.zeros_like(self.vocals)
-        self.step = self.vocals.shape[2]
+        self.step = self.transformer.step
         self.initialized = True
 
     def unpad(self):
