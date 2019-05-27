@@ -6,7 +6,7 @@
     },
     "collection": {
         "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=22050_channels=1-mono/",
-        "song_limit": 400,
+        "song_limit": 400
     },
     "transformation": {
         "name": "train_window_predict_mask",
