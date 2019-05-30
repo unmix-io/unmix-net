@@ -26,8 +26,8 @@ class TrainWindowPredictMaskHannTransformer(TrainWindowPredictMaskTransformer):
     NAME = "train_window_predict_mask_hann"
 
     def __init__(self, size, step, shuffle, save_audio, normalizer_name):
-        if(step * 2 != size):
-            raise Exception("Step size must be half of size for the hann overlap.")
+        if(size % step != 0):
+            raise Exception("Step must be a multiple of the size.")
         super().__init__(size, step, shuffle, save_audio, normalizer_name)
 
     def __hann(self, matrix):
@@ -67,5 +67,6 @@ class TrainWindowPredictMaskHannTransformer(TrainWindowPredictMaskTransformer):
         if size < right:
             track = np.append(track, np.zeros((track.shape[0], track.shape[1], right - size)), axis=2)
         # Sum up over the "hanned" predictions
-        track[:,:,left:right] += prediction * np.hanning(self.size)
+        factor = self.size / self.step / 2
+        track[:,:,left:right] += prediction * np.hanning(self.size) / factor
 

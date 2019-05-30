@@ -66,13 +66,14 @@ class Accuracy(object):
                     predicted_vocals, predicted_instrumental = prediction.run(
                         mix)
                     if self.save_count > i:
-                        prediction.save_vocals(song_file, folder=self.save_path)
+                        prediction.save_vocals(
+                            song_file, folder=self.save_path)
                         prediction.save_instrumental(
                             song_file, folder=self.save_path)
 
                     accuracies.append(
                         self.__generate_accuracy(vocals, instrumental,
-                                                predicted_vocals, predicted_instrumental))
+                                                 predicted_vocals, predicted_instrumental))
                 except Exception as e:
                     Logger.error(
                         "Error while predicting song '%s': %s." % (song_file, str(e)))
