@@ -1,18 +1,17 @@
 {
     "base": "default-hourglass.jsonc",
     "collection": {
-        "folder": "env('UNMIX_COLLECTION_DIR')",
-        "sample_rate": "int(env('UNMIX_SAMPLE_RATE'))",
-        "song_limit": "int(env('UNMIX_SONG_LIMIT'))", // Number of tracks
-        "test_data_count": 50,
+        "sample_rate": 44100,
+        "song_limit": 0,
+        "test_data_count": 0,
         "test_frequency": 0,
-        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))"
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=44100_channels=1-mono/dsd100"
     },
     "training": {
         "epoch": {
             "count": 100000
         },
-        "limit_items_per_song": "int(env('UNMIX_LIMIT_ITEMS_PER_SONG'))",
+        "limit_items_per_song": 0,
         "model": {
             "options": {
                 "stacks": 6,

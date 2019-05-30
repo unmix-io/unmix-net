@@ -45,6 +45,8 @@ if __name__ == "__main__":
                         type=str, help="Target sample rate which the model can process.")
     parser.add_argument('--fft_window', default=1536,
                         type=str, help="FFT window size the model was trained on.")
+    parser.add_argument('--remove_panning', default='False',
+                        type=converter.str2bool, help="If panning of stereo input files should be removed by preprocessing.")
     parser.add_argument('--song', default='',
                         type=str, help="Input audio file to split vocals and instrumental.")
     parser.add_argument('--songs', default='./temp/songs',
@@ -75,7 +77,6 @@ if __name__ == "__main__":
     if os.path.isdir(args.song):
         args.songs = args.song
         args.song = ''
-    
 
     Logger.info("Arguments: ", str(args))
 
@@ -93,17 +94,21 @@ if __name__ == "__main__":
     engine = Engine()
     engine.load_weights(args.weights)
 
+    stereo = Configuration.get("collection.stereo", default=False)
+
     for song_file in song_files:
         try:
-            prediction = FilePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
-            prediction.run(song_file)
+            prediction = FilePrediction(
+                engine, sample_rate=args.sample_rate, fft_window=args.fft_window, stereo=stereo)
+            prediction.run(song_file, remove_panning=args.remove_panning)
             prediction.save(song_file, prediction_folder)
         except Exception as e:
             Logger.error(
                 "Error while predicting song '%s': %s." % (song_file, str(e)))
 
     if args.youtube:
-        prediction = YoutTubePrediction(engine, sample_rate=args.sample_rate, fft_window=args.fft_window)
+        prediction = YoutTubePrediction(
+            engine, sample_rate=args.sample_rate, fft_window=args.fft_window, stereo=stereo)
         path, name, _ = prediction.run(args.youtube)
         prediction.save(name, path)
 

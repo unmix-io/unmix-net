@@ -1,28 +1,20 @@
+// Fixed dataset for comparsion runs between different transformers and models.
 {
+    "base": "comparison/comparison-master.jsonc",
     "environment": {
-        "name": "mini-Hourglass"
-    },
-    "collection": {
-        "folder": "env('UNMIX_COLLECTION_DIR')",
-        "sample_rate": 11025,
-        "song_limit": 2,
-        "validation_ratio": 0.5,
-        "test_data_count": 0,
-        "test_frequency": 0,
-        "test_save_count": 0
+        "name": "comparison-hourglass"
     },
     "transformation": {
-        "name": "train_window_predict_mask",
+        "name": "train_window_predict_mask_hann",
         "options": {
             "size": 64,
-            "step": 64,
+            "step": 32,
             "shuffle": true,
             "save_audio": false,
             "normalizer": "norm_max"
         }
     },
     "training": {
-        "limit_items_per_song": 8,
         "model": {
             "name": "Hourglass",
             "options": {
@@ -42,7 +34,12 @@
                 }
             }
         },
-        "batch_size": 2,
+        "callbacks": {
+            "early_stopping": {
+                "patience": 50
+            }
+        },
+        "batch_size": 4,
         "loss_function": "L11_loss",
         "optimizer": {
             "name": "adam",

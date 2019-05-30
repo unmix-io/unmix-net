@@ -52,5 +52,5 @@ class MaskIBMModel(BaseModel):
         model.add(Dense(769 * transformation.step, kernel_initializer='he_normal'))
         model.add(Reshape((769, transformation.step, 1)))
         #model.add(ReLU(max_value=0.999, negative_slope=0.01))
-        model.add(Activation('sigmoid'))
+        #model.add(Activation('sigmoid'))
         return model

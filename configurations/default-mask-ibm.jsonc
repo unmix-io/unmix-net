@@ -16,15 +16,15 @@
             "name": "mask-ibm",
             "options": {
                 "alpha": 0.3,
-                "dropout_rate": 0.5,
+                "dropout_rate": 0.2,
                 "filter_factor": 1
             }
         },
         "batch_size": 8,
-        "loss_function": "binary_crossentropy",
+        "loss_function": "mean_squared_error",
         "optimizer": {
             "name": "adam",
-            "lr": 0.001
+            "lr": 0.0001
         }
     }
 }

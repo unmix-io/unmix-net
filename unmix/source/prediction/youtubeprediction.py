@@ -28,8 +28,8 @@ from unmix.source.logging.logger import Logger
 
 class YoutTubePrediction(FilePrediction):
 
-    def __init__(self, engine, sample_rate=22050, fft_window=1536):
-        super().__init__(engine, sample_rate, fft_window)
+    def __init__(self, engine, sample_rate=22050, fft_window=1536, stereo=False):
+        super().__init__(engine, sample_rate, fft_window, stereo=stereo)
         self.length = 1
         self.cursor = 0
 

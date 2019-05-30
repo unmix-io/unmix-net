@@ -5,7 +5,7 @@
     "transformation": {
         "name": "mask",
         "options": {
-            "size": 64,
+            "size": 25,
             "step": 1,
             "shuffle": true,
             "save_image": false

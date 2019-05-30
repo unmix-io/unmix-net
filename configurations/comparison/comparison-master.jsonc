@@ -14,7 +14,7 @@
         "sample_rate": 22050,
         "song_limit": 0, // Number of tracks
         "validation_ratio": 0.2,
-        "test_data_count": 50, // Number of Testdata (Whenever possible use 50)
+        "test_data_count": 0,
         "test_frequency": 0, // Run tests every n epoch
         "test_save_count": 5
     },
@@ -30,7 +30,6 @@
         "limit_items_per_song": 0,
         "verbose": 1,
         "metrics": ["mean_pred"],
-        "load_weights": false,
         "callbacks": {
             "model_checkpoint": {
                 "enabled": true,
@@ -62,7 +61,7 @@
                 "enabled": true,
                 "monitor": "val_loss",
                 "min_delta": 0.00001,
-                "patience": 15,
+                "patience": 50,
                 "verbose": 1
             }
         }

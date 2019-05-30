@@ -15,6 +15,7 @@ import os
 
 from unmix.source.data.track import Track
 from unmix.source.exceptions.dataerror import DataError
+from unmix.source.helpers import spectrogramhandler
 
 
 class Song(object):
@@ -49,15 +50,18 @@ class Song(object):
                                 self.depth, instrumental_file)
         self.mix = Track("mix", self.height, self.width, self.depth)
 
-    def load(self):
+    def load(self, remove_panning=False, clean_up=True):
         if not self.mix.initialized:
             try:
                 # After this step all tracks are initialized
                 self.mix.mix(self.vocals, self.instrumental)
+                if remove_panning:
+                    self.mix.channels = spectrogramhandler.remove_panning(self.mix.channels)
             except Exception as e:
                 raise DataError(self.folder, str(e))
             finally:
-                self.clean_up()
+                if clean_up:
+                    self.clean_up()
         return self.mix.channels, self.vocals.channels
 
     def clean_up(self):

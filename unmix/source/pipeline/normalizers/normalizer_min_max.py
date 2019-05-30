@@ -21,15 +21,16 @@ from unmix.source.helpers import filehelper
 name = 'norm_min_max'
 
 
-def normalize(input, target):
+def normalize(input, target=None):
     max = np.max(input)
     min = np.min(input)
     difference = max - min
     if difference > 0:
         input = (input - min) / difference
-        target = (input - min) / difference
+        if target is not None:
+            target = (input - min) / difference
     return input, target
 
 
-def denormalize(input, target):
+def denormalize(input, target=None):
     return input, target

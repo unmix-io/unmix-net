@@ -65,10 +65,10 @@ class StreamPrediction(Prediction):
 
             position = self.mix.shape[1] // StreamPrediction.PREDICTION_SIZE
             if position > self.cursor:
-                input, transform_info = self.transformer.prepare_input(
+                input = self.transformer.prepare_input(
                     self.mix[:, StreamPrediction.PREDICTION_SIZE*(position-1):StreamPrediction.PREDICTION_SIZE*position], 0)
                 # TODO Move prediction to isolated thread?
-                self.predict_part(self.progress, input, transform_info)
+                self.predict_part(self.progress, input)
                 self.cursor += 1
         except Exception as e:
             Logger.error("Error while predicting stream chunk: %s." % str(e))

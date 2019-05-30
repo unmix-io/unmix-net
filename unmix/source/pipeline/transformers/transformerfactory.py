@@ -17,6 +17,7 @@ from unmix.source.pipeline.transformers.masktransformer import MaskTransformer
 from unmix.source.pipeline.transformers.mask_ibm_transformer import IBMMaskTransformer
 from unmix.source.pipeline.transformers.windowtransformer import WindowTransformer
 from unmix.source.pipeline.transformers.train_window_predict_mask_transformer import TrainWindowPredictMaskTransformer
+from unmix.source.pipeline.transformers.train_window_predict_mask_hann_transformer import TrainWindowPredictMaskHannTransformer
 
 
 class TransformerFactory(object):
@@ -34,6 +35,8 @@ class TransformerFactory(object):
                 return IBMMaskTransformer(options.size, options.step, options.shuffle, options.save_image)
             if name == TrainWindowPredictMaskTransformer.NAME:
                 return TrainWindowPredictMaskTransformer(options.size, options.step, options.shuffle, options.save_audio, Configuration.get('transformation.options.normalizer', default=''))
+            if name == TrainWindowPredictMaskHannTransformer.NAME:
+                return TrainWindowPredictMaskHannTransformer(options.size, options.step, options.shuffle, options.save_audio, Configuration.get('transformation.options.normalizer', default=''))
         except:
-            raise ConfigurationError('transformation.options')
+            raise ConfigurationError("Invalid transformation.")
         raise ConfigurationError('transformation.name')

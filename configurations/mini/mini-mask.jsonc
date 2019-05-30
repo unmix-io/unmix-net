@@ -5,7 +5,7 @@
     "collection": {
         "folder": "env('UNMIX_COLLECTION_DIR')",
         "sample_rate": 11025,
-        "song_limit": 1,
+        "song_limit": 2,
         "validation_ratio": 0.5,
         "test_data_count": 0,
         "test_frequency": 0,
@@ -21,6 +21,7 @@
         }
     },
     "training": {
+        "limit_items_per_song": 8,
         "model": {
             "name": "mask",
             "options": {

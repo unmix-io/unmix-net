@@ -1,15 +1,12 @@
+// Fixed dataset for comparsion runs between different transformers and models.
 {
+    "base": "comparison/comparison-master.jsonc",
     "environment": {
-        "name": "mini-Hourglass"
+        "name": "comparison-hourglass-400"
     },
     "collection": {
-        "folder": "env('UNMIX_COLLECTION_DIR')",
-        "sample_rate": 11025,
-        "song_limit": 2,
-        "validation_ratio": 0.5,
-        "test_data_count": 0,
-        "test_frequency": 0,
-        "test_save_count": 0
+        "folder": "/cluster/data/muellrap/4_training/fft-window=1536_sample-rate=22050_channels=1-mono/",
+        "song_limit": 400
     },
     "transformation": {
         "name": "train_window_predict_mask",
@@ -22,7 +19,6 @@
         }
     },
     "training": {
-        "limit_items_per_song": 8,
         "model": {
             "name": "Hourglass",
             "options": {
@@ -42,7 +38,12 @@
                 }
             }
         },
-        "batch_size": 2,
+        "callbacks": {
+            "early_stopping": {
+                "patience": 50
+            }
+        },
+        "batch_size": 4,
         "loss_function": "L11_loss",
         "optimizer": {
             "name": "adam",
