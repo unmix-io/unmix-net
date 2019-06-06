@@ -17,7 +17,7 @@ Date: 2018-07-28
 Availability: https://github.com/madebyollin/acapellabot
 """
 
-class AccapellaBotModel(BaseModel):
+class AcapellaBotModel(BaseModel):
     name = 'AcapellaBot'
 
     def build(self, config):
