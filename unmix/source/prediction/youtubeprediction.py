@@ -43,7 +43,7 @@ class YoutTubePrediction(FilePrediction):
         super().run(os.path.join(path, name))
         return path, name, self.length
 
-    def __download(self, link, path):        
+    def __download(self, link, path):
         from pytube import YouTube
         yt = YouTube(link)
         yt.register_on_progress_callback(self.__youtube_stream_callback)

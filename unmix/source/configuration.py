@@ -19,7 +19,7 @@ import datetime
 
 from unmix.source.exceptions.configurationerror import ConfigurationError
 from unmix.source.helpers import converter
-from unmix.source.helpers import environmentvariables
+from unmix.source.helpers import envvars
 from unmix.source.helpers import filehelper
 from unmix.source.helpers import dictionary
 from unmix.source.helpers import reducer
@@ -34,7 +34,7 @@ class Configuration(object):
         global configuration
         if not working_directory:
             working_directory = os.getcwd()
-        environmentvariables.initialize(extend=True)
+        envvars.initialize(extend=True)
 
         if not configuration_file:
             configuration_file = converter.env('UNMIX_CONFIGURATION_FILE')
