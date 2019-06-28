@@ -39,7 +39,10 @@ class YoutTubePrediction(FilePrediction):
             path = Configuration.get_path('environment.temp_folder')
                     
         Logger.info("Start downloading youtube song: %s." % link)
-        name = self.__download(link, path)
+        try:            
+            name = self.__download(link, path)
+        except:
+            name = self.__download_alternative(link, path)
         super().run(os.path.join(path, name))
         return path, name, self.length
 
@@ -56,6 +59,18 @@ class YoutTubePrediction(FilePrediction):
             self.progressbar = progbar
             audio.download(path)
         return audio.default_filename
+
+    def __download_alternative(self, link, path):
+        """
+        Alternative library to download YouTube files.
+        """
+        import youtube_dl
+
+        ydl_opts = {}
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            result = ydl.download([link])
+        
+        return ""
 
     def __youtube_stream_callback(self, stream, chunk, file_handle, bytes_remaining):
         self.progressbar.update(self.length - bytes_remaining)
