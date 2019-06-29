@@ -69,7 +69,7 @@ class YoutTubePrediction(FilePrediction):
             'format': 'bestaudio',
             'outtmpl': os.path.join(path, '%(title)s-%(id)s.%(ext)s'),
             'restrictfilenames': True,
-            'forcefilename': True,
+            'forcefilename': True
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(link, download=False)
