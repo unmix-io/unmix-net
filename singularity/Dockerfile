@@ -55,8 +55,8 @@ RUN apt-get install -y libcupti-dev python-pip python-dev python3-dev python3-pi
 RUN pip install tensorflow-gpu==1.12 numpy scipy 'matplotlib<3.0' pandas scikit-learn scikit-image
 RUN pip3 install tensorflow-gpu==1.12 numpy scipy matplotlib pandas scikit-learn scikit-image
 
-RUN pip install scipy pyyaml h5py matplotlib pandas scikit-learn scikit-image keras==2.2.4 librosa commentjson psutil gitpython colorama progressbar2 mir_eval pytube && \
-    pip3 install scipy pyyaml h5py matplotlib pandas scikit-learn scikit-image keras==2.2.4 librosa commentjson psutil gitpython colorama progressbar2 mir_eval pytube
+RUN pip install scipy pyyaml h5py matplotlib pandas scikit-learn scikit-image keras==2.2.4 librosa commentjson psutil gitpython colorama progressbar2 mir_eval pytube youtube-dl && \
+    pip3 install scipy pyyaml h5py matplotlib pandas scikit-learn scikit-image keras==2.2.4 librosa commentjson psutil gitpython colorama progressbar2 mir_eval pytube youtube-dl
 
 # To publish this Dockerfile, run (in the same directory as this file):
 # docker login --username=yourhubusername --email=youremail@provider.com
