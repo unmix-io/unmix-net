@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Executes a training session.")
-    parser.add_argument('--run_folder', default='',
+    parser.add_argument('--run_folder', default='D:\\Data\\unmix.io\\runs\\20190621-133434-hourglass-final',
                         type=str, help="General training input folder (overwrites other parameters).")
     parser.add_argument('--configuration', default='',
                         type=str, help="Environment and training configuration.")
@@ -41,7 +41,7 @@ if __name__ == "__main__":
                         type=str, help="Pretrained weights file (overwrites configuration).")
     parser.add_argument('--workingdir', default=os.getcwd(),
                         type=str, help="Working directory (default: current directory).")
-    parser.add_argument('--sample_rate', default=11025,
+    parser.add_argument('--sample_rate', default=44100,
                         type=str, help="Target sample rate which the model can process.")
     parser.add_argument('--fft_window', default=1536,
                         type=str, help="FFT window size the model was trained on.")
@@ -49,9 +49,9 @@ if __name__ == "__main__":
                         type=converter.str2bool, help="If panning of stereo input files should be removed by preprocessing.")
     parser.add_argument('--song', default='',
                         type=str, help="Input audio file to split vocals and instrumental.")
-    parser.add_argument('--songs', default='./temp/songs',
+    parser.add_argument('--songs', default='',
                         type=str, help="Input folder containing audio files to split vocals and instrumental.")
-    parser.add_argument('--youtube', default='', type=str,
+    parser.add_argument('--youtube', default='https://www.youtube.com/watch?v=G1PsSKE4ihE', type=str,
                         help="Audio from a youtube video as file (or later stream).")
 
     args = parser.parse_args()

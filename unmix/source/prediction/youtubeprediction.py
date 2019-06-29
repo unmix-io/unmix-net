@@ -34,12 +34,12 @@ class YoutTubePrediction(FilePrediction):
         self.cursor = 0
 
     def run(self, link, path=''):
-        'Predicts an download from youtube.'
+        'PredEicts an download from youtube.'
         if not path:
             path = Configuration.get_path('environment.temp_folder')
-                    
+
         Logger.info("Start downloading youtube song: %s." % link)
-        try:            
+        try:
             name = self.__download(link, path)
         except:
             name = self.__download_alternative(link, path)
@@ -51,9 +51,8 @@ class YoutTubePrediction(FilePrediction):
         yt = YouTube(link)
         yt.register_on_progress_callback(self.__youtube_stream_callback)
         audio = yt.streams.filter(progressive=True, subtype='mp4') \
-                .order_by('resolution').desc().first() # only_audio=True is much slower
+            .order_by('resolution').desc().first()  # only_audio=True is much slower
         self.length = audio.filesize
-        # self.sample_rate_origin = int(audio.audio_sample_rate)
 
         with progressbar.ProgressBar(max_value=self.length) as progbar:
             self.progressbar = progbar
@@ -66,11 +65,17 @@ class YoutTubePrediction(FilePrediction):
         """
         import youtube_dl
 
-        ydl_opts = {}
+        ydl_opts = {
+            'format': 'bestaudio',
+            'outtmpl': os.path.join(path, '%(title)s-%(id)s.%(ext)s'),
+            'restrictfilenames': True,
+            'forcefilename': True,
+        }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            result = ydl.download([link])
-        
-        return ""
+            info = ydl.extract_info(link, download=False)
+            download_target = ydl.prepare_filename(info)
+            ydl.download([link])
+        return download_target
 
     def __youtube_stream_callback(self, stream, chunk, file_handle, bytes_remaining):
         self.progressbar.update(self.length - bytes_remaining)
