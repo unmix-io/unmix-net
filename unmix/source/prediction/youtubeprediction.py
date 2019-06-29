@@ -75,7 +75,7 @@ class YoutTubePrediction(FilePrediction):
             info = ydl.extract_info(link, download=False)
             download_target = ydl.prepare_filename(info)
             ydl.download([link])
-        return download_target
+        return os.path.basename(download_target)
 
     def __youtube_stream_callback(self, stream, chunk, file_handle, bytes_remaining):
         self.progressbar.update(self.length - bytes_remaining)
